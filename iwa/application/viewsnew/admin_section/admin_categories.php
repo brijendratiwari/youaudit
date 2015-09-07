@@ -410,7 +410,7 @@
 
                     var category = $.parseJSON(data);
                     $("#quantity_enabled").val(category.quantity_enabled);
-                    $("#edit_category_name").attr("value", category_name);
+                    $("#edit_category_name").attr("value", category.name);
 
                     $("#category_id").attr("value", id);
                     if (email.length != 1) {
