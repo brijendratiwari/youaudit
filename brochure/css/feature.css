@@ -1,0 +1,19 @@
+.feature_info{
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	line-height: 22px;
+	color: #333;
+}
+.feature_info img{
+	display: block;
+	margin: auto;
+}
+h1{
+	font-size: 18px;
+}
+.print{
+	display: block;
+	margin: 0 0 20px 0;
+	background: url(../img/icon-print.png) 0 3px no-repeat;
+	padding: 0 0 0 20px;
+}

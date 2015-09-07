@@ -1,0 +1,620 @@
+<?php
+
+if (!defined('BASEPATH'))
+    exit('No direct script access allowed');
+
+class Faults extends MY_Controller {
+
+    public function index() {
+        $this->filter();
+    }
+
+    public function filter() {
+
+        if (!$this->session->userdata('booUserLogin') && !$this->session->userdata('booInheritedUser')) {
+            $this->session->set_userdata('strReferral', '/items/filter/');
+            redirect('users/login/', 'refresh');
+        }
+        // housekeeping
+        $arrPageData = array();
+        $arrPageData['arrPageParameters']['strSection'] = get_class();
+        $arrPageData['arrPageParameters']['strPage'] = "All Fault";
+        $arrPageData['arrSessionData'] = $this->session->userdata;
+        $this->session->set_userdata('booCourier', false);
+        $this->session->set_userdata('arrCourier', array());
+        $arrPageData['arrErrorMessages'] = array();
+        $arrPageData['arrUserMessages'] = array();
+        $this->load->model('tickets_model');
+        $fullItemsData = $this->tickets_model->getAllFaultItems($this->session->userdata('objSystemUser')->accountid);
+       
+        $arrPageData['current_job'] = $fullItemsData['results'];
+
+        $arrPageData['fullItemsData'] = $fullItemsData['results'];
+        // load views
+        $this->load->view('common/header', $arrPageData);
+        //load the correct view
+        $this->load->view('faults/faults', $arrPageData);
+        $this->load->view('common/footer', $arrPageData);
+    }
+    
+    
+     public function faulthistory() {
+
+        if (!$this->session->userdata('booUserLogin') && !$this->session->userdata('booInheritedUser')) {
+            $this->session->set_userdata('strReferral', '/items/filter/');
+            redirect('users/login/', 'refresh');
+        }
+        // housekeeping
+        $arrPageData = array();
+        $arrPageData['arrPageParameters']['strSection'] = 'Fault History';
+       $arrPageData['arrPageParameters']['strPage'] = "All Fault";
+        $arrPageData['arrSessionData'] = $this->session->userdata;
+        $this->session->set_userdata('booCourier', false);
+        $this->session->set_userdata('arrCourier', array());
+        $arrPageData['arrErrorMessages'] = array();
+        $arrPageData['arrUserMessages'] = array();
+        $this->load->model('tickets_model');
+        $fullItemsData = $this->tickets_model->getAllFixItems($this->session->userdata('objSystemUser')->accountid);
+        
+       
+        
+        
+        $arrPageData['fixed_job'] = $fullItemsData['results'];
+        $this->load->view('common/header', $arrPageData);
+        $this->load->view('faults/fault_history', $arrPageData);
+        $this->load->view('common/footer', $arrPageData);
+    }
+
+    function ajaxfetchItem() {
+        $intItemId = $this->input->post('id');
+        $intAccountId = $this->input->post('account_id');
+        if($this->input->post('type')){
+        $intAccountType = $this->input->post('type');
+        }
+        if(strpos($intItemId, '_')!=FALSE) {
+        $explodeArr = explode("_", $intItemId);
+        $item_id = $explodeArr[1];
+        }
+        else
+        {
+         $item_id = $this->input->post('id');   
+        }
+        $this->load->model('items_model');
+        $this->load->model('tickets_model');
+
+        $arrPageData = array();
+        $arrPageData['arrPageParameters']['strSection'] = get_class();
+        $arrPageData['arrPageParameters']['strPage'] = "Change ownership";
+        $arrPageData['arrSessionData'] = $this->session->userdata;
+        $this->session->set_userdata('booCourier', false);
+        $this->session->set_userdata('arrCourier', array());
+        $arrPageData['arrErrorMessages'] = array();
+        $arrPageData['arrUserMessages'] = array();
+
+        //echo "<pre>"; print_R($explodeArr); die;
+        //echo $explodeArr[1]."===============".$intAccountId;
+        $fullItemsData = $this->items_model->basicGetOneWithTicket($item_id, $intAccountId, $intAccountType);
+       
+        $all_job_notes = $this->tickets_model->getAllJob($item_id,$intAccountType);        
+        foreach($all_job_notes as $history){
+            if($history['jobnote']!=''){
+            $jobnotes[]=$history['jobnote'];
+            }
+            if($history['photoid']!=''){
+            $photoid[]=$history['photoid'];
+            }
+        }
+        $all_notes=  implode(',', $jobnotes);
+        $all_photos=  implode(',', $photoid);
+        $fullItemsData[0]->allNotes=$all_notes;
+        $fullItemsData[0]->allPhoto=$all_photos;
+       
+        $array = json_encode($fullItemsData[0]);
+        echo $array;
+        die;
+    }
+
+    public function raiseTicket($intId = -1) {
+
+
+        if (!$this->session->userdata('booUserLogin') && !$this->session->userdata('booInheritedUser')) {
+
+            redirect('users/login/', 'refresh');
+        }
+
+        // housekeeping
+        $arrPageData = array();
+        $arrPageData['arrPageParameters']['strSection'] = get_class();
+        $arrPageData['arrPageParameters']['strPage'] = "Raise a Support Ticket";
+        $arrPageData['arrSessionData'] = $this->session->userdata;
+        $this->session->set_userdata('booCourier', false);
+        $this->session->set_userdata('arrCourier', array());
+        $arrPageData['arrErrorMessages'] = array();
+        $arrPageData['arrUserMessages'] = array();
+
+        // load models
+        $this->load->model('users_model');
+        $this->load->model('items_model');
+        $this->load->model('accounts_model');
+        $this->load->model('tickets_model');
+        $this->load->model('photos_model');
+
+        // helpers
+        $this->load->helper('form');
+        $this->load->library('form_validation');
+        $this->form_validation->set_error_delimiters('<span class="error">', '</span>');
+        $booSuccess = false;
+
+        $arrPageData['strMessageTitle'] = "";
+        $arrPageData['strMessageBody'] = "";
+        $intId = $this->input->post('report_item_id');
+        if ($intId > 0) {
+            $mixItemsData = $this->items_model->basicGetOne($intId, $this->session->userdata('objSystemUser')->accountid);
+            //                    Check Items has Report Faults ?
+            $reportFault = $this->tickets_model->checkReportFault($intId);
+
+            if (!$reportFault) {
+                if ($mixItemsData) {
+                    $arrPageData['objItem'] = $mixItemsData[0];
+                    $booSuccess = true;
+
+                    /* if category has support user ID, get user email */
+
+                    $user_data = $this->users_model->getOneWithoutAccount($mixItemsData[0]->category_user_id);
+                    $category_support = $mixItemsData[0]->support_emails;
+
+
+
+                    $arrPageData['strMake'] = $mixItemsData[0]->manufacturer;
+                    $arrPageData['strModel'] = $mixItemsData[0]->model;
+                    $arrPageData['strSerialNumber'] = $mixItemsData[0]->serial_number;
+                    $arrPageData['strBarcode'] = $mixItemsData[0]->barcode;
+
+                    $arrPageData['intItemId'] = $intId;
+
+                    // is there a submission?
+                    if ($this->input->post()) {
+
+                        /* Priority Level array */
+                        $priorities = array(1 => 'Low', 2 => 'Medium', 3 => 'High', 4 => 'Critical');
+                        $priority_level = $this->input->post('ticket_priority');
+                        $data = array(
+                            'item_id' => $this->input->post('report_item_id'),
+                            'user_id' => $this->input->post("userid"),
+                            'severity' => $this->input->post("severity"),
+                            'order_no' => $this->input->post("order_no"),
+                            'jobnote' => $this->input->post("job_notes"),
+                            'date' => date("Y-m-d H:i:s"),
+                            'ticket_action' => "Open Job",
+                            'status' => $this->input->post("itemstatusname"),
+                        );
+                        
+                        
+                        
+
+                        $strZenDeskDataCapture = "";
+                        $strZenDeskDataCapture .= "#requester " . $this->session->userdata('objSystemUser')->username . " \r\n";
+                        $strZenDeskDataCapture .= "#tags iworkaudit " . $mixItemsData[0]->barcode . " \r\n";
+                        $strZenDeskDataCapture .= "#problem \r\n";
+                        $strZenDeskDataCapture .= " -----------------------------------------------------\r\n";
+
+                        $strMessageBodyItemData = "\r\n -----------------------------------------------------\r\n";
+                        $strMessageBodyItemData .= "ACCOUNT NAME: " . $this->session->userdata('objSystemUser')->accountname . "\r\n";
+                        $strMessageBodyItemData .= "SENDER: " . $this->session->userdata('objSystemUser')->firstname . " " . $this->session->userdata('objSystemUser')->lastname . "\r\n";
+
+                        $strMessageBodyItemData .= "MAKE & MODEL: " . $mixItemsData[0]->manufacturer . " " . $mixItemsData[0]->model . "\r\n";
+                        $strMessageBodyItemData .= "BARCODE: " . $mixItemsData[0]->barcode . "\r\n";
+                        $strMessageBodyItemData .= "SERIAL NUMBER: " . $mixItemsData[0]->serial_number . "\r\n";
+                        $strMessageBodyItemData .= "WARRANTY DATE: " . $mixItemsData[0]->warranty_date . "\r\n";
+                        $strMessageBodyItemData .= "LOCATION: " . $mixItemsData[0]->locationname . "\r\n";
+                        $strMessageBodyItemData .= "PRIORITY LEVEL: " . $this->input->post("severity") . "\r\n";
+
+
+                        //okay try to build the email
+                        $this->load->library('email');
+                        $this->email->from("tickets@iworkaudit.com", "iWork Audit Ticket");
+                        $strSupportAddress = $this->accounts_model->getSupportEmailAddress($this->session->userdata('objSystemUser')->accountid);
+
+                        /* If category user is set */
+                        if ($category_support != '' || $category_support != NULL) {
+                            $this->email->to($category_support);
+                        } else {
+
+                            $this->email->to($strSupportAddress);
+                        }
+//                    echo $strSupportAddress;
+                        $this->email->subject($mixItemsData[0]->manufacturer . " " . $mixItemsData[0]->model . ":" . $this->input->post('message_title'));
+
+                        $strEmailContent = "";
+
+                        if (strpos($strSupportAddress, 'zendesk.com')) {
+                            $strEmailContent = $strZenDeskDataCapture;
+                        }
+
+                        $strEmailContent .= $this->input->post('message_body') . $strMessageBodyItemData;
+
+                        $this->email->message($strEmailContent);
+
+                        if ($this->email->send()) {
+
+                          $last_id = $this->tickets_model->insertTicket($data);
+                         
+                          if($last_id>0){
+                              
+                             if (array_key_exists('photo_file_1', $_FILES) && ($_FILES['photo_file_1']['size'] > 0)) {
+                                    $arrConfig['upload_path'] = './uploads/';
+                                    $arrConfig['allowed_types'] = 'gif|jpg|png';
+                                    $arrConfig['max_size'] = '0';
+                                    $arrConfig['max_width'] = '0';
+                                    $arrConfig['max_height'] = '0';
+
+// load helper
+                                    $this->load->library('upload', $arrConfig);
+                                    
+// photo upload done
+                                   
+                                    for ($i = 1; $i <= count($_FILES); $i++) {
+                                        if ($this->upload->do_upload('photo_file_' . $i)) {
+                                            $strPhotoTitle = "Item Picture";
+                                            
+                                            $intPhotoId[] = $this->photos_model->setOne($this->upload->data(), $strPhotoTitle, "item/default");
+                                          
+//                                            $arrPageData['intPhotoId'] = $intPhotoId;
+                                        } else {
+
+
+                                            $intPhotoError = 1;
+                                        }
+                                        
+                                    }
+                                  
+                                    $photoid = implode(',', $intPhotoId);
+                                 
+                                    $this->tickets_model->setPhoto($last_id, $photoid);
+                                } 
+                          }
+                            $this->session->set_userdata('booCourier', true);
+                            $this->session->set_userdata('arrCourier', array('arrUserMessages' => array('The ticket was successfully sent')));
+                            redirect('/items/view/' . $intId, 'refresh');
+                        } else {
+                            $arrPageData['arrErrorMessages'][] = "Unable to send ticket.";
+                        }
+
+
+
+                        $arrPageData['strMessageTitle'] = $this->input->post('message_title');
+                        $arrPageData['strMessageBody'] = $this->input->post('message_body');
+                    }
+                }
+            } else {
+                $booSuccess = FALSE;
+            }
+            //if mixitemsdata
+        }
+        //if intItems
+
+        if (!$booSuccess) {
+            $arrPageData['arrErrorMessages'][] = "Item Not Found.";
+            $arrPageData['strPageTitle'] = "System Error";
+            $arrPageData['strPageText'] = "We couldn't find that item.";
+        }
+
+        // load views
+        $this->load->view('common/header', $arrPageData);
+        if ($booSuccess) {
+            //load the correct view
+
+            $this->session->set_userdata('booCourier', true);
+            $this->session->set_userdata('arrCourier', array('arrUserMessages' => array('The ticket was successfully sent')));
+            redirect('/items/view/' . $intId, 'refresh');
+        } else {
+            $this->session->set_userdata('booCourier', true);
+            $this->session->set_userdata('arrCourier', array('arrUserMessages' => array('Unable to send ticket')));
+            redirect('/items/view/' . $intId, 'refresh');
+        }
+        $this->load->view('common/footer', $arrPageData);
+    }
+
+// End of function
+
+    function fixfault() {
+        if (!$this->session->userdata('booUserLogin') && !$this->session->userdata('booInheritedUser')) {
+            $this->session->set_userdata('strReferral', '/items/raiseticket/' . $intId . '/');
+            redirect('users/login/', 'refresh');
+        }
+        $arrPageData = array();
+        $arrPageData['arrPageParameters']['strSection'] = get_class();
+        $arrPageData['arrPageParameters']['strPage'] = "Raise a Support Ticket";
+        $arrPageData['arrSessionData'] = $this->session->userdata;
+        $this->session->set_userdata('booCourier', false);
+        $this->session->set_userdata('arrCourier', array());
+        $arrPageData['arrErrorMessages'] = array();
+        $arrPageData['arrUserMessages'] = array();
+
+        $item_manu = $this->input->post('item_manu');
+        $manufacturer = $this->input->post('manufacturer');
+        $serial_number = $this->input->post('serial_number');
+        $categoryname = $this->input->post('categoryname');
+
+        $locationname = $this->input->post('locationname');
+        $action = $this->input->post('action');
+        $status = $this->input->post('status');
+
+
+        $job_notes = $this->input->post('job_notes');
+
+        $data = array(
+            "ticket_action" => $action,
+            "jobnote" => $job_notes,
+        );
+
+        $mode = $this->input->post('mode');
+        $this->load->model('items_model');
+        $this->load->model('tickets_model');
+
+
+        if ($mode == "fixFault") {
+            if ($this->input->post()) {
+                $fix_item_id = $this->input->post('fix_item_id');
+                if(strpos($fix_item_id,'_'))
+                {
+                   $item_iId = explode("_", $fix_item_id);  
+                   $item_iId = $item_iId[1];
+                }
+                else
+                {
+                  $item_iId = $fix_item_id;   
+                }
+               
+                $data = array(
+                    'fix_item_id' => $item_iId,
+                    'job_notes' => $this->input->post('job_notes'),
+                    'status' => 1,
+                    'fix_code' => $this->input->post('fix_code'),
+                    'ticket_id' => $this->input->post('fix_ticket_id'),
+                    'fix_date' => date("Y-m-d H:i:s"),
+                );
+            
+                $result = $this->tickets_model->fixStatus($data);
+                
+                
+                if ($result) {
+                    $this->load->model('photos_model'); 
+                      if (array_key_exists('photo_file_1', $_FILES) && ($_FILES['photo_file_1']['size'] > 0)) {
+                                    $arrConfig['upload_path'] = './uploads/';
+                                    $arrConfig['allowed_types'] = 'gif|jpg|png';
+                                    $arrConfig['max_size'] = '0';
+                                    $arrConfig['max_width'] = '0';
+                                    $arrConfig['max_height'] = '0';
+
+// load helper
+                                    $this->load->library('upload', $arrConfig);
+                                    
+// photo upload done
+                                   
+                                    for ($i = 1; $i <= count($_FILES); $i++) {
+                                        if ($this->upload->do_upload('photo_file_' . $i)) {
+                                            $strPhotoTitle = "Item Picture";
+                                            
+                                            $intPhotoId[] = $this->photos_model->setOne($this->upload->data(), $strPhotoTitle, "item/default");
+                                          
+//                                            $arrPageData['intPhotoId'] = $intPhotoId;
+                                        } else {
+
+
+                                            $intPhotoError = 1;
+                                        }
+                                        
+                                    }
+                                  
+                                    $photoid = implode(',', $intPhotoId);
+                                    
+                                    $this->tickets_model->setPhoto($data['ticket_id'], $photoid);
+                                } 
+                    $this->session->set_userdata('booCourier', true);
+                    $this->session->set_userdata('arrCourier', array('arrUserMessages' => array('Fault fix successfully')));
+                    if($this->input->post('view_fix'))
+                    {
+                        redirect('/items/view/'.$data['fix_item_id'], 'refresh');
+                    }
+                    else{
+                    redirect('/faults/filter', 'refresh');
+                    }
+                }
+            } else {
+                $this->session->set_userdata('booCourier', true);
+                $this->session->set_userdata('arrCourier', array('arrErrorMessages' => array('Fault Not fix ')));
+                 if($this->input->post('view_fix'))
+                    {
+                        redirect('/items/view/'.$data['fix_item_id'], 'refresh');
+                    }
+                    else{
+                    redirect('/faults/filter', 'refresh');
+                    }
+            
+            }
+        } else if ($mode == "updateFault") {
+            $update_item_id = $this->input->post('update_item_id');
+                $item_iId = explode("_", $update_item_id);
+            if ($this->input->post()) {
+                $data = array(
+                    'reason_code' => $this->input->post('reason_code'),
+                    'jobnote' => $this->input->post('job_notes'),
+                    'status' => $this->input->post('status'),
+                    'tickets_action'=>'Open Job',
+                    'fix_item_id' => $item_iId[1],
+                );
+                
+                
+                
+             
+             
+                $ticket_id = $this->input->post("update_ticket_id");
+                $result = $this->tickets_model->updateTicket($ticket_id, $data);
+                if ($result) {
+                    $this->session->set_userdata('booCourier', true);
+                    $this->session->set_userdata('arrCourier', array('arrUserMessages' => array('Fault Update successfully')));
+                    redirect('/faults/filter', 'refresh');
+                } else {
+                    $this->session->set_userdata('booCourier', true);
+                    $this->session->set_userdata('arrCourier', array('arrErrorMessages' => array('Fault could not updated ')));
+                    redirect('/faults/filter', 'refresh');
+                }
+            } else {
+                $this->session->set_userdata('booCourier', true);
+                $this->session->set_userdata('arrCourier', array('arrErrorMessages' => array('Fault could not updated ')));
+                redirect('/faults/filter', 'refresh');
+            }
+        } else if ($mode == "reportFault") {
+            $report_item_id = $this->input->post('report_item_id');
+            $iId = explode("_", $report_item_id);
+            $iteam_id = $iId[1];
+            $id = $this->input->post("report_ticket_id");
+            $data["order_no"] = $this->input->post('order_no');
+            $data["order_no"] = $this->input->post("order_no");
+        }
+
+        if ($id > 0) {
+            // Update Ticket
+            $this->tickets_model->updateTicket($id, $data);
+        } else {
+            // Insert Ticket
+            $data["item_id"] = $iteam_id;
+            $data["user_id"] = $this->session->userdata('objSystemUser')->userid;
+            $data["date"] = date("Y-m-d");
+            $this->tickets_model->insertTicket($data);
+        }
+    }
+
+//
+    //
+        function reportFault() {
+        if (!$this->session->userdata('booUserLogin') && !$this->session->userdata('booInheritedUser')) {
+            $this->session->set_userdata('strReferral', '/items/raiseticket/' . $intId . '/');
+            redirect('users/login/', 'refresh');
+        }
+        $arrPageData = array();
+        $arrPageData['arrPageParameters']['strSection'] = get_class();
+        $arrPageData['arrPageParameters']['strPage'] = "Raise a Support Ticket";
+        $arrPageData['arrSessionData'] = $this->session->userdata;
+        $this->session->set_userdata('booCourier', false);
+        $this->session->set_userdata('arrCourier', array());
+        $arrPageData['arrErrorMessages'] = array();
+        $arrPageData['arrUserMessages'] = array();
+        if ($this->input->post()) {
+            $this->load->model('tickets_model');
+            $data = array(
+                'item_id' => $this->input->post('report_item_id'),
+                'user_id' => $this->input->post("userid"),
+                'severity' => $this->input->post("severity"),
+                'order_no' => $this->input->post("order_no"),
+                'jobnote' => $this->input->post("job_notes"),
+                'date' => date("Y-m-d H:i:s"),
+                'ticket_action' => "Open Job",
+            );
+
+            $result = $this->tickets_model->insertTicket($data);
+            if ($result) {
+                $this->session->set_userdata('booCourier', true);
+                $this->session->set_userdata('arrCourier', array('arrUserMessages' => array('Report fault successfully')));
+                redirect('/items/view/' . $data['item_id'], 'refresh');
+            } else {
+                $this->session->set_userdata('booCourier', true);
+                $this->session->set_userdata('arrCourier', array('arrErrorMessages' => array('Report fault is not  successfully')));
+                redirect('/items/view/' . $data['item_id'], 'refresh');
+            }
+        }
+    }
+    
+    public function getPdf($fault_id)
+    {
+       if($fault_id){
+           $this->load->model('tickets_model');
+           $result=$this->tickets_model->getPdf($fault_id);               
+            echo "<pre>";
+
+            echo "</pre>";
+            die("here");
+           
+       }
+    }
+    
+     public function getAllFaultPdf()
+    {
+     
+           $this->load->model('tickets_model');
+           $result=$this->tickets_model->getAllFaultPdf();
+            echo "<pre>";
+
+            echo "</pre>";
+            die("here");
+           
+       
+    }
+
+    //     Export PDF For Faults
+    public function exportPDFForFaults($type = '') {
+
+        // housekeeping
+        $arrPageData = array();
+        $arrPageData['arrPageParameters']['strSection'] = get_class();
+        $arrPageData['arrPageParameters']['strPage'] = "All Fault";
+        $arrPageData['arrSessionData'] = $this->session->userdata;
+        $this->session->set_userdata('booCourier', false);
+        $this->session->set_userdata('arrCourier', array());
+        $arrPageData['arrErrorMessages'] = array();
+        $arrPageData['arrUserMessages'] = array();
+
+        $this->load->model('tickets_model');
+        $fullItemsData = $this->tickets_model->getAllFaultItems($this->session->userdata('objSystemUser')->accountid,$type);
+       
+       
+ 
+        echo "<pre>";
+        var_dump($fullItemsData);
+        echo "</pre>";
+        die("here");
+    }
+    
+    
+      public function exportPDFForFixFaults($type = '') {
+
+        // housekeeping
+        $arrPageData = array();
+        $arrPageData['arrPageParameters']['strSection'] = get_class();
+        $arrPageData['arrPageParameters']['strPage'] = "All Fault";
+        $arrPageData['arrSessionData'] = $this->session->userdata;
+        $this->session->set_userdata('booCourier', false);
+        $this->session->set_userdata('arrCourier', array());
+        $arrPageData['arrErrorMessages'] = array();
+        $arrPageData['arrUserMessages'] = array();
+
+        $this->load->model('tickets_model');
+        $fullItemsData = $this->tickets_model->getAllFixItems($this->session->userdata('objSystemUser')->accountid,$type);
+
+
+        echo "<pre>";
+        var_dump($fullItemsData);
+        echo "</pre>";
+        die("here");
+    }
+    public function editMultipleFaults() {
+        $this->load->model('tickets_model');
+        if ($this->input->post()) {
+            
+            $result = $this->tickets_model->editMultiple_Faults();
+
+             if ($result) {
+                    $this->session->set_flashdata('success', 'Fault Updated Successfully');
+                    redirect("faults/", "refresh");
+                } else {
+                    $this->session->set_flashdata('error', 'Fault Could Not Be Updated.');
+                    redirect("faults/", "refresh");
+                }
+        }
+    }
+    
+}
+
+/* End of file faults.php */
+/* Location: ./application/controllers/faults.php */

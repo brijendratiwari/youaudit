@@ -1,0 +1,15 @@
+Options +FollowSymLinks
+RewriteEngine On
+RewriteBase /youaudit/iwa/
+
+
+RewriteRule ^$ index.php [L]
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond $1 !^(index\.php|robots\.txt|favicon\.ico)
+
+RewriteRule ^(.*)$ index.php?/$1 [L] 
+
+<IfModule mod_php5.c>
+   php_value short_open_tag 1
+ </IfModule>

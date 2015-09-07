@@ -1,0 +1,5 @@
+RewriteEngine on
+
+# force the url to use www. prefix and load https
+RewriteCond %{HTTPS} !=off
+RewriteRule ^(.*)$ http://dev-iis.com/youaudit/$1 [R=permanent,L]

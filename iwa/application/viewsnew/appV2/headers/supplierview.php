@@ -1,0 +1,1 @@
+<h1>Supplier Details</h1><a href="#" id="backButton" onclick="isaSuppliers_showList();">Back</a><a href="#" onclick="isa_Dashboard();">Dashboard</a>
