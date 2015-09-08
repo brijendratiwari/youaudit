@@ -3560,12 +3560,52 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
             $('#genPdf_form input#pdfAllData').val(rowData);
             $('#genPdf_form').submit();
         });
+                 // Establish Link to Owner,Location and Site
+        $('body').find('#owner_id').change(function() {
+            var owner_id = this.value;
+            if (owner_id != 0) {
+                $.getJSON("<?php echo base_url('items/getlocationbyowner'); ?>" + '/' + owner_id, function(data) {
+
+                    if (data.results.length != 0) {
+                        $('.multi_location_class option[value="' + data.results[0].location_id + '"]').attr('selected', 'selected');
+                        $.getJSON("<?php echo base_url('items/getsitebylocation'); ?>" + '/' + data.results[0].location_id, function(site_data) {
+                           if (site_data!= null)
+                            {
+                                $('.multi_site_class option[value="' + site_data.results[0].site_id + '"]').attr('selected', 'selected');
+                            }
+                            else {
+                                $('.multi_site_class option[value="0"]').attr('selected', 'selected');
+                            }
+                        });
+                    }
+                    else {
+                        $('.multi_location_class option[value="0"]').attr('selected', 'selected');
+                        $('.multi_site_class option[value="0"]').attr('selected', 'selected');
+                    }
+                });
+            }
+            else
+            {
+                $('.multi_location_class option[value="0"]').attr('selected', 'selected');
+                $('.multi_site_class option[value="0"]').attr('selected', 'selected');
+            }
+        });
+        
         // estblish link and site link
 
         $(document).find('.multi_site_class').change(function() {
             $(".multi_location_class").empty();
             var site_id = this.value;
             if (site_id != 0) {
+                $.getJSON("<?php echo base_url('items/getownerbysite'); ?>" + '/' + site_id, function(data) {
+                    if (data.results.length != 0) {
+                        $('#owner_id option[value="' + data.results[0].id + '"]').attr('selected', 'selected');
+                    }
+                    else
+                    {
+                        $('#owner_id option[value="0"]').attr('selected', 'selected');
+                    }
+                });
                 $.getJSON("<?php echo base_url('items/getlocationbysite'); ?>" + '/' + site_id, function(data) {
                     if (data.results.length != 0) {
 
@@ -3602,6 +3642,15 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
 
 
             var site_id = this.value;
+            $.getJSON("<?php echo base_url('items/getownerbylocation'); ?>" + '/' + site_id, function(data) {
+                if (data.results.length != 0) {
+                    $('#owner_id option[value="' + data.results[0].id + '"]').attr('selected', 'selected');
+                }
+                else
+                {
+                    $('#owner_id option[value="0"]').attr('selected', 'selected');
+                }
+            });
             $.getJSON("<?php echo base_url('items/getsitebylocation'); ?>" + '/' + site_id, function(data) {
 
                 if (data.results.length != 0) {

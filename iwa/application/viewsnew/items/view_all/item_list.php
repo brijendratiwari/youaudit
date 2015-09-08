@@ -1019,7 +1019,7 @@
             $('#export_csv_form').submit();
         });
 
-        // Establish Link to Owner,Location and Site
+         // Establish Link to Owner,Location and Site
         $('body').find('#owner_id').change(function() {
 //            $(".multi_location_class").empty();
 //            $(".multi_site_class").empty(); 
@@ -1031,7 +1031,7 @@
                         $('.multi_location_class option[value="' + data.results[0].location_id + '"]').attr('selected', 'selected');
 //                    $('#updated_location_id').attr('value', +data.results[0].location_id);
                         $.getJSON("<?php echo base_url('items/getsitebylocation'); ?>" + '/' + data.results[0].location_id, function(site_data) {
-                            if (site_data.results.length != 0)
+                           if (site_data!= null)
                             {
                                 $('.multi_site_class option[value="' + site_data.results[0].site_id + '"]').attr('selected', 'selected');
 //                            $('#updated_site_id').attr('value', +site_data.results[0].site_id);
@@ -1125,7 +1125,7 @@
                 }
             });
         });
-
+        
         $(document).find("#item_table").find("tfoot").addClass("pp");
 
     });
