@@ -956,16 +956,16 @@ class Admin_Section extends MY_Controller {
             $this->session->set_userdata('strReferral', '/sites/edit/' . $intId . '/');
             redirect('users/login/', 'refresh');
         }
-
+//        var_dump($this->input->post());die;
         if ($this->input->post()) {
 
             $this->load->model('admin_section_model');
 
             $editLocation = array(
                 'locationname' => $this->input->post('edit_location_name'),
-                'qrcode' => $this->input->post('edit_qr_code'),
+                'qrcode' => $this->session->userdata('objSystemUser')->qrcode.$this->input->post('edit_qr_code'),
                 'sitename' => $this->input->post('edit_site_name'),
-                'adminuser_id' => $this->input->post('adminuser_id')
+                'adminuser_id' => $this->input->post('adminuser_id'),
             );
 
             $result = $this->admin_section_model->editLocation($editLocation);
