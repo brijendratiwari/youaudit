@@ -235,7 +235,7 @@ if ($this->session->userdata['theme_design']->color != "") {
         border: 1px solid #ccc;
         border-radius: 4px;
         box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
-        color: #555;
+        color: black !important;
         display: block;
         font-size: 14px;
         height: 34px;

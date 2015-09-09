@@ -326,6 +326,7 @@ class Admin_Section extends MY_Controller {
         $arrPageData['user_data'] = $arrPageData['arrSessionData']['objSystemUser']->accountid;
         $arrPageData['customer_data'] = $this->admin_section_model->getCustomerName($arrPageData['arrSessionData']['objSystemUser']->accountid);
         $arrPageData['supplier_user'] = $this->admin_section_model->getSupplierUser($arrPageData['arrSessionData']['objSystemUser']->accountid);
+        $arrPageData['alertEmail'] = $this->admin_section_model->alertEmailList($arrPageData['arrSessionData']['objSystemUser']->accountid);
 
         $this->load->view('common/header', $arrPageData);
         $this->load->view('admin_section/admin_categories', $arrPageData);
@@ -436,7 +437,7 @@ class Admin_Section extends MY_Controller {
 
             $mails = implode(",", $arr1);
             $editCategory['support_emails'] = $mails;
-            
+
             $result = $this->admin_section_model->editCategory($editCategory);
 
             if ($result) {
@@ -699,6 +700,7 @@ class Admin_Section extends MY_Controller {
                 'lastname' => $this->input->post('edit_last_name'),
                 'level' => $this->input->post('edit_access_level'),
                 'adminuser_id' => $this->input->post('adminuser_id'),
+                'username' => $this->input->post('edit_username'),
                 'push_notification' => $notify
             );
 
@@ -2386,6 +2388,7 @@ class Admin_Section extends MY_Controller {
             $this->session->set_userdata('strReferral', '/items/filter/');
             redirect('users/login/', 'refresh');
         }
+   
         $data = array();
         $this->load->model('admin_section_model');
         $arrPageData['arrSessionData'] = $this->session->userdata;
@@ -2400,12 +2403,31 @@ class Admin_Section extends MY_Controller {
 
             $result = $this->admin_section_model->editmulticategories($data);
         }
-        
+
         if ($result) {
             $this->session->set_flashdata('success', 'Category(s) Updated Successfully');
             redirect("admin_section/admin_categories", "refresh");
         } else {
             $this->session->set_flashdata('error', 'Category(s) Could Not Be Updated Successfully');
+            redirect("admin_section/admin_categories", "refresh");
+        }
+    }
+
+    //save fault alert email,default alert emial,safety alert email...
+    function saveFaultEmails() {
+        $this->load->model('admin_section_model');
+        $emailData = array(
+            'support_email' => $this->input->post('default_alert_email'),
+            'fault_alert_email' => $this->input->post('fault_alert_email'),
+            'safety_alert_email' => $this->input->post('safety_alert_email'),
+        );
+        $result = $this->admin_section_model->addFaultEmail($this->input->post('account_id'), $emailData);
+
+        if ($result) {
+            $this->session->set_flashdata('success', 'Email added Successfully');
+            redirect("admin_section/admin_categories", "refresh");
+        } else {
+            $this->session->set_flashdata('error', 'Something went wrong.. Please try again.');
             redirect("admin_section/admin_categories", "refresh");
         }
     }

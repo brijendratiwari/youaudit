@@ -645,21 +645,33 @@ if ($this->session->flashdata('arrCourier')) {
     </div>
 </div>-->
 <div class="row">
-
     <div class="col-lg-12">
         <div class="col-lg-4"></div>
         <div class="col-lg-4">
             <div class="panel-body">
-
-                <div class="table-responsive">
+                <form action="<?php echo base_url() . 'admin_section/saveFaultEmails'; ?>" method="post">
+     <input type="hidden" name="account_id" value="<?php echo $arrSessionData["objSystemUser"]->accountid; ?>">
+     
+         <div class="table-responsive">
                     <div role="grid" class="dataTables_wrapper form-inline" id="dataTables-example_wrapper">
                         <table id="Alert" class="table table-striped table-bordered table-hover" width="100%" cellspacing="0">
+                           
                             <thead>
                                 <tr>
                                     <th>Default Email Alerts</th>
                                     <td><div class="form-group col-md-12">
-                                            <div class="col-md-6">       
-                                                <input type="text" name='default_email' style="width:200px" disabled="" value='<?php echo $customer_data[0]['support_email'] ?>' class="form-control">
+                                            <div class="col-md-6"> 
+                                                <select name="default_alert_email"  class="form-control">
+                                                    <option value="">----select user----</option>
+                                                    <?php
+                                                    foreach ($all_user as $val) {
+                                                        ?>
+                                                        <option <?php if($alertEmail[0]['support_email'] == $val['username'] ) echo "selected"; ?> value="<?php echo $val['username']; ?>"><?php echo $val['username']; ?></option>  
+                                                        <?php
+                                                    }
+                                                    ?>
+                                                </select>
+                                                <!--<input type="text" name='default_email' style="width:200px" disabled="" value='<?php // echo $customer_data[0]['support_email'] ?>' class="form-control">-->
                                             </div>
                                         </div></td>
 
@@ -668,12 +680,12 @@ if ($this->session->flashdata('arrCourier')) {
                                     <th>Fault Alerts</th>
                                     <td><div class="form-group col-md-12">
                                             <div class="col-md-6">       
-                                                <select name="select_user" id="select_user_fault" class="form-control">
-                                                    <option value="1">----select user----</option>
+                                                <select name="fault_alert_email" class="form-control">
+                                                    <option value="">----select user----</option>
                                                     <?php
                                                     foreach ($all_user as $val) {
                                                         ?>
-                                                        <option value="<?php echo $val['username']; ?>"><?php echo $val['username']; ?></option>  
+                                                        <option <?php if($alertEmail[0]['fault_alert_email'] == $val['id'] ){ echo "selected";} ?> value="<?php echo $val['id']; ?>"><?php echo $val['username']; ?></option>  
                                                         <?php
                                                     }
                                                     ?>
@@ -685,12 +697,12 @@ if ($this->session->flashdata('arrCourier')) {
                                     <th>Safety Alerts</th>
                                     <td><div class="form-group col-md-12">
                                             <div class="col-md-6">       
-                                                <select name="select_user" id="select_user_compliance" class="form-control">
-                                                    <option value="1">----select user----</option>
+                                                <select name="safety_alert_email"  class="form-control">
+                                                    <option value="">----select user----</option>
                                                     <?php
                                                     foreach ($all_user as $val) {
                                                         ?>
-                                                        <option value="<?php echo $val['username']; ?>"><?php echo $val['username']; ?></option>  
+                                                        <option <?php if($alertEmail[0]['safety_alert_email'] == $val['id'] ){ echo "selected";} ?> value="<?php echo $val['id']; ?>"><?php echo $val['username']; ?></option>  
                                                         <?php
                                                     }
                                                     ?>
@@ -699,14 +711,27 @@ if ($this->session->flashdata('arrCourier')) {
                                         </div></td>
 
                                 </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><div class="form-group col-md-12">
+                                            <div class="col-md-6">       
+                                               
+                                            </div>
+                                            <div class="col-md-6">       
+                                                <button type="submit" class="btn btn-md btn-primary">Save</button>
+                                            </div>
+                                        </div></td>
+                                </tr>
 
                             </thead>
+                            
                             <tbody id="Master_Customer_body">
                             </tbody>
                         </table>
                     </div>
                     <!-- /.table-responsive -->
                 </div>
+                </form>
             </div>
         </div>
         <div class="col-lg-4"></div>

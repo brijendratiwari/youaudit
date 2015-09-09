@@ -239,11 +239,13 @@
         });
 
         // script for edit user
+        var editUserName = '';
         $("body").on("click", ".edit", function() {
 
             var firstname = $(this).attr("data_firstname");
             var lastname = $(this).attr("data_lastname");
             var username = $(this).attr("data_username");
+                editUserName = $(this).attr("data_username");
             var access = $(this).attr("data_access");
             var owner = $(this).attr("data_owner");
             var adminuser_id = $(this).attr("data_adminuser_id");
@@ -458,6 +460,43 @@
         $("[name='notification']").bootstrapSwitch();
 //  Adding Switch for Push notification
 //        $('#edit_notify').bootstrapSwitch();
+
+
+
+// check username on edit user information....
+    $("#edit_username").on("keyup blur", function() {
+
+            var username = $(this).val();
+            var base_url_str = $("#base_url").val();
+    if(editUserName != username){
+
+            $.ajax({
+                type: "POST",
+                url: base_url_str + "admin_section/checkUsername",
+                data: {
+                    'username': username
+                },
+                success: function(msg) {
+
+                    // we need to check if the value is the same
+                    if (msg == "1") {
+                        //Receiving the result of search here
+                        $("#edit_button_system").addClass('disabled');
+                        $("#edit_username_error").removeClass("hide");
+                    } else {
+                        $("#edit_button_system").removeClass('disabled');
+                        $("#edit_username_error").addClass("hide");
+                    }
+                }
+
+            });
+        }else{
+             $("#edit_username_error").addClass("hide");
+              $("#edit_button_system").removeClass('disabled');
+        }
+
+        });
+
 
 
     });
@@ -908,8 +947,8 @@ if ($this->session->flashdata('error')) {
                     <div class="form-group col-md-12">
                         <div class="col-md-6">         <label>Username :</label> </div> 
 
-                        <div class="col-md-6">  <input type="text" placeholder="Enter UserName" class="form-control" name="edit_username" id="edit_username" disabled="">
-
+                        <div class="col-md-6">  <input type="text" placeholder="Enter UserName" class="form-control" name="edit_username" id="edit_username">
+                                <div id="edit_username_error" class="username_error hide">Username Is Already Exist.</div> 
                         </div>
 
                     </div> 

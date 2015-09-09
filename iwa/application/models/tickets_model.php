@@ -664,7 +664,7 @@ OR `categories`.`name` LIKE '%$strfreetext%')");
 
         $strHtml .= "<body><div>";
         $strHtml .= "<table><tr><td>";
-        $strHtml .= "<h1>YouAudit Report</h1>";
+        $strHtml .= "<h1>".$this->session->userdata('objSystemUser')->firstname." ".$this->session->userdata('objSystemUser')->lastname."/".$this->session->userdata('objSystemUser')->accountname."</h1>";
         $strHtml .= "<h2>" . $strReportName . "</h2>";
         $strHtml .= "</td><td class=\"right\">";
 
