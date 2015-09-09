@@ -970,13 +970,13 @@ class Admin_Section_Model extends CI_Model {
         if ($export != '') {
 
             $this->db->select('locations.name as location,barcode,sites.name as url,owner.owner_name');
-            $this->db->join('sites', 'locations.site_id = sites.id');
-            $this->db->join('owner', 'locations.id = owner.location_id');
+            $this->db->join('sites', 'locations.site_id = sites.id','left');
+            $this->db->join('owner', 'locations.id = owner.location_id','left');
         } else {
             $this->db->select('locations.*,sites.name as url,locations.id as id,sites.id as site_id,owner.owner_name,owner.id as owner_id');
 
-            $this->db->join('sites', 'locations.site_id = sites.id');
-            $this->db->join('owner', 'locations.id = owner.location_id');
+            $this->db->join('sites', 'locations.site_id = sites.id','left');
+            $this->db->join('owner', 'locations.id = owner.location_id','left');
         }
         $this->db->from('locations');
         $this->db->where('locations.account_id', $customer_id);
