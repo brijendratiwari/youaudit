@@ -87,26 +87,29 @@
             var bar_code = $("#qr_code").val();
             var qrcode = code + bar_code;
             var base_url_str = $("#base_url").val();
-            $.ajax({
-                type: "POST",
-                url: base_url_str + "items/checkQrcode",
-                data: {
-                    'bar_code': qrcode
-                },
-                success: function(msg) {
+            var current_qrcode = $('#current_barcode').val();
+            if (current_qrcode != qrcode) {
+                $.ajax({
+                    type: "POST",
+                    url: base_url_str + "items/checkQrcode",
+                    data: {
+                        'bar_code': qrcode
+                    },
+                    success: function(msg) {
 
-                    // we need to check if the value is the same
-                    if (msg == "1") {
-                        //Receiving the result of search here
-                        $("#save_item").addClass('disabled');
-                        $("#qrcodeerror").removeClass("hide");
-                    } else {
-                        $("#save_item").removeClass('disabled');
-                        $("#qrcodeerror").addClass("hide");
+                        // we need to check if the value is the same
+                        if (msg == "1") {
+                            //Receiving the result of search here
+                            $("#save_item").attr('disabled', true);
+                            $("#qrcodeerror").removeClass("hide");
+                        } else {
+                            $("#save_item").removeAttr('disabled');
+                            $("#qrcodeerror").addClass("hide");
+                        }
                     }
-                }
 
-            });
+                });
+            }
         });
 
 
@@ -169,16 +172,16 @@
             </a>
             <?php
 //            if ($arrSessionData['objSystemUser']->levelid > 1) {
-                ?>
-                <a id="item_edit" class="button icon-with-text round"><i class="fa fa-fw">&#xf044;</i> Edit item</a>
-                <div style="float: left; margin-left: 5px;">
-                    <button onclick="$('#itemedit').submit();" class="button update icon-with-text round" id="save_item" style="display: none;margin-top: 2px;">   <i class="fa fa-fw">&#xf0ab;</i> Save</button>
-                </div>
-                <?php
+            ?>
+            <a id="item_edit" class="button icon-with-text round"><i class="fa fa-fw">&#xf044;</i> Edit item</a>
+            <div style="float: left; margin-left: 5px;">
+                <button onclick="$('#itemedit').submit();" class="button update icon-with-text round" id="save_item" style="display: none;margin-top: 2px;">   <i class="fa fa-fw">&#xf0ab;</i> Save</button>
+            </div>
+            <?php
 //            }
             if ($arrSessionData['objSystemUser']->userid == $objItem->userid) {
                 ?>
-                        <a  data-toggle="modal" data-target="#change_owner_model" id="change_owner" class="button icon-with-text round">   <i class="fa fa-fw">&#xf007;</i> Change Owner or Location</a>
+                <a  data-toggle="modal" data-target="#change_owner_model" id="change_owner" class="button icon-with-text round">   <i class="fa fa-fw">&#xf007;</i> Change Owner or Location</a>
                 <?php
             } else {
                 ?>
@@ -476,6 +479,7 @@
 
 <input type="hidden" name="base_url" id="base_url" value="<?= base_url(); ?>">
 <input type="hidden" id="current_item" value="<?php echo $this->uri->segment('3'); ?>">
+<input type="hidden" id="current_barcode" value="<?php echo $objItem->barcode; ?>">
 <!--<a class="btn btn-info" href="<?php echo base_url('/items/filter'); ?>">Back</a>-->
 <!--<li class="pull-right back back-btn">-->
 <a href="#" class="backarrow back-btn" onclick="goBack();"><i class="fa fa-arrow-left"></i></a>
@@ -578,12 +582,15 @@
                         <tr>
                             <td>QR Code</td>
                             <td>
-                                <!--                                <div class="input-group">
-                                                                    <div class="input-group-addon grpaddon">
-                                <?php echo $this->session->userdata('objSystemUser')->qrcode; ?></div>-->
-                                <input placeholder="Enter QR Code" class="form-control barcss" name="item_barcode" id="qr_code" value="<?php echo $objItem->barcode; ?>" disabled="">            
-                                <!--</div>-->
-                                <div id="qrcodeerror" class="qrcode_error hide">QR Code Already Exist.</div>
+                                <div class="input-group">
+                                    <div class="input-group-addon grpaddon">
+                                        <?php echo $this->session->userdata('objSystemUser')->qrcode; ?></div>
+                                    <input placeholder="Enter QR Code" class="form-control barcss" name="item_barcode" id="qr_code" value="<?php
+                                    $barcode = explode($this->session->userdata('objSystemUser')->qrcode, $objItem->barcode);
+                                    echo $barcode[1];
+                                    ?>" disabled="">            
+                                    <!--</div>-->
+                                    <div id="qrcodeerror" class="qrcode_error hide">QR Code Already Exist.</div>
                             </td>
                         </tr>
                         <tr>
@@ -620,7 +627,7 @@
                                             echo 'selected="selected"';
                                         }
                                         ?>><?php echo $con['condition']; ?></option>
-                                            <?php } ?>
+<?php } ?>
                                 </select></td>
                         </tr>
                         <tr class="tb_header">
@@ -674,7 +681,7 @@
                                     }
                                     ?>
                                 </select>
-                                <?php echo form_error('location_id'); ?>  
+<?php echo form_error('location_id'); ?>  
                             </td>
                         </tr>
                         <tr>
@@ -876,7 +883,7 @@
                     ?>
 
                     <div class="col-md-4">
-                        <?php echo $custom_name->field_name; ?>
+    <?php echo $custom_name->field_name; ?>
                     </div>
                     <div id="custom_field_id" class="col-md-8">
                         <?php if ($custom_name->field_value == 'text_type') { ?>
@@ -885,19 +892,19 @@
                                 echo $custom_name->content;
                             }
                             ?>" ></br>
-                               <?php } elseif ($custom_name->field_value == 'value_type') { ?>
+                            <?php } elseif ($custom_name->field_value == 'value_type') { ?>
                             <div class="input-group"><div class="input-group-addon">$</div><input type="number" class="form-control" placeholder="Enter Content" disabled="" name="<?php echo $custom_name->id; ?>" id="asset_type" type="text" min="0" value="<?php
                                 if (isset($custom_name->content)) {
                                     echo $custom_name->content;
                                 }
                                 ?>" ></div></br>
-                            <?php } elseif ($custom_name->field_value == 'num') { ?>
+                        <?php } elseif ($custom_name->field_value == 'num') { ?>
                             <input class="form-control" placeholder="Enter Content" disabled="" name="<?php echo $custom_name->id; ?>" id="asset_type" type="number" min="0" value="<?php
                             if (isset($custom_name->content)) {
                                 echo $custom_name->content;
                             }
                             ?>" ></br>
-                               <?php } elseif ($custom_name->field_value == 'date_type') { ?>
+                        <?php } elseif ($custom_name->field_value == 'date_type') { ?>
                             <input placeholder="Enter Asset Type" class="form-control pickdate" placeholder="Enter Content" disabled="" name="<?php echo $custom_name->id; ?>" id="asset_type" type="text" value="<?php
                             if (isset($custom_name->content)) {
                                 echo $custom_name->content;
@@ -910,10 +917,10 @@
                             <select class="form-control" name="<?php echo $custom_name->id; ?>" disabled>
                                 <?php foreach ($arr as $value) { ?>
                                     <option value="<?php echo $value; ?>" <?php if ($value == $custom_name->content) echo 'selected=selected'; ?>><?php echo $value; ?></option>  
-                                <?php } ?>
+        <?php } ?>
 
                             </select></br>
-                        <?php } ?>
+    <?php } ?>
                     </div>
 
                     <?php
@@ -921,7 +928,7 @@
                 ?>
 
             </div>
-            <?php echo form_close(); ?>
+<?php echo form_close(); ?>
         </div>
 
         <!--</form>-->
@@ -941,11 +948,11 @@
                                     $arr_image = explode(',', $objItem->photo_id);
                                     ?>
 
-                                    <?php for ($i = 0; $i < count($arr_image); $i++) { ?>
+        <?php for ($i = 0; $i < count($arr_image); $i++) { ?>
 
 
                                         <a target='_top' title='' href='<?php echo base_url(); ?>/index.php/images/viewAsset/<?php echo $arr_image[$i] ?>' class=''><img width='23%' height="150" alt='Gallery Image' style='display: inline-block' class='thumbnail thumb'  src='<?php echo base_url(); ?>/index.php/images/viewAsset/<?php echo $arr_image[$i] ?>'></a>&nbsp;      
-                                        <?php if ($arrSessionData['objSystemUser']->levelid > 2) { ?>
+            <?php if ($arrSessionData['objSystemUser']->levelid > 2) { ?>
                                             <button class="delete btn-warning" delete_item_id="<?php echo $objItem->itemid; ?>" delete_id="<?php echo $arr_image[$i] ?>" href='<?php echo site_url('/items/delete_photo/' . $arr_image[$i]); ?>'>
                                                 <i class="fa fa-times-circle"></i>
                                             </button>
@@ -956,7 +963,7 @@
                                     ?>
 
                                     <a target='_top' title='' href='<?php echo base_url(); ?>/index.php/images/viewAsset/<?php echo $objItem->photo_id ?>' class=''><img width='23%' height="150" alt='Gallery Image' style='display: inline-block' class='thumbnail thumb'  src='<?php echo base_url(); ?>/index.php/images/viewAsset/<?php echo $objItem->photo_id; ?>'></a>&nbsp;         
-                                    <?php if ($arrSessionData['objSystemUser']->levelid > 2) { ?>
+        <?php if ($arrSessionData['objSystemUser']->levelid > 2) { ?>
                                         <button class="delete btn-warning" delete_item_id="<?php echo $objItem->itemid; ?>" delete_id="<?php echo $objItem->photo_id ?>" href='<?php echo site_url('/items/delete_photo/' . $objItem->photo_id); ?>'>
                                             <i class="fa fa-times-circle"></i>
                                         </button>  
@@ -997,11 +1004,11 @@
                                     <div  class="pdf_upload">
                                         <a href='<?php echo site_url('/items/pdf_download/' . $list['s3_key']); ?>'>
                                             <i class="fa fa-file-pdf-o"></i></a>
-                                        <?php if ($arrSessionData['objSystemUser']->levelid > 2) { ?>
+    <?php if ($arrSessionData['objSystemUser']->levelid > 2) { ?>
                                             <a class="delete" href='<?php echo site_url('/items/pdf_delete/' . $objItem->itemid . '/' . $list['s3_key']); ?>'>
                                                 <i class="fa fa-times-circle"></i>
                                             </a>  
-                                        <?php } ?>
+    <?php } ?>
                                         <label for="nickname"><?php echo $list['file_name']; ?>    </label>
                                     </div>
                                 </li>
@@ -1068,7 +1075,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                                 <?php
                                 if (isset($arrRecord['audit'])) {
                                     ?>
-                                                                                                                                                                                        <td colspan="3"><em><strong>Item was marked as <?php
+                                                                                                                                                                                            <td colspan="3"><em><strong>Item was marked as <?php
                                     if ($arrRecord['audit']->present == 1) {
                                         echo "present";
                                     } else {
@@ -1078,12 +1085,12 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                                     echo " by " . $arrRecord['audit']->userfirstname . " " . $arrRecord['audit']->userlastname;
                                     echo " on an audit of location " . $arrRecord['audit']->name;
                                     ?></strong></em>
-                                                                                                                                                                                        </td>
+                                                                                                                                                                                            </td>
                                     <?php
                                 } else {
                                     ?>
 
-                                                                                                                                                                                        <td><?php
+                                                                                                                                                                                            <td><?php
                                     if (isset($arrRecord['user'])) {
                                         echo $arrRecord['user']->owner_name;
                                     }
@@ -1213,7 +1220,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
     <!--                                <tr>
     <td colspan="3">No Logs Found</td>
     </tr>-->
-                            <? // }         ?>
+    <? // }          ?>
                         </tbody>
 
                     </table>
@@ -1707,7 +1714,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
         ?>
         <div class="alert alert-success alert-dismissable">
             <button aria-hidden="true" data-dismiss="alert" class="close" type="button">&times;</button>
-            <?php echo $this->session->flashdata('success'); ?>
+        <?php echo $this->session->flashdata('success'); ?>
         </div>
         <?php
     }
@@ -1715,12 +1722,12 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
         ?>
         <div class="alert alert-warning alert-dismissable">
             <button aria-hidden="true" data-dismiss="alert" class="close" type="button">&times;</button>
-            <?php echo $this->session->flashdata('error'); ?>
+        <?php echo $this->session->flashdata('error'); ?>
         </div>
         <?php
     }
     ?>
-    <?php // echo $this->view('users/assets/asset_sidemenu');              ?>
+<?php // echo $this->view('users/assets/asset_sidemenu');               ?>
     <div class="row">
         <div class="col-lg-12">
 
@@ -1742,7 +1749,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                                 </tr>
                             </thead>
                             <tbody id="asset_body"> 
-                                <?php foreach ($conditionhistory as $asset) { ?>
+<?php foreach ($conditionhistory as $asset) { ?>
                                     <tr>
                                         <td>
                                             <?php
@@ -1824,7 +1831,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                                         <td><?php echo $asset['firstname'] . ' ' . $asset['lastname']; ?></td>
                                         <td><?php echo $asset['notes']; ?></td>
                                     </tr>
-                                <?php } ?>
+<?php } ?>
                             </tbody>
                         </table>
                     </div>
@@ -2122,7 +2129,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                         </tr>
 
 
-                    <?php } ?>
+    <?php } ?>
                 </tbody>
                 <tfoot>
                 <th>Actions</th>
@@ -2239,7 +2246,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                         <div class="col-md-6"><select name="new_condition" class="form-control"><option>----SELECT----</option>  
                                 <?php foreach ($conditionlist as $condition) { ?>
                                     <option value="<?php echo $condition['id']; ?>"><?php echo $condition['condition']; ?></option>
-                                <?php } ?>
+<?php } ?>
                             </select>
                         </div>
                     </div>
@@ -2481,7 +2488,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                         <div class="col-md-6">  <label>Enter QR Code*</label> </div>
                         <div class="col-md-6">  <div class="input-group">
                                 <div class="input-group-addon grpaddon">
-                                    <?php echo $this->session->userdata('objSystemUser')->qrcode; ?></div>
+<?php echo $this->session->userdata('objSystemUser')->qrcode; ?></div>
                                 <input placeholder="Enter QR Code" class="form-control barcss" name="item_barcode_similar" id="item_barcode_similar">
                             </div>
                             <div id="qrcodeerror_similar" class="qrcodeerror hide">QR Code Already Exist.</div>

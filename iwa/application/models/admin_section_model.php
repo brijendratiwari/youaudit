@@ -209,7 +209,7 @@ class Admin_Section_Model extends CI_Model {
         $resQuery = $this->db->get();
 
         $ownerinfo = $resQuery->result_array();
-        
+
         if ($export == 'CSV') {
             foreach ($ownerinfo as $key => $value) {
                 $output[] = preg_replace('/<\/?[a-zA-Z]*[^>]*>/', '', preg_replace('/<\/?[a-zA-Z]*[^>]*>/', '', $value));
@@ -968,12 +968,14 @@ class Admin_Section_Model extends CI_Model {
     public function locationlist($customer_id, $export = '') {
         if ($export != '') {
 
-            $this->db->select('locations.name as location,barcode,sites.name as url');
+            $this->db->select('locations.name as location,barcode,sites.name as url,owner.owner_name');
             $this->db->join('sites', 'locations.site_id = sites.id');
+            $this->db->join('owner', 'locations.id = owner.location_id');
         } else {
-            $this->db->select('locations.*,sites.name as url,locations.id as id,sites.id as site_id');
+            $this->db->select('locations.*,sites.name as url,locations.id as id,sites.id as site_id,owner.owner_name,owner.id as owner_id');
 
             $this->db->join('sites', 'locations.site_id = sites.id');
+            $this->db->join('owner', 'locations.id = owner.location_id');
         }
         $this->db->from('locations');
         $this->db->where('locations.account_id', $customer_id);
@@ -992,7 +994,8 @@ class Admin_Section_Model extends CI_Model {
             $arrFields = array(
                 array('strName' => 'Location Name', 'strFieldReference' => 'location', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
                 array('strName' => 'Location QR Code', 'strFieldReference' => 'barcode', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
-                array('strName' => 'Site', 'strFieldReference' => 'url', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0))
+                array('strName' => 'Site', 'strFieldReference' => 'url', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                array('strName' => 'Owner', 'strFieldReference' => 'owner_name', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0))
             );
 
             $this->outputPdfFile(date('d/m/Y Gis') . '.pdf', $arrFields, $res->result_array());
@@ -1037,7 +1040,7 @@ class Admin_Section_Model extends CI_Model {
 
     //Action For Edit Location.
     public function editLocation($editLocation) {
-
+        
         if (isset($editLocation)) {
             $data = array('name' => $editLocation['locationname'],
                 'site_id' => $editLocation['sitename'],
@@ -1045,6 +1048,12 @@ class Admin_Section_Model extends CI_Model {
 
             $this->db->where('id', $editLocation['adminuser_id']);
             $this->db->update('locations', $data);
+            if ($this->input->post('edit_owner_id')) {
+                $this->db->set('location_id','')->where('id',$this->input->post('editownerid'))->update('owner');
+                $arr = array('location_id'=>$editLocation['adminuser_id']);
+                $this->db->where('id', $this->input->post('edit_owner_id'));
+                $this->db->update('owner',$arr);
+            }
             return 1;
         } else {
             return False;
@@ -1666,7 +1675,7 @@ class Admin_Section_Model extends CI_Model {
                 $data['user_id'] = str_replace('on,', '', $data['user_id']);
             }
             $ids = explode(',', $data['user_id']);
-            
+
             if ($data['notification'] == 'on') {
                 $notify = 1;
             } else {

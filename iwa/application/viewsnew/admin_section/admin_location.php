@@ -119,14 +119,18 @@
 
             var locationname = $(this).attr("data_locationname");
             var qrcode = $(this).attr("data_qrcode");
+            var barcode = qrcode.split($('#code').val());
+
             var sitename = $(this).attr("data_site_id");
+            var owner = $(this).attr("data_owner_id");
             var adminuser_id = $(this).attr("data_adminuser_id");
 
             $("#edit_location_name").attr("value", locationname);
-            $("#edit_qr_code").attr("value", qrcode);
+            $("#edit_qr_code").attr("value", barcode[1]);
 
             $("#edit_site_name option[value='" + sitename + "']").prop("selected", "selected");
-
+            $("#edit_owner_id option[value='" + owner + "']").prop("selected", "selected");
+            $("#editownerid").val(owner);
             $("#adminuser_id_1").attr("value", adminuser_id);
 
 
@@ -139,7 +143,7 @@
             "fnRowCallback": function(nRow, aData) {
 
                 var $nRow = $(nRow); // cache the row wrapped up in jQuery
-                tdhtm = $nRow.children()[5].innerHTML;
+                tdhtm = $nRow.children()[6].innerHTML;
 
                 if (tdhtm.search("enable") != -1) {
                     $nRow.css("background-color", "#f2b4b4");
@@ -153,7 +157,8 @@
                 {"sClass": "eamil_conform aligncenter", "aTargets": [2]},
                 {"sClass": "eamil_conform aligncenter", "aTargets": [3]},
                 {"sClass": "eamil_conform aligncenter", "aTargets": [4]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [5]}
+                {"sClass": "eamil_conform aligncenter", "aTargets": [5]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [6]}
             ]}
         );
         $("#addlocation").validate({
@@ -213,14 +218,16 @@
 
         $("#edit_qr_code").on("keyup blur", function() {
 
+            var code = $('#code').val();
             var qr_code = $("#edit_qr_code").val();
+            var qrcode = code + qr_code;
             var base_url_str = $("#base_url").val();
 
             $.ajax({
                 type: "POST",
                 url: base_url_str + "admin_section/checkQRNumber",
                 data: {
-                    'qr_code': qr_code
+                    'qr_code': qrcode
                 },
                 success: function(msg) {
 
@@ -416,6 +423,7 @@ if ($this->session->flashdata('error')) {
                                 <th>Location Name</th>
                                 <th>Location QR Code</th>
                                 <th>Site</th>
+                                <th>Owner</th>
                                 <th>Last Audit</th>
                                 <th>Audit Result</th>
                                 <th>Actions</th>
@@ -435,6 +443,7 @@ if ($this->session->flashdata('error')) {
                                         ?></td>
                                     <td><?php echo $location->url; ?>
                                     </td>
+                                    <td><?php echo $location->owner_name; ?></td>
                                     <td><?php
                                         if ($location->loc_date['date']) {
                                             echo date('d/m/Y H:i:s', strtotime($location->loc_date['date']));
@@ -448,7 +457,7 @@ if ($this->session->flashdata('error')) {
                                         $access_icon = '<span class="action-w"><a  id="enableuser_id_' . $location->id . '" href="' . base_url('admin_section/enableLocation/' . $location->id) . '" data_adminuser_id=' . $location->id . '  title="enable" class="enableadminuser"><i class="fa  fa-play franchises-i"></i></a>Enable</span>';
                                     }
                                     ?>
-                                    <td><span class="action-w"><a data-toggle="modal" id="edit_adminuser_id_<?php echo $location->id; ?>" href="#edit_location" title="Edit" data_locationname="<?php echo $location->name; ?>" data_site_id="<?php echo $location->site_id; ?>" data_qrcode="<?php echo $location->barcode; ?>" data_site="<?php echo $location->url; ?>" data_adminuser_id="<?php echo $location->id; ?>" class="edit"><i class="glyphicon glyphicon-edit franchises-i"></i></a>Edit</span><?php echo $access_icon; ?><span class="action-w"><a  href="javascript:void(0)" data-toggle="modal" onclick="deleteTemplate(this)" data-href="<?php echo base_url('admin_section/archiveLocation/' . $location->id); ?>"  title="Archive"><i class="glyphicon glyphicon-remove-sign franchises-i"></i></a>Archive</span></td>
+                                    <td><span class="action-w"><a data-toggle="modal" id="edit_adminuser_id_<?php echo $location->id; ?>" href="#edit_location" title="Edit" data_locationname="<?php echo $location->name; ?>" data_site_id="<?php echo $location->site_id; ?>" data_owner_id="<?php echo $location->owner_id; ?>" data_qrcode="<?php echo $location->barcode; ?>" data_site="<?php echo $location->url; ?>" data_adminuser_id="<?php echo $location->id; ?>" class="edit"><i class="glyphicon glyphicon-edit franchises-i"></i></a>Edit</span><?php echo $access_icon; ?><span class="action-w"><a  href="javascript:void(0)" data-toggle="modal" onclick="deleteTemplate(this)" data-href="<?php echo base_url('admin_section/archiveLocation/' . $location->id); ?>"  title="Archive"><i class="glyphicon glyphicon-remove-sign franchises-i"></i></a>Archive</span></td>
                                 </tr>
                             <?php } ?>
                         </tbody>
@@ -552,7 +561,7 @@ if ($this->session->flashdata('error')) {
                         <div class="col-md-5">  <label>Location QR Code :</label> </div>
                         <div class="col-md-7">  
                             <div class="input-group col-md-12">
-
+                                <div class="input-group-addon"><?php echo $arrSessionData["objSystemUser"]->qrcode; ?></div>
                                 <input placeholder="Enter Location QR Code" class="form-control locationbar" name="edit_qr_code" id="edit_qr_code">
                             </div>
                             <div id="edit_qrcode_error" class="edit_qrcode_error hide">QR Code Already Exist.</div>
@@ -574,6 +583,19 @@ if ($this->session->flashdata('error')) {
                             </select>
                         </div>
                     </div><!-- /.form-group -->
+
+                    <div class="form-group col-md-12">
+                        <div class="col-md-5">  <label>Owner</label> </div>
+                        <div class="col-md-7">  <select name="edit_owner_id" id="edit_owner_id" class="form-control">
+                                <option value="0">----SELECT----</option>
+                                <?php foreach ($arrOwners['results'] as $arrOwner) { ?>
+                                    <option value= "<?php echo $arrOwner->ownerid; ?>" ><?php echo $arrOwner->owner_name; ?></option>
+                                <?php }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    <input type="hidden" name="editownerid" id="editownerid"/>
                     <input type="hidden" name="adminuser_id" id="adminuser_id_1"/>
                 </div>
 
