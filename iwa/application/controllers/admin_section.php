@@ -1125,7 +1125,7 @@ class Admin_Section extends MY_Controller {
                 $this->session->set_flashdata('success', 'Custom Field Added Successfully');
                 redirect("admin_section/customFields", "refresh");
             } else {
-                $this->session->set_flashdata('error', 'There Is Some Error To Adding Custom Field');
+                $this->session->set_flashdata('error', 'you have reached the limit of your custom fields, please contact YouAudit to increase this limit');
                 redirect("admin_section/customFields", "refresh");
             }
         }
