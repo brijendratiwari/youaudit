@@ -305,7 +305,7 @@ class Admin_Section_Model extends CI_Model {
 // Action to add owner
     public function add_owner() {
         $arrPageData['arrSessionData'] = $this->session->userdata;
-        $ownerdata = array('owner_name' => $this->input->post('owner_name'),
+        $ownerdata = array('owner_name' => trim($this->input->post('owner_name')),
             'account_id' => $arrPageData['arrSessionData']['objSystemUser']->accountid,
             'active' => 1,
             'archive' => 1,
@@ -755,7 +755,8 @@ class Admin_Section_Model extends CI_Model {
                 'firstname' => $editUser['firstname'],
                 'lastname' => $editUser['lastname'],
                 'level_id' => $editUser['level'],
-                'push_notification' => $editUser['push_notification']
+                'push_notification' => $editUser['push_notification'],
+                'username' => $editUser['username']
             );
             if ($this->input->post('edit_add_owner')) {
                 $data['is_owner'] = 1;
@@ -1543,7 +1544,7 @@ class Admin_Section_Model extends CI_Model {
 
         $strHtml .= "<body><div>";
         $strHtml .= "<table><tr><td>";
-        $strHtml .= "<h1>YouAudit Report</h1>";
+        $strHtml .= "<h1>".$this->session->userdata('objSystemUser')->firstname." ".$this->session->userdata('objSystemUser')->lastname."/".$this->session->userdata('objSystemUser')->accountname."</h1>";
         $strHtml .= "<h2>" . $strReportName . "</h2>";
         $strHtml .= "</td><td class=\"right\">";
 
@@ -2288,4 +2289,38 @@ class Admin_Section_Model extends CI_Model {
         }
     }
 
+    
+  //update fault,safety and default alert email....
+    public function addFaultEmail($accountId,$emailData){
+        
+        $this->db->where('id',$accountId);
+        $this->db->set($emailData);
+       $res =  $this->db->update('accounts');
+       
+       if($res){
+           
+           return TRUE;
+           
+       } else{
+           
+           return FALSE;
+       }
+    }
+    
+  // get all set alert email from user table...
+    
+    public function alertEmailList($accountId){
+        $result = $this->db->where('id',$accountId)->select('support_email,fault_alert_email,safety_alert_email')->from('accounts')->get();
+                        
+        if($result->num_rows() > 0){
+            
+            return $result->result_array();
+            
+        }else{
+            return FALSE;
+        }
+            
+        
+    }
+    
 }
