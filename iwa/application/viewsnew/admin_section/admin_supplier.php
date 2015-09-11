@@ -2,6 +2,8 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js"></script>
 <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.13.0/jquery.validate.js"></script>
 <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.13.0/additional-methods.js"></script>
+<link href="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/css/sub_style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" language="javascript" src="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/bootbox/bootbox.min.js"></script>
 
 <link href="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/css/sub_style.css" rel="stylesheet" type="text/css" />
 <style>
@@ -48,6 +50,13 @@
         display:none;
         color:red;
         font-weight: bold;
+    }
+    .bootbox .modal-dialog{
+        width: 400px;
+    }
+    .bootbox .modal-body{
+        min-height: 75px;
+        overflow: auto !important;
     }
 </style>
 <script>
@@ -248,8 +257,13 @@
                     var supplier = $.parseJSON(data);
                     if (supplier.contract_startdate > 0)
                     {
+
                         var start_date = convert_to_date(supplier.contract_startdate);
                         var end_date = convert_to_date(supplier.contract_enddate);
+
+                        var start_date = supplier.contract_startdate;
+                        var end_date = supplier.contract_enddate;
+
                     }
                     else
                     {
@@ -336,6 +350,17 @@
         });
 
     });
+    function deleteTemplate(editObj) {
+        var url = $(editObj).attr('data-href');
+
+        bootbox.confirm("Do you want to archive this Supplier ?", function(result) {
+            if (result) {
+                window.location.href = url;
+            } else {
+                // Do nothing!
+            }
+        });
+    }
     function convert_to_date(timestamp)
     {
         var jsDate = new Date(timestamp * 1000);
@@ -382,8 +407,8 @@
                     <?php
                     if ($arrSessionData['objSystemUser']->levelid == 3 || $arrSessionData['objSystemUser']->levelid == 4) {
                         ?>
-                    <li><a data-toggle="" href="<?php echo base_url('admin_section/data_import'); ?>">Data Import</a>
-                    </li>
+                        <li><a data-toggle="" href="<?php echo base_url('admin_section/data_import'); ?>">Data Import</a>
+                        </li>
                     <?php } ?>
                 </ul>
 
@@ -542,7 +567,7 @@ if ($this->session->flashdata('error')) {
                                         $access_icon = '<span class="action-w"><a  id="enableuser_id_' . $supplier['supplier_id'] . '" href="' . base_url('admin_section/enableSupplier/' . $supplier['supplier_id']) . '" data_adminuser_id=' . $supplier['supplier_id'] . '  title="enable" class="enableadminuser"><i class="fa  fa-play franchises-i"></i></a>Enable</span>';
                                     }
                                     ?>
-                                    <td><span class="action-w"><a data-toggle="modal" id="edit_adminuser_id_<?php echo $supplier['supplier_id']; ?>" href="#edit_supplier" title="Edit" data_adminuser_id="<?php echo $supplier['supplier_id']; ?>" class="edit"><i class="glyphicon glyphicon-edit franchises-i"></i></a>Edit</span><?php echo $access_icon; ?></td>
+                                    <td><span class="action-w"><a data-toggle="modal" id="edit_adminuser_id_<?php echo $supplier['supplier_id']; ?>" href="#edit_supplier" title="Edit" data_adminuser_id="<?php echo $supplier['supplier_id']; ?>" class="edit"><i class="glyphicon glyphicon-edit franchises-i"></i></a>Edit</span><?php echo $access_icon; ?><span class="action-w"><a  href="javascript:void(0)" data-toggle="modal" onclick="deleteTemplate(this)" data-href="<?php echo base_url('admin_section/archiveSupplier/' . $supplier['supplier_id']); ?>"  title="Archive"><i class="glyphicon glyphicon-remove-sign franchises-i"></i></a>Archive</span></td>
                                 </tr>
                             <?php } ?>
                         </tbody>
