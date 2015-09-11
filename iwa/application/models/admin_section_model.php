@@ -1363,14 +1363,14 @@ class Admin_Section_Model extends CI_Model {
             $service_level = $this->input->post('service_level');
             $response = $this->input->post('response');
             if ($this->input->post('contract_start')) {
-                $start_date = strtotime($this->input->post('contract_start'));
+                $start_date = $this->input->post('contract_start');
             } else {
-                $start_date = time();
+                $start_date = '';
             }
             if ($this->input->post('contract_end')) {
-                $end_date = strtotime($this->input->post('contract_end'));
+                $end_date = $this->input->post('contract_end');
             } else {
-                $end_date = time();
+                $end_date = '';
             }
         }
 
@@ -1410,14 +1410,14 @@ class Admin_Section_Model extends CI_Model {
         $arrPageData['arrSessionData'] = $this->session->userdata;
         $supplier_id = $this->input->post('adminuser_id');
         if ($this->input->post('editcontract_start')) {
-            $start_date = strtotime($this->input->post('editcontract_start'));
+            $start_date = $this->input->post('editcontract_start');
         } else {
-            $start_date = time();
+            $start_date = '';
         }
         if ($this->input->post('editcontract_end')) {
-            $end_date = strtotime((string) $this->input->post('editcontract_end'));
+            $end_date = $this->input->post('editcontract_end');
         } else {
-            $end_date = time();
+            $end_date = '';
         }
         if (isset($supplier_id)) {
 

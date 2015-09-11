@@ -63,7 +63,7 @@
 
 //        var url = $('#base_url').val();
         $(function() {
-            $(".datepicker").datepicker({dateFormat: "mm/dd/yy"});
+            $(".datepicker").datepicker({dateFormat: "dd/mm/yy"});
         });
 
         var rowCount = 1;
@@ -242,25 +242,30 @@
             ]}
         );
 
-        // script for edit user
+        // script for edit supplier
         $("body").on("click", ".edit", function() {
 
             var supplier_id = $(this).attr("data_adminuser_id");
             var base_url = $("#base_url").val();
-
+         
             $.ajax({
                 type: "POST",
                 url: base_url + "index.php/admin_section/getsupplierdata/" + supplier_id,
                 success: function(data) {
 
                     var supplier = $.parseJSON(data);
-                    if (supplier.contract_startdate > 0)
+                    if (supplier.contract_startdate)
                     {
 
-                        var start_date = convert_to_date(supplier.contract_startdate);
-                        var end_date = convert_to_date(supplier.contract_enddate);
 
-                        var start_date = supplier.contract_startdate;
+//                        var start_date = convert_to_date(supplier.contract_startdate);
+//                        var end_date = convert_to_date(supplier.contract_enddate);
+//
+//                        var start_date = supplier.contract_startdate;
+//                        var end_date = supplier.contract_enddate;
+
+
+                        var start_date = supplier.contract_startdate; 
                         var end_date = supplier.contract_enddate;
 
                     }
@@ -547,14 +552,14 @@ if ($this->session->flashdata('error')) {
                                     <td><?php echo $supplier['supplier_postcode']; ?></td>
                                     <td><?php
                                         if ($supplier['contract_startdate'] > 0) {
-                                            echo date('d/m/Y', $supplier['contract_startdate']);
+                                            echo $supplier['contract_startdate'];
                                         } else {
                                             echo '';
                                         }
                                         ?></td>
                                     <td><?php
                                         if ($supplier['contract_enddate'] > 0) {
-                                            echo date('d/m/Y', $supplier['contract_enddate']);
+                                            echo $supplier['contract_enddate'];
                                         } else {
                                             echo '';
                                         }
