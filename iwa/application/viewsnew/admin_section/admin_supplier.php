@@ -1,5 +1,4 @@
-<!--<script src="<?php echo base_url() . '/assets/js/bootstrap-formhelpers.min.js'; ?>"></script>-->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js"></script>
+
 <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.13.0/jquery.validate.js"></script>
 <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.13.0/additional-methods.js"></script>
 <link href="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/css/sub_style.css" rel="stylesheet" type="text/css" />
@@ -120,7 +119,7 @@
                             email: true
                         },
                         service_level: "required",
-                        postcode: {required: true,
+                        postcode: {
                             digits: true,
                             minlength: 4,
                             maxlength: 4}
@@ -156,7 +155,7 @@
                             require_from_group: [1, ".js-product"],
                             email: true
                         },
-                        postcode: {required: true,
+                        postcode: {
                             digits: true,
                             minlength: 4,
                             maxlength: 4}
