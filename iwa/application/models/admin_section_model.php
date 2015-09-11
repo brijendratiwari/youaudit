@@ -1485,6 +1485,15 @@ class Admin_Section_Model extends CI_Model {
         $userinfo = $this->db->get()->result_array();
         return $userinfo;
     }
+    
+    // Get Archive Supplier List
+    public function archiveSupplierList($account_id) {
+
+        $this->db->where('account_id', $account_id);
+        $this->db->where('archive', 0);
+        $supplierinfo = $this->db->get('suppliers')->result_array();
+        return $supplierinfo;
+    }
 
 // Archive User
     public function restoreUser($id) {
@@ -1499,6 +1508,19 @@ class Admin_Section_Model extends CI_Model {
         }
     }
 
+    // Archive Supplier
+    public function restoreSupplier($id) {
+
+        if (isset($id)) {
+            $this->db->set(array('archive' => 1, 'active' => 1));
+            $this->db->where('supplier_id', $id);
+            $this->db->update('suppliers');
+            return 1;
+        } else {
+            return False;
+        }
+    }
+    
 // Restore Owner
     public function restoreOwner($id) {
 

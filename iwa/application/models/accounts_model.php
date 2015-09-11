@@ -88,6 +88,14 @@ class Accounts_model extends CI_Model {
             $booSuccess = true;
             if ($this->db->insert('accounts', $arrInput)) {
                 $intAccountId = $this->db->insert_id();
+                $userid = $this->db->insert_id();
+                    if ($userid) {
+                        if ($arrInput['add_owner'] != 0) {
+                            $newOwner = array('owner_name' => $arrInput['firstname'] . ' ' . $arrInput['lastname'],
+                                'account_id' => $intAccountId, 'active' => 1, 'archive' => 1, 'is_user' => $userid);
+                            $this->db->insert('owner', $newOwner);
+                        }
+                    }
                 $this->sendMailConfirmation($mail_content);
 
                 $profiles = $this->db->where('profile_id', $this->input->post('profile'))->get('profile')->result();

@@ -712,7 +712,7 @@ if ($this->session->flashdata('error')) {
 
                 <div class="modal-footer">
                     <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
-                    <button class="btn btn-primary" type="submit" id="multiadd_button">Update</button>
+                    <button class="btn btn-primary" type="submit" id="multiadd_button">Save</button>
                 </div>
             </form>
         </div>

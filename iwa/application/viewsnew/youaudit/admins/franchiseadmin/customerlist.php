@@ -48,8 +48,10 @@
                 contact_name: "required",
                 company_postcode:
                         {
-                            required: true,
+//                            required: true,
                             digits: true,
+                            minlength: 4,
+                            maxlength: 4
                         },
                 first_name: "required",
                 last_name: "required",
@@ -89,10 +91,10 @@
                 company_city: "Please Enter Company City",
                 company_state: "Please Enter Company State",
                 contact_name: "Please Enter Contact Name",
-                company_postcode: {
-                    required: "Please Enter Company Postcode",
-                    digits: "Please Enter Valid Postal Code"
-                },
+//                company_postcode: {
+//                    required: "Please Enter Company Postcode",
+//                    digits: "Please Enter Valid Postal Code"
+//                },
 //                contact_phone: {
 //                    required: "Please Enter Company Postcode",
 //                },
@@ -319,7 +321,7 @@
                     $('#edit_profile').attr('disabled', true);
                     $('#edit_package_type').val(customerdata.package_id);
                     $('#edit_contact_username').val(customerdata.contact_email);
-
+                    $('#edit_add_owner').val(customerdata.add_owner);
 
                 }
 
@@ -517,7 +519,7 @@
             </li>
             <li><a data-toggle="" href="<?php echo base_url("youaudit/franchiseAdminUser/$masterid"); ?>">Admin Users</a>
             </li>
-            <li><a data-toggle="" href="<?php echo base_url("youaudit/franchise_admins/complianceChecksForFranchise/$masterid"); ?>">Compliance Templates</a>
+            <li><a data-toggle="" href="<?php echo base_url("youaudit/franchise_admins/complianceChecksForFranchise/$masterid"); ?>">Safety Templates</a>
             </li>
             <li><a data-toggle="" href="<?php echo base_url("youaudit/franchise_profiles/$masterid"); ?>">Profiles</a>
             </li>
@@ -785,7 +787,7 @@ if ($this->session->flashdata('error')) {
                         </div>
                         <div class="col-md-6"><input placeholder="Enter No of Custom Fields" class="form-control" name="custom_count" id="custom_count" type="text"></div>
                     </div> 
-                    
+
                     <div class="form-group col-md-12">
                     </div>
                     <div class="form-group col-md-12">

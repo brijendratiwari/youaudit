@@ -619,7 +619,7 @@ class Admin_Section extends MY_Controller {
             redirect("admin_section/admin_user/", "refresh");
         }
     }
-    
+
     // Action For archive Supplier.
     public function archiveSupplier($supplier_id) {
 
@@ -976,7 +976,7 @@ class Admin_Section extends MY_Controller {
 
             $editLocation = array(
                 'locationname' => $this->input->post('edit_location_name'),
-                'qrcode' => $this->session->userdata('objSystemUser')->qrcode.$this->input->post('edit_qr_code'),
+                'qrcode' => $this->session->userdata('objSystemUser')->qrcode . $this->input->post('edit_qr_code'),
                 'sitename' => $this->input->post('edit_site_name'),
                 'adminuser_id' => $this->input->post('adminuser_id'),
             );
@@ -1363,7 +1363,8 @@ class Admin_Section extends MY_Controller {
         $arrPageData['owner'] = $this->admin_section_model->archiveOwnerList($arrPageData['arrSessionData']['objSystemUser']->accountid);
         $arrPageData['site'] = $this->admin_section_model->archiveSiteList($arrPageData['arrSessionData']['objSystemUser']->accountid);
         $arrPageData['user'] = $this->admin_section_model->archiveUserList($arrPageData['arrSessionData']['objSystemUser']->accountid);
-
+        $suppliers = $this->admin_section_model->archiveSupplierList($arrPageData['arrSessionData']['objSystemUser']->accountid);
+        $arrPageData['suppliers'] = $suppliers;
         $arrPageData['customer_data'] = $arrPageData['arrSessionData']['objSystemUser']->accountname;
 
 
@@ -1385,6 +1386,23 @@ class Admin_Section extends MY_Controller {
         if ($result) {
 
             $this->session->set_flashdata('success', 'User Restore Successfully');
+            redirect("admin_section/admin_archive/", "refresh");
+        }
+    }
+    
+    // Action to restore users
+    public function restoreSupplier($supplierID) {
+
+        if (!$this->session->userdata('booUserLogin') && !$this->session->userdata('booInheritedUser')) {
+            $this->session->set_userdata('strReferral', '/sites/edit/' . $intId . '/');
+            redirect('users/login/', 'refresh');
+        }
+
+        $this->load->model('admin_section_model');
+        $result = $this->admin_section_model->restoreSupplier($supplierID);
+        if ($result) {
+
+            $this->session->set_flashdata('success', 'Supplier Restored Successfully');
             redirect("admin_section/admin_archive/", "refresh");
         }
     }
@@ -2399,7 +2417,7 @@ class Admin_Section extends MY_Controller {
             $this->session->set_userdata('strReferral', '/items/filter/');
             redirect('users/login/', 'refresh');
         }
-   
+
         $data = array();
         $this->load->model('admin_section_model');
         $arrPageData['arrSessionData'] = $this->session->userdata;

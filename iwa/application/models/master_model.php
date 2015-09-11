@@ -142,13 +142,21 @@ class Master_Model extends CI_Model {
                         'active' => 1,
                     );
                     $this->db->insert('users', $users);
+                    $userid = $this->db->insert_id();
+                    if ($userid) {
+                        if ($arrCustomer['add_owner'] != 0) {
+                            $newOwner = array('owner_name' => $arrCustomer['firstname'] . ' ' . $arrCustomer['lastname'],
+                                'account_id' => $id, 'active' => 1, 'archive' => 1, 'is_user' => $userid);
+                            $this->db->insert('owner', $newOwner);
+                        }
+                    }
 
                     $profiles = $this->db->where('profile_id', $this->input->post('profile'))->get('profile')->result();
 
                     if ($profiles[0]->custom_field) {
                         $fields = json_decode($profiles[0]->custom_field);
                         for ($i = 0; $i < count($fields->name); $i++) {
-                            $custom_data = array('field_name' => $fields->name[$i], 'account_id' => $id, 'field_value' => $fields->type[$i],'pick_values' => $fields->values[$i], 'profile' => 1);
+                            $custom_data = array('field_name' => $fields->name[$i], 'account_id' => $id, 'field_value' => $fields->type[$i], 'pick_values' => $fields->values[$i], 'profile' => 1);
                             $this->db->insert('custom_fields', $custom_data);
                             $cus_id = $this->db->insert_id();
                             $ids[] = $cus_id;
@@ -249,6 +257,11 @@ class Master_Model extends CI_Model {
 
             $this->db->where('username', $this->input->post('edit_contact_username'));
             $this->db->update('users', $persnal_info);
+            if ($editArrCustomer['add_owner'] == 0) {
+                $userid = $this->db->select('id as user')->where('account_id',$editArrCustomer['customer_id'])->get('users')->row();
+                $this->db->where('is_user', $userid->user);
+                $this->db->delete('owner');
+            }
 
             return 1;
         } else {
@@ -474,11 +487,12 @@ class Master_Model extends CI_Model {
         if (($owner[0]) || ($category[0]) || ($manu[0]) || ($manufacturer[0]) || ($field_name)) {
             $data = $this->input->post('masterid');
             if ($field_name) {
-            for ($i = 0; $i < count($field_name); $i++) {
-                $arr['name'][$i] = $field_name[$i];
-                $arr['type'][$i] = $field_type[$i];
-                $arr['values'][$i] = $field_values[$i];
-            }}
+                for ($i = 0; $i < count($field_name); $i++) {
+                    $arr['name'][$i] = $field_name[$i];
+                    $arr['type'][$i] = $field_type[$i];
+                    $arr['values'][$i] = $field_values[$i];
+                }
+            }
 
             $profiledata = array('profile_name' => $this->input->post('profile_name'),
                 'owner' => json_encode($owner),
@@ -1143,7 +1157,7 @@ COUNT( accounts.id ) >=1
 
     // Profile name
     public function checkProfile($profilename, $account_id) {
-     
+
         $this->db->select('profile_name');
         $this->db->where('account_type', 1);
         $this->db->where('account_id', $account_id);
