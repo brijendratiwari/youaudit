@@ -240,7 +240,7 @@ if ($this->session->flashdata('error')) {
                                             ?>
 
                                             <tr>
-                                                <td><span class="itemmanu"><?php echo strtoupper($val['item_manu_name']); ?></span>
+                                                <td><span class="itemmanu"><?php echo $val['item_manu_name']; ?></span>
                                                     <input type="hidden" name="item_id[]" value="<?php echo $val['id']; ?>">
                                                     <input class="form-control item manuitem" name='item_name[]' id="item_<?php echo $val['id']; ?>" value="<?php echo $val['item_manu_name']; ?>"></td>
                                                 <td>  
@@ -294,7 +294,7 @@ if ($this->session->flashdata('error')) {
                                         foreach ($getmanufacturer as $val) {
                                             ?>
                                             <tr>
-                                                <td><span class="itemmanu"><?php echo strtoupper($val['manufacturer_name']); ?></span>
+                                                <td><span class="itemmanu"><?php echo $val['manufacturer_name']; ?></span>
                                                     <input type="hidden" name="manufacturer_id[]" value="<?php echo $val['id']; ?>">
                                                     <input class="form-control item manuitem"  name="manufacturer_name[]" id="manufacturer_<?php echo $val['id']; ?>" value="<?php echo $val['manufacturer_name']; ?>">
                                                 </td>

@@ -22,7 +22,12 @@
     }
     #add_multiple_category .modal-content
     {
-        width: 820px;
+        width: 980px;
+    }
+    #tbody_multiple_cat .form-control{
+        
+        padding: 3px !important ;
+        font-size: 11px !important;
     }
     #editmultipleuser
     {
@@ -755,6 +760,7 @@ if ($this->session->flashdata('arrCourier')) {
                                         <button id="multiCatEditBtn" class="btn btn-warning fade hide" style="padding:0 5px;" type="button">Edit</button></th>
                                     <th>Category Name</th>
                                     <th>Alert/Reminder Email Address</th>
+                                    <th>Supplier Email Address</th>
                                     <?php
                                     foreach ($custom_field as $header_name) {
                                         echo '<th>' . $header_name['field_name'] . '</th>';
@@ -827,7 +833,7 @@ if ($this->session->flashdata('arrCourier')) {
                                                     ?>
                                                 </textarea>
                                             </td>
-
+                                              <td><?php echo $val['supplier_user']; ?></td>
                                             <?php
                                             foreach ($custom_field as $header_name) {
                                                 if (array_key_exists($header_name['field_name'], $val)) {
@@ -1259,7 +1265,7 @@ if ($this->session->flashdata('arrCourier')) {
 </div>
 
 <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="add_multiple_category" class="modal fade" style="display: none;">
-    <div class="modal-dialog" style="width: 650px;">
+    <div class="modal-dialog" style="width: 980px;">
         <div class="modal-content">
             <div class="modal-header">
                 <button aria-hidden="true" data-dismiss="modal" class="close" type="button">&times;</button>

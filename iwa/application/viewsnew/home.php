@@ -315,7 +315,10 @@
                     'location_id': location_id
                 },
                 success: function(data) {
+              $('body').find('#search_box').find('input').val('');
+              $('body').find('#search_box').find('select').val('');
                     $('#search_box').css('display', 'none');
+                    $('#search_results #resdata').html('');
                     $('#search_results').css('display', 'block');
                     var searchdata = $.parseJSON(data);
                     if (searchdata.length > 0) {
@@ -655,7 +658,7 @@
                 <div class="panel-body" id="search_box">
                     <div class="list-group">
                         <div class="list-group-item barcode">
-                            Qr Code
+                            QR Code
                             <span class="pull-right text-muted small"><input name="search_qrcode" class="opt" id="search_barcode">  
                             </span>
                         </div>

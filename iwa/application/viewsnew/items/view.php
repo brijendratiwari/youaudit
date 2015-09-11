@@ -414,6 +414,24 @@
                 {"sClass": "eamil_conform aligncenter", "aTargets": [9]},
                 {"sClass": "eamil_conform aligncenter", "aTargets": [10]}
             ]}
+        var fixed_history = $("#fixed_history").DataTable({
+            "ordering": true,
+            "aLengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
+            "iDisplayLength": 5,
+            "bDestroy": true, //!!!--- for remove data table warning.
+            "aoColumnDefs": [
+                {"sClass": "eamil_conform aligncenter", "aTargets": [0]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [1]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [2]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [3]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [4]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [5]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [6]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [7]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [8]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [9]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [10]}
+            ]}
         );
         var quantity = $("#quantity_change").DataTable({
         });
@@ -1292,9 +1310,23 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                 {"sClass": "eamil_conform aligncenter", "aTargets": [5]},
                 {"sClass": "eamil_conform aligncenter", "aTargets": [6]},
                 {"sClass": "eamil_conform aligncenter", "aTargets": [7]},
+            ]
+        });
+        var fix_history1 = $("#fixed_history").DataTable({
+            "ordering": true,
+            "aLengthMenu": [[10, 20, 40, -1], [10, 20, 40, "All"]],
+            "iDisplayLength": 10,
+            "bDestroy": true, //!!!--- for remove data table warning.
+            "aoColumnDefs": [
+                {"sClass": "eamil_conform aligncenter", "aTargets": [0]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [1]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [2]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [3]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [4]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [5]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [6]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [7]},
                 {"sClass": "eamil_conform aligncenter", "aTargets": [8]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [9]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [10]}
             ]
         });
         var open_history = $("#open_job").DataTable({
@@ -1333,6 +1365,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                                         <th>Severity</th>
                                         <th>Fault Date</th>
 
+                                        <th>Incident Time</th>
                                         <th>Incident Length</th>
 
 
@@ -1354,6 +1387,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                                         <tr>
                                             <td><?php echo $openticket['severity']; ?></td>
                                             <?php
+//                                            echo $openticket['date'];
                                             if ($openticket['date']) {
                                                 $arr_date = explode(' ', $openticket['date']);
 //                                                    echo $arr_date[0]; 
@@ -1361,6 +1395,15 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                                             ?>
                                             <td><?php echo date('d/m/Y', strtotime($arr_date[0])); ?></td>
                                             <td><?php echo $arr_date[1]; ?></td>
+                                            <td><?php
+                                            $datetime1 = new DateTime($openticket['date']);
+                                            $datetime2 = new DateTime('now');
+                                            $interval = $datetime1->diff($datetime2);
+                                            $daysCal = $interval->format('%d');
+                                            $week = $daysCal/7;
+                                            echo $interval->format('%m month, '.intval($week).' week and %d days');
+                                            
+                                            ?></td>
 
 
                                             <?php
@@ -1436,7 +1479,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                                                 ?>
 
                                             </td>
-                                            <td><a  href="<?php echo base_url("faults/getPdf/$openticket[id]"); ?>"><img src="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/img/pdf.png" title="Get pdf" alt="Get pdf" /></a></td>
+                                            <td><a  href="<?php echo base_url("faults/getPdf/$openticket[id]/1"); ?>"><img src="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/img/pdf.png" title="Get pdf" alt="Get pdf" /></a></td>
                                             <td><span class="action-w"><a data-toggle="modal" actionmode="reportfault"  ticket_id = "<?php echo $openticket['id']; ?>"  id="itm_<?php echo $openticket['itemid']; ?>" account_id="<?php echo $this->session->userdata('objSystemUser')->accountid; ?>" data-val="<?php echo $openticket['ticket_action']; ?>" href="#view_fault" title="View Incident" class="viewfault" data_customer_id=''><i class="fa fa-eye franchises-i"></i></a>View Incident</span>
                                                 <span class="action-w"><a  id="itm_<?php echo $openticket['itemid']; ?>" item_status="<?php echo $openticket['statusname']; ?>" ticket_id = "<?php echo $openticket['id']; ?>" account_id="<?php echo $this->session->userdata('objSystemUser')->accountid; ?>"  id="" data-toggle="modal" href="#update_fault" data_customer_id='' title="Update Fault" class="updatefault" data-val="<?php echo $openticket['ticket_action']; ?>"><i class="fa  fa-recycle franchises-i"></i></a>Update Incident</span>
                                                 <span class="action-w"><a  ticket_id = "<?php echo $openticket['id']; ?>" id="itm_<?php echo $openticket['itemid']; ?>" account_id="<?php echo $this->session->userdata('objSystemUser')->accountid; ?>"  data-toggle="modal" href="#fix_item" title="Fix item" class="fixitem" data_customer_id='' data-val="<?php echo $openticket['ticket_action']; ?>"><i class="glyphicon glyphicon-edit franchises-i"></i></a>Resolve Incident</span>
@@ -1455,12 +1498,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
             </div>
         </div>
         <div class="row">
-            <h1>Resolve Incident</h1>
-        </div>
-
-        <div class="row">
-
-
+            <h1>Resolve Incident Fixed Data</h1>
         </div>
 
         <div class="row">
@@ -1470,19 +1508,15 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
 
                     <div class="table-responsive">
                         <div role="grid" class="dataTables_wrapper form-inline" id="dataTables-example_wrapper">
-                            <table id="fault_history" class="table table-striped table-bordered table-hover" width="100%" cellspacing="0">
+                            <table id="fixed_history" class="table table-striped table-bordered table-hover" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
                                         <th>Severity</th>
-                                        <th>Fault Date</th>
-                                        <th>Incident Length</th>
                                         <th>Fix Date</th>
                                         <th>Fix Time</th>
                                         <th>Total Time</th>
                                         <th>Fix Code</th>
-
                                         <th>Logged By</th>
-
                                         <th>Order No</th>
                                         <th>Photos</th>
                                         <th>Incident Report</th>
@@ -1490,9 +1524,9 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                                     </tr>
                                 </thead>
                                 <tbody id="asset_body">
-
+<?php // var_dump($arrItemFixTicketHistory); ?>
                                     <?php
-                                    foreach ($arrItemFixTicketHistory as $ticket) {
+                                    foreach ($arrItemFixTicketHistory['itemFixedHistory'] as $ticket) {
                                         ?>
 
                                         <tr>
@@ -1503,9 +1537,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
 //                                                    echo $arr_date[0]; 
                                             }
                                             ?>
-                                            <td><?php echo date('d/m/Y', strtotime($arr_date[0])); ?></td>
-                                            <td><?php echo $arr_date[1]; ?></td>
-                                            <?php
+                                        <?php
                                             if ($ticket['fix_date'])
                                                 $arr_fixdate = explode(' ', $ticket['fix_date']);
 //                                                    echo $arr_date[0]; 
@@ -1599,6 +1631,125 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
 
                                         </tr>
                                         <?php
+                                    }
+                                    ?></tbody>
+                            </table>
+                        </div>
+                        <!-- /.table-responsive -->
+                    </div>
+                </div>
+            </div>
+        </div>
+         <div class="row">
+            <h1>Resolve Incident Logged Data</h1>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="panel-body">
+
+                    <div class="table-responsive">
+                        <div role="grid" class="dataTables_wrapper form-inline" id="dataTables-example_wrapper">
+                            <table id="fault_history" class="table table-striped table-bordered table-hover" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Severity</th>
+                                        <th>Fault Date</th>
+                                        <th>Incident Time</th>
+                                        <th>Incident Length</th>
+                                        <th>Logged By</th>
+                                        <th>Order No</th>
+                                        <th>Photos</th>
+                                        <th>Incident Report</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody id="asset_body">
+<?php // var_dump($arrItemFixTicketHistory['itemFaultHistory']); ?>
+                                    <?php
+                                    foreach ($arrItemFixTicketHistory['itemFaultHistory'] as $ticketData) {
+                                    foreach ($ticketData as $ticket) {
+                                        
+                                        ?>
+
+                                        <tr>
+                                            <td><?php echo $ticket['severity']; ?></td>
+                                            <?php
+                                            if ($ticket['date']) {
+                                                $arr_date = explode(' ', $ticket['date']);
+//                                                    echo $arr_date[0]; 
+                                            }
+                                            ?>
+                                            <td><?php echo date('d/m/Y', strtotime($arr_date[0])); ?></td>
+                                            <td><?php echo $arr_date[1]; ?></td>
+                                             <td><?php
+                                            $datetime1 = new DateTime($ticket['date']);
+                                            $datetime2 = new DateTime('now');
+                                            $interval = $datetime1->diff($datetime2);
+                                            $daysCal = $interval->format('%d');
+                                            $week = $daysCal/7;
+                                            echo $interval->format('%m month, '.intval($week).' week and %d days');
+                                            
+                                            ?></td>
+                                      
+
+                                            <td><?php echo $ticket['username']; ?></td>
+
+                                            <td><?php echo $ticket['order_no']; ?></td>
+                                            <td>
+                                                <?php
+                                                $image_role = '';
+                                                $url_contain = base_url();
+
+                                                if ($ticket['photoid'] != '') {
+                                                    if (strpos($ticket['photoid'], ',') !== FALSE) {
+                                                        $image_arr = explode(',', $ticket['photoid']);
+                                                        if (is_array($image_arr)) {
+
+
+
+                                                            $image_role = "<div class='ui-lightbox-gallery_$j'>";
+                                                            foreach ($image_arr as $image_id) {
+                                                                $image_role.= "<a target='_top' title='' href='$url_contain/index.php/images/viewHero/$image_id' class=''><img width='75' alt='Gallery Image' style='display: inline-block' class='thumbnail thumb'  src='$url_contain/index.php/images/viewList/$image_id'></a>&nbsp;";
+                                                            }
+
+                                                            $image_role .= "<script>$('.ui-lightbox-gallery_" . $j . "').each(function() { // the containers for all your galleries
+    $(this).magnificPopup({
+        delegate: 'a', // the selector for gallery item
+        type: 'image',
+        gallery: {
+          enabled:true
+        }
+    });
+}); </script>";
+                                                            $image_role .= "</div>";
+                                                        }
+                                                    } else {
+
+                                                        $image_role = "<div class='image_single'>";
+                                                        $photoid = $ticket['photoid'];
+                                                        $image_role .= "<a title='' href='$url_contain/index.php/images/viewHero/$photoid' class='ui-lightbox'><img width='75' alt='Gallery Image' style='display: inline-block' class='thumbnail thumb'  src='$url_contain/index.php/images/viewList/$photoid'></a>";
+
+                                                        $image_role .= "<script>$('.image_single').each(function() { // the containers for all your galleries
+    $(this).magnificPopup({
+        delegate: 'a', // the selector for gallery item
+        type: 'image',
+        gallery: {
+          enabled:true
+        }
+    });
+}); </script>";
+                                                        $image_role .= "</div>";
+                                                    }
+                                                } echo $image_role;
+                                                ?>
+
+                                            </td>
+                                            <td><a  href="<?php echo base_url("faults/getPdf/$ticket[id]"); ?>"><img src="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/img/pdf.png" title="Get pdf" alt="Get pdf" /></a></td>
+
+                                        </tr>
+                                        <?php
+                                    }
                                     }
                                     ?></tbody>
                             </table>

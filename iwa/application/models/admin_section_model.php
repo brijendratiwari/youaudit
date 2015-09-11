@@ -377,7 +377,7 @@ class Admin_Section_Model extends CI_Model {
 // Action to Get Categorylist
     public function getCategory($account_id, $export = '') {
         if ($export != '') {
-            $this->db->select('name,support_emails');
+            $this->db->select('name,support_emails,supplier_user');
         } else {
             $this->db->select('*');
         }
@@ -472,7 +472,6 @@ class Admin_Section_Model extends CI_Model {
 
     //Action For Edit Catgeory.
     public function editCategory($editCategory) {
-
         if (isset($editCategory)) {
 
             $data = array(
@@ -480,12 +479,16 @@ class Admin_Section_Model extends CI_Model {
                 'support_emails' => $editCategory['support_emails'],
                 'quantity_enabled' => $editCategory['quantity_enabled']
             );
+            
+            if (isset($editCategory['supplier_user'])) {
+                $data['supplier_user'] = $editCategory['supplier_user'];
+            }
+            
             if (isset($editCategory['custom_fields'])) {
                 $data['custom_fields'] = $editCategory['custom_fields'];
             } else {
                 $data['custom_fields'] = NULL;
             }
-
             $this->db->where('id', $editCategory['category_id']);
             $this->db->update('categories', $data);
             return TRUE;

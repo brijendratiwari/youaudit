@@ -200,7 +200,7 @@ class Items extends MY_Controller {
         $sLimit = "";
         $lenght = 20;
         $str_point = 0;
-        $col_sort = array("items.barcode", "items.serial_number", "categories.name", "items.item_manu", "items.manufacturer", "items.model", "items.quantity", "sites.name", "locations.name", "users.firstname", "users.lastname", "pat.pattest_name", "itemstatus.name", "items.purchase_date", "items.warranty_date", "items.replace_date", "items.value", "items.current_value", "suppliers.supplier_name", "item_condition.condition");
+        $col_sort = array("","items.barcode", "items.serial_number", "categories.name", "items.item_manu", "items.manufacturer", "items.model", "items.quantity", "sites.name", "locations.name", "users.firstname",  "suppliers.supplier_name","itemstatus.name", "item_condition.condition","","items.serial_number","","items.purchase_date", "items.warranty_date", "items.replace_date", "items.value", "items.current_value");
         $query = "select
                 items.id AS itemid, items.manufacturer,items.item_manu ,items.model, items.serial_number, items.barcode, items.owner_since AS currentownerdate, items.location_since AS currentlocationdate, items.site, items.value, items.current_value, items.purchase_date,items.status_id, items.compliance_start, items.quantity,items.warranty_date,items.replace_date,
 		categories.id AS categoryid, categories.name AS categoryname, categories.default AS categorydefault, categories.icon AS categoryicon,item_condition.condition AS condition_name,
@@ -254,7 +254,7 @@ class Items extends MY_Controller {
                           OR itemstatus.name REGEXP '$words'
                           OR item_condition.condition REGEXP '$words' 
                           OR items.serial_number REGEXP '$words' 
-                          OR custom_fields_content.content '$words'
+                          OR custom_fields_content.content REGEXP '$words'
 ) ";
         } else {
             $query .="";
@@ -319,7 +319,7 @@ class Items extends MY_Controller {
             $query .=" and ( item_condition.condition REGEXP '$words'
                          ) ";
         }
-        for ($k = 22; $k < $_GET['iColumns']; $k++) {
+        for ($k = 30; $k < $_GET['iColumns']; $k++) {
             if (isset($_GET['sSearch_' . $k]) && $_GET['sSearch_' . $k] != "") {
 
                 $words = $_GET['sSearch_' . $k];
@@ -327,25 +327,45 @@ class Items extends MY_Controller {
                          ) ";
             }
         }
-
+//
+//        echo $col_sort.'<br>';
+//        echo $_GET['iSortCol_0'].'<br>';
+//        echo $col_sort[$_GET['iSortCol_0']].'<br>';
+//         $order_by = "id";
+//        $temp = 'asc';
+//         if (isset($_GET['iSortCol_0'])) {
+//              $query .= " GROUP BY items.id ORDER BY ";
+//            $index = $_GET['iSortCol_0'];
+//            $temp = $_GET['sSortDir_0'] === 'asc' ? 'asc' : 'desc';
+//            $order_by = $col_sort[$index];
+//            $query .= $order_by;
+//        }
+//        echo $_GET['iSortCol_0'];
         if (isset($_GET['iSortCol_0'])) {
-            $query .= " GROUP BY items.id ORDER BY ";
+//            echo $_GET['iSortCol_0'];
+            $query .= " GROUP BY items.id  ";
             for ($i = 0; $i < intval($_GET['iSortingCols']); $i++) {
+//                echo $_GET['bSortable_' . intval($_GET['iSortCol_' . $i])];
                 if ($_GET['bSortable_' . intval($_GET['iSortCol_' . $i])] == "true") {
+                    if(!empty($col_sort[intval($_GET['iSortCol_' . $i])])){
+                    $query .= " ORDER BY ";
                     $query .= $col_sort[intval($_GET['iSortCol_' . $i])] . "
-				 	" . mysql_real_escape_string($_GET['sSortDir_' . $i]) . ", ";
+				 	" . mysql_real_escape_string($_GET['sSortDir_' . $i]);
+                    }
                 }
+//                echo $query;
             }
 
-            $query = substr_replace($query, "", -2);
-            if ($query == "ORDER BY") {
-                $query .= "";
-            }
-            if ($query == "GROUP BY") {
-                $query .= "";
-            }
+//            $query = substr_replace($query, "", -2);
+//            if ($query == "ORDER BY") {
+//                $query .= "";
+//            }
+//            if ($query == "GROUP BY") {
+//                $query .= "";
+//            }
         }
-
+//
+//        echo $_GET['iDisplayStart'];
         if (isset($_GET['iDisplayStart']) && $_GET['iDisplayLength'] != '-1') {
             $str_point = intval($_GET['iDisplayStart']);
             $lenght = intval($_GET['iDisplayLength']);
@@ -353,11 +373,13 @@ class Items extends MY_Controller {
         } else {
             $query_res = $query;
         }
+//        echo $query_res;die;
         $res = $this->db->query($query_res);
         $count_res = $this->db->query($query);
         $result = $res->result_array();
         $count_result = $count_res->result_array();
         $total_record = count($count_result);
+    
 
         $output = array(
             "sEcho" => intval($_GET['sEcho']),
@@ -406,6 +428,7 @@ class Items extends MY_Controller {
                 $age_asset = 'N/A';
             }
             $custom_fields = $this->customfields_model->getCustomFieldsByItem($val['itemid']);
+//            var_dump($custom_fields);die;
             foreach ($arrCustomfield as $col) {
                 if ($custom_fields) {
                     foreach ($custom_fields as $custom_field) {
@@ -463,7 +486,7 @@ class Items extends MY_Controller {
             $count++;
         }
 
-//        var_dump($output);
+//        var_dump($output);die;
 
         echo json_encode($output);
         die;
@@ -2165,7 +2188,7 @@ class Items extends MY_Controller {
 
                                 $this->session->set_userdata('booCourier', true);
                                 $this->session->set_userdata('arrCourier', array('arrUserMessages' => array('The item was successfully updated')));
-                                redirect('/items/view/' . $intId, 'refresh');
+                                redirect('/items/filter','refresh');
                             } else {
 
                                 $arrPageData['arrErrorMessages'][] = "Unable to update the item.";
@@ -2879,7 +2902,6 @@ class Items extends MY_Controller {
         if ($owner_id) {
             $this->load->model('admin_section_model');
             $location = $this->admin_section_model->getlocationbyowner($owner_id);
-
             if (!empty($location)) {
                 echo json_encode($location);
             }
