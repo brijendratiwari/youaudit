@@ -234,8 +234,7 @@ class Faults extends MY_Controller {
                         $strEmailContent .= $this->input->post('message_body') . $strMessageBodyItemData;
 
                         $this->email->message($strEmailContent);
-
-                        if ($this->email->send()) {
+//                        if ($this->email->send()) {
 
                           $last_id = $this->tickets_model->insertTicket($data);
                          
@@ -276,9 +275,9 @@ class Faults extends MY_Controller {
                             $this->session->set_userdata('booCourier', true);
                             $this->session->set_userdata('arrCourier', array('arrUserMessages' => array('The ticket was successfully sent')));
                             redirect('/items/view/' . $intId, 'refresh');
-                        } else {
-                            $arrPageData['arrErrorMessages'][] = "Unable to send ticket.";
-                        }
+//                        } else {
+//                            $arrPageData['arrErrorMessages'][] = "Unable to send ticket.";
+//                        }
 
 
 
@@ -526,11 +525,11 @@ class Faults extends MY_Controller {
         }
     }
     
-    public function getPdf($fault_id)
+    public function getPdf($fault_id,$pdfName = '')
     {
        if($fault_id){
            $this->load->model('tickets_model');
-           $result=$this->tickets_model->getPdf($fault_id);               
+           $result=$this->tickets_model->getPdf($fault_id,$pdfName);               
             echo "<pre>";
 
             echo "</pre>";

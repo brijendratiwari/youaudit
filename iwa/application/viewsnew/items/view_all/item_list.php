@@ -137,21 +137,21 @@
         var base_url_str = $("#base_url").val();
         var num_of_th = $('#num_of_th').val();
         var numofth = num_of_th.split(',');
-//        alert(numofth);
+//        alert(numofth.length);
         var aryJSONColTable = [];
         for (var k = 0; k < numofth.length; k++) {
-
-            if (k == 0) {
-                aryJSONColTable.push({
-                    "bSortable": true,
-                    "aTargets": [k]
-                });
-            }
-            else if (k > 19)
-            {
+//       console.log(k+"count")
+            if (k != 0) {
+//                aryJSONColTable.push({
+//                    "bSortable": true,
+//                    "aTargets": [k]
+//                });
+//            }
+//            else if (k > 20)
+//            {
                 aryJSONColTable.push({
                     "sClass": "eamil_conform aligncenter",
-                    "bSortable": false,
+                    "bSortable": true,
                     "aTargets": [k]
                 });
             }
@@ -159,12 +159,12 @@
             {
                 aryJSONColTable.push({
                     "sClass": "eamil_conform aligncenter",
-//                    "bSortable": false,
+                    "bSortable": false,
                     "aTargets": [k],
                 });
             }
         }
-
+//console.log(aryJSONColTable);
         var item_table = $("#item_table").DataTable({
             "oLanguage": {
                 "sProcessing": "<div align='center'><img src='<?php echo base_url('./img/ajax-loader.gif'); ?>'</div>"},
@@ -219,8 +219,8 @@
                         .draw();
             });
         }
-        for (var m = 22; m < numofth.length; m++) {
-            $("body").on("change", "#" + m, function() {
+//        for (var m = 22; m < numofth.length; m++) {
+            $("body").on("change", "#22", function() {
                 var ind = this.id;
                 var val = this.value;
 
@@ -228,7 +228,7 @@
                         .search(val)
                         .draw();
             });
-        }
+//        }
 
         $("body").on("change", "#filtercategoryname", function() {
 
@@ -658,17 +658,11 @@
 //                item_purchased_similar: "required",
             },
             messages: {
-//                item_quantity_similar: "Please Select Quantity",
                 item_barcode_similar: "Please Enter QR_code",
-//                item_serial_number_similar: "Please Enter Serial Number",
-//                status_id_similar: "Please Enter Status",
-//                item_condition_similar: "Please Select Condition",
                 owner_id_similar: "Please Select Owner",
                 site_id_similar: "Please Select Site",
                 location_id_similar: "Please Select Location",
-//                supplier_similar: "Please Select Supplier",
-//                item_value_similar: "Please Enter Purchase Price",
-//                item_purchased_similar: "Please Enter Purchase Date",
+
             },
         });
 
@@ -1000,17 +994,19 @@
             // remove photo th
             var heads = cloneHead.split(',');
             var reshead = [];
+            var thCount = 0;
             $.each(heads, function(i, v) {
-                if (heads[i] != 'Photo') {
+                if (thCount != 1) {
                     reshead.push(heads[i]);
                 }
+                thCount++;
             });
             var foots = cloneFoot.split(',');
             var resfoot = [];
             $.each(foots, function(j, v) {
                 if (heads[j] != 'Photo') {
                     if (j == '0') {
-                        foots[j] = 'Summary- TOTAL / COUNT';
+                        foots[j] = 'Summary- TOTAL / COUNT = '+data1.length+'';
                     }
                     resfoot.push(foots[j]);
                 }
@@ -1157,14 +1153,14 @@
     <div class="col-md-12" style="margin-top: 10px;">
         <div class="col-md-7">
             <?php
-            if ($arrSessionData['objSystemUser']->levelid > 1) {
+            if ($arrSessionData['objSystemUser']->levelid > 2) {
                 ?>
                 <div class="icon-nav">
     <!--                <form  id="csvform" action="<?= site_url($_SERVER['REDIRECT_QUERY_STRING']) ?>" method="post">
                         <input  type="hidden" value="ExportResultsasCSV" name="csvfile">
                     --> 
                     <a href="#" id="exportCsvButton" class="button icon-with-text round" type="button" style="padding:0">
-                        <i class="fa  fa-file-pdf-o"></i>
+                        <i class="fa  fa-file-o"></i>
                         <b>Export to <br />CSV</b>
                     </a>
                     <!--
@@ -1240,6 +1236,7 @@
             <tr> <th>Select</th>
                 <?php
                 foreach ($arrColumns as $column) {
+                    
                     $cnt = 22;
 //                    var_dump($column);
                     ?>
@@ -1504,6 +1501,7 @@ if (!empty($arr1)) {
 
                     <div class="col-md-12">
                         <?php
+//                        var_dump($arrColumns);
                         $arr = intval(count($arrColumns) / 2);
                         for ($i = 0; $i < $arr; $i++) {
                             ?>
@@ -1697,6 +1695,7 @@ if (!empty($arr1)) {
 
 
                     <div class="form-group col-md-12">
+                        <?php // var_dump($arrLocations); ?>
                         <div class="col-md-6"> <label>Location*</label>
                         </div>
                         <div class="col-md-6">       

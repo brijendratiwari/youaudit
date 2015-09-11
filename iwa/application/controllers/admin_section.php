@@ -407,7 +407,7 @@ class Admin_Section extends MY_Controller {
                 'name' => $this->input->post('edit_category_name'),
                 'category_id' => $this->input->post('category_id'),
             );
-            if ($this->input->post('edit_select_anather_user')) {
+            if ($this->input->post('edit_select_anather_user') != '1') {
                 $editCategory['supplier_user'] = $this->input->post('edit_select_anather_user');
             }
             $custom_fields = $this->input->post('custom_fields');

@@ -1,5 +1,5 @@
 <div class="heading">
-    <h1>Welcome, <?php echo $arrSessionData['objSystemUser']->nickname; ?></h1>
+    <h1>Welcome, <?php echo ucfirst($arrSessionData['objSystemUser']->nickname); ?></h1>
     <div class="buttons">
     </div>
     <div class="text-right">

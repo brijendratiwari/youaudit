@@ -121,7 +121,8 @@ class Tickets_model extends CI_Model {
                 'order_no' => $open_history->order_no,
                 'reason_code' => $open_history->reason_code,
                 'reason_code' => $open_history->reason_code,
-                'photoid' => $open_history->photoid
+                'photoid' => $open_history->photoid,
+                'ticket_id' => $open_history->id
             );
             foreach ($history as $key => $value) {
                 if ($value = '') {
@@ -133,7 +134,7 @@ class Tickets_model extends CI_Model {
             $result = $this->db->update('items', array("status_id" => $data['status']));
             if ($result) {
                 $this->db->where('id', $data['ticket_id']);
-                $this->db->update('tickets', array("fix_code" => $data['fix_code'], "status" => $data['status'], "jobnote" => $data['job_notes'], "ticket_action" => "Fix", "fix_date" => $data['fix_date'], "photoid" => $data['photoid']));
+                $this->db->update('tickets', array("user_id" => $this->session->userdata('objSystemUser')->userid, "fix_code" => $data['fix_code'], "status" => $data['status'], "jobnote" => $data['job_notes'], "ticket_action" => "Fix", "fix_date" => $data['fix_date'], "photoid" => $data['photoid']));
                 return TRUE;
             } else {
                 return FALSE;
@@ -438,7 +439,7 @@ class Tickets_model extends CI_Model {
 
             $notesarray = implode(',', $notes_array);
             $itemHistory[$key]['jobnote'] = $notesarray;
-            
+
 //            if (strtotime($value['dt'] > 0)) {
             $itemHistory[$key]['dt'] = date('d/m/Y', strtotime($value['dt']));
 //            } else {
@@ -589,17 +590,21 @@ OR `categories`.`name` LIKE '%$strfreetext%')");
         return '';
     }
 
-    public function getPdf($ticket_id) {
+    public function getPdf($ticket_id, $pdfName = '') {
+
         if ($ticket_id) {
 
             $this->load->model('users_model');
-            $this->db->select('tickets.id,tickets.severity,tickets.jobnote,tickets.order_no,tickets.fix_code,tickets.reason_code,tickets.ticket_action,tickets.user_id,tickets.date,tickets.fix_date,itemstatus.name AS statusname,items.barcode,item_manu.item_manu_name,items.manufacturer,items.model,categories.name AS categoryname,  locations.name AS locationname, sites.name AS sitename,users.firstname AS userfirstname,users.lastname AS userlastname,users.nickname AS usernickname,tickets.photoid as photo_id');
+            $this->db->select('tickets.id,tickets.severity,tickets.jobnote,tickets.order_no,tickets.fix_code,tickets.reason_code,tickets.ticket_action,tickets.user_id,tickets.date,tickets.fix_date,itemstatus.name AS statusname,items.barcode,item_manu.item_manu_name,items.manufacturer,items.model,categories.name AS categoryname,  locations.name AS locationname, sites.name AS sitename,users.firstname AS fixedbyfirst,users.lastname AS fixedbylast,tickets.photoid as photo_id');
             $this->db->join('items', 'items.id = tickets.item_id', 'left');
             $this->db->join('sites', 'items.site = sites.id', 'left');
             $this->db->join('items_categories_link', 'items.id = items_categories_link.item_id', 'left');
             $this->db->join('categories', 'items_categories_link.category_id = categories.id', 'left');
             $this->db->join('locations', 'items.location_now = locations.id', 'left');
-            $this->db->join('users', 'items.owner_now = users.id', 'left');
+//            $this->db->join('tickets_history', 'tickets_history.ticket_id  = tickets.id', 'left');
+            $this->db->join('users', 'tickets.user_id = users.id', 'left');
+
+//            $this->db->join('users', 'tickets_history.user_id  = users.id', 'left');
             $this->db->join('itemstatus', 'items.status_id = itemstatus.id', 'left');
             $this->db->join('item_manu', 'items.item_manu = item_manu.id', 'left');
             $this->db->where('tickets.id', $ticket_id);
@@ -608,8 +613,12 @@ OR `categories`.`name` LIKE '%$strfreetext%')");
             $query = $this->db->get('tickets');
             $ticketdata = $query->result_array();
             foreach ($ticketdata as $key => $value) {
-                $user = $this->users_model->getOne($value['user_id'], $this->session->userdata('objSystemUser')->accountid);
+                // get incident logged by user name...
+                $this->db->where('ticket_id', $ticket_id);
+                $ticketHistoryData = $this->db->select('user_id')->from('tickets_history')->get()->result_array();
+                $user = $this->users_model->getOne($ticketHistoryData[0]['user_id'], $this->session->userdata('objSystemUser')->accountid);
                 $ticketdata[$key]['username'] = $user['result'][0]->firstname . " " . $user['result'][0]->lastname;
+                $ticketdata[$key]['faultFixedBy'] = $value['fixedbyfirst'] . " " . $value['fixedbylast'];
 
                 if ($value['fix_date'] != '0000-00-00 00:00:00') {
 
@@ -627,30 +636,62 @@ OR `categories`.`name` LIKE '%$strfreetext%')");
                     $ticketdata[$key]['total'] = "-";
                 }
             }
+
+
+
+
+//              $ticketdata['faultLoggedBy'] 
 //            var_dump($ticketdata);die;
 
-            $arrFields = array(
-                array('strName' => 'Qr Code', 'strFieldReference' => 'barcode', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
-                array('strName' => 'Category', 'strFieldReference' => 'categoryname', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
-                array('strName' => 'Item', 'strFieldReference' => 'item_manu_name', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
-                array('strName' => 'Manufacturer', 'strFieldReference' => 'manufacturer', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
-                array('strName' => 'Model', 'strFieldReference' => 'model', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
-                array('strName' => 'Site', 'strFieldReference' => 'sitename', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
-                array('strName' => 'Location', 'strFieldReference' => 'locationname', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
-                array('strName' => 'Owner', 'strFieldReference' => 'userfirstname', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
-                array('strName' => 'Severity', 'strFieldReference' => 'severity', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
-                array('strName' => 'Status', 'strFieldReference' => 'statusname', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
-                array('strName' => 'Fault Date', 'strFieldReference' => 'date', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
-                array('strName' => 'Fix Date', 'strFieldReference' => 'fix_date', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
-                array('strName' => 'Tatal Time', 'strFieldReference' => 'total', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
-                array('strName' => 'Logged By', 'strFieldReference' => 'username', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
-                array('strName' => 'Reason Code', 'strFieldReference' => 'reason_code', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
-                array('strName' => 'Order No', 'strFieldReference' => 'order_no', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
-                array('strName' => 'Fix Code', 'strFieldReference' => 'fix_code', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
-                array('strName' => 'Job Notes', 'strFieldReference' => 'jobnote', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
-                array('strName' => 'Photo', 'strFieldReference' => 'photo_id', 'strConversion' => 'img', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
-            );
+            if ($pdfName != '') {
+                $arrFields = array(
+                    array('strName' => 'Qr Code', 'strFieldReference' => 'barcode', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Manufacturer', 'strFieldReference' => 'manufacturer', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Model', 'strFieldReference' => 'model', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Category', 'strFieldReference' => 'categoryname', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Item', 'strFieldReference' => 'item_manu_name', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Location', 'strFieldReference' => 'locationname', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Site', 'strFieldReference' => 'sitename', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Owner', 'strFieldReference' => 'userfirstname', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Severity', 'strFieldReference' => 'severity', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Order No', 'strFieldReference' => 'order_no', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Fault Logged By', 'strFieldReference' => 'faultFixedBy', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Safety Check', 'strFieldReference' => 'statusname', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Date', 'strFieldReference' => 'date', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+//                array('strName' => 'Fix Date', 'strFieldReference' => 'fix_date', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Time', 'strFieldReference' => 'total', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Logged By', 'strFieldReference' => 'username', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Code', 'strFieldReference' => 'reason_code', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    // array('strName' => 'Fix Code', 'strFieldReference' => 'fix_code', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Notes', 'strFieldReference' => 'jobnote', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Photo', 'strFieldReference' => 'photo_id', 'strConversion' => 'img', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                );
+            } else {
 
+                $arrFields = array(
+                    array('strName' => 'Qr Code', 'strFieldReference' => 'barcode', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Manufacturer', 'strFieldReference' => 'manufacturer', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Model', 'strFieldReference' => 'model', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Category', 'strFieldReference' => 'categoryname', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Item', 'strFieldReference' => 'item_manu_name', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Location', 'strFieldReference' => 'locationname', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Site', 'strFieldReference' => 'sitename', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Owner', 'strFieldReference' => 'userfirstname', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Severity', 'strFieldReference' => 'severity', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Order No', 'strFieldReference' => 'order_no', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Fault Logged By', 'strFieldReference' => 'username', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Fault Fixed By', 'strFieldReference' => 'faultFixedBy', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Safety Check', 'strFieldReference' => 'statusname', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Date', 'strFieldReference' => 'date', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+//                array('strName' => 'Fix Date', 'strFieldReference' => 'fix_date', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Time', 'strFieldReference' => 'total', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Logged By', 'strFieldReference' => 'username', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Code', 'strFieldReference' => 'reason_code', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    // array('strName' => 'Fix Code', 'strFieldReference' => 'fix_code', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Notes', 'strFieldReference' => 'jobnote', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Photo', 'strFieldReference' => 'photo_id', 'strConversion' => 'img', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                );
+            }
             $this->outputPdfFile(date('d/m/Y Gis') . '.pdf', $arrFields, $ticketdata);
         }
     }
@@ -664,7 +705,7 @@ OR `categories`.`name` LIKE '%$strfreetext%')");
 
         $strHtml .= "<body><div>";
         $strHtml .= "<table><tr><td>";
-        $strHtml .= "<h1>".$this->session->userdata('objSystemUser')->firstname." ".$this->session->userdata('objSystemUser')->lastname."/".$this->session->userdata('objSystemUser')->accountname."</h1>";
+        $strHtml .= "<h1>" . $this->session->userdata('objSystemUser')->firstname . " " . $this->session->userdata('objSystemUser')->lastname . "/" . $this->session->userdata('objSystemUser')->accountname . "</h1>";
         $strHtml .= "<h2>" . $strReportName . "</h2>";
         $strHtml .= "</td><td class=\"right\">";
 
@@ -697,10 +738,13 @@ OR `categories`.`name` LIKE '%$strfreetext%')");
             $arrPageData['arrSessionData'] = $this->session->userdata;
 
             foreach ($arrFields as $arrReportField) {
+//                var_dump($arrReportField);
                 $strHtml .= "<td style='height:50px:'>";
                 if (array_key_exists('strConversion', $arrReportField)) {
                     switch ($arrReportField['strConversion']) {
+
                         case 'date':
+
                             $arrDate = explode('-', $objItem->{$arrReportField['strFieldReference']});
                             if (count($arrDate) > 1) {
                                 $strHtml .= $arrDate[2] . "/" . $arrDate[1] . "/" . $arrDate[0];
@@ -791,6 +835,7 @@ OR `categories`.`name` LIKE '%$strfreetext%')");
 
         $strHtml .= "<p>Produced by " . $arrPageData['arrSessionData']["objSystemUser"]->firstname . " " . $arrPageData['arrSessionData']["objSystemUser"]->lastname . " (" . $arrPageData['arrSessionData']["objSystemUser"]->username . ") on " . date('d/m/Y') . "</p>";
         $strHtml .= "</div></body></html>";
+   
         if (!$booOutputHtml) {
             $this->load->library('Mpdf');
             $mpdf = new Pdf('en-GB', 'A4');
@@ -911,14 +956,35 @@ OR `categories`.`name` LIKE '%$strfreetext%')");
         $query = $this->db->get('tickets');
         $itemHistory = $query->result_array();
 
-
+        $itemFaultHistory = array();
         foreach ($itemHistory as $key => $value) {
+            $itemFaultHistory[] = $this->ticketFaulltHistory($value['id']);
             $user = $this->users_model->getOne($value['user_id'], $this->session->userdata('objSystemUser')->accountid);
 
             $itemHistory[$key]['username'] = $user['result'][0]->firstname . " " . $user['result'][0]->lastname;
         }
+//        echo '<pre>';
+//                        print_r(array("itemFixedHistory"=>$itemHistory,"itemFaultHistory"=>$itemFaultHistory));die;
+        return array("itemFixedHistory" => $itemHistory, "itemFaultHistory" => $itemFaultHistory);
+    }
 
-        return $itemHistory;
+    public function ticketFaulltHistory($ticket_id) {
+//        echo $ticket_id;
+//        MAX(date) As fix_Date ,MIN(date) As Fault_Date
+        $this->db->select('*');
+
+        $this->db->where('ticket_id', $ticket_id);
+        $query = $this->db->get('tickets_history');
+        $itemFaultHistory = $query->result_array();
+
+
+        foreach ($itemFaultHistory as $key => $value) {
+            $user = $this->users_model->getOne($value['user_id'], $this->session->userdata('objSystemUser')->accountid);
+
+            $itemFaultHistory[$key]['username'] = $user['result'][0]->firstname . " " . $user['result'][0]->lastname;
+        }
+
+        return $itemFaultHistory;
     }
 
     public function ticketOpenHistory($item_id) {
