@@ -16,7 +16,7 @@
 */
 //$config['base_url']	= 'https://www.iworkaudit.com/iwa_new/'; 
 //$config['base_url']	= 'http://dev.iworkaudit.com.au/iwa_new/';
-$config['base_url']	= 'http://localhost/youaudit/iwa/';
+$config['base_url']	= 'http://192.168.10.139:8080/youaudit/iwa/';
 
 /*
 |--------------------------------------------------------------------------

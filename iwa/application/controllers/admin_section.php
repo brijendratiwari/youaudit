@@ -619,6 +619,17 @@ class Admin_Section extends MY_Controller {
             redirect("admin_section/admin_user/", "refresh");
         }
     }
+    
+    // Action For archive Supplier.
+    public function archiveSupplier($supplier_id) {
+
+        $this->load->model('admin_section_model');
+        $result = $this->admin_section_model->archive_Supplier($supplier_id);
+        if ($result) {
+            $this->session->set_flashdata('success', 'Supplier Archived Successfully');
+            redirect("admin_section/admin_supplier/", "refresh");
+        }
+    }
 
     // Add User
     public function add_user() {

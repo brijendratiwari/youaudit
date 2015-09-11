@@ -702,6 +702,19 @@ class Admin_Section_Model extends CI_Model {
             return False;
         }
     }
+    
+    // Archive User
+    public function archive_Supplier($id) {
+
+        if (isset($id)) {
+            $this->db->set(array('archive' => 0, 'active' => 0));
+            $this->db->where('supplier_id', $id);
+            $this->db->update('suppliers');
+            return 1;
+        } else {
+            return False;
+        }
+    }
 
 // Action to Add User and add owner (if user is owner)
     public function add_users($userdata) {
