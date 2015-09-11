@@ -18,6 +18,11 @@
         color: red;
         font-weight: bold;
     }
+    .locqrcode_error
+    {
+        color: red;
+        font-weight: bold;
+    }
 
     .edit_qrcode_error
     {
@@ -40,6 +45,17 @@
     .locationbar {
         float: left !important;
         width: 80% !important;
+    }
+    .location_bar
+    {
+        float: left !important;
+        width: 62% !important;  
+    }
+    .grp_addon
+    {
+        float: left;
+        padding: 9px;
+        width: 38%;   
     }
 </style>
 <script>
@@ -115,6 +131,8 @@
             }
 
         });
+
+
         $("body").on("click", ".edit", function() {
 
             var locationname = $(this).attr("data_locationname");
@@ -277,6 +295,40 @@
 
         });
     });
+    function check_barcode(multiple)
+    {
+        var multi_bar = multiple.id;
+        var barcode = multi_bar.split('qrcode_');
+        var pre = $("#code").val();
+        var qr_code = $("#qrcode_" + barcode[1]).val();
+        var code = pre + qr_code;
+        var base_url_str = $("#base_url").val();
+        if (qr_code != '') {
+            $.ajax({
+                type: "POST",
+                url: base_url_str + "admin_section/checkQRNumber",
+                data: {
+                    'qr_code': code
+                },
+                success: function(msg) {
+
+                    // we need to check if the value is the same
+                    if (msg == "1") {
+                        //Receiving the result of search here
+
+                        $("#locqrcode_err" + barcode[1]).removeClass("hide");
+                        $("#multiadd_button").attr("disabled", true);
+                    } else {
+
+                        $("#locqrcode_err" + barcode[1]).addClass("hide");
+                        $("#multiadd_button").attr("disabled", false);
+                    }
+                }
+
+            });
+        }
+    }
+
     function deleteTemplate(editObj) {
         var url = $(editObj).attr('data-href');
 
@@ -645,7 +697,12 @@ if ($this->session->flashdata('error')) {
                         <tbody id="tbody_multiple_cat">
                             <tr>
                                 <td><input type="text" data=""  class="form-control multicat" required=""  name="location_name_1" id="location_name_1" placeholder="Enter Location Name"></td>
-                                <td><input type="text" data=""  class="form-control multicat"  name="qrcode_1" id="qrcode_1" placeholder="Enter QR Code Na"></td>
+                                <td><div class="input-group">
+                                        <div class="input-group-addon grp_addon">
+                                            <?php echo $arrSessionData["objSystemUser"]->qrcode; ?></div>
+                                        <input type="text" data=""  class="form-control multicat location_bar"  name="qrcode_1" id="qrcode_1" placeholder="Enter QR Code Na" onblur="check_barcode(this);"></div>
+                                    <div id="locqrcode_err1" class="locqrcode_error hide">QR Code Already Exist.</div>
+                                </td>
                                 <td><select name="site_name_1" id="site_name_1" class="form-control multiemail" required="">
                                         <option value=''>--select site--</option>
                                         <?php
@@ -672,7 +729,11 @@ if ($this->session->flashdata('error')) {
                             </tr>
                             <tr id="row_1" style="display:none">
                                 <td><input type="text" data=""   class="form-control multicat"  name="location_name_" id="location_name_" placeholder="Enter Location Name"> </td>
-                                <td><input type="text" data=""  class="form-control multicat"  name="qrcode_" id="qrcode_" placeholder="Enter QR Code Na"> </td>
+                                <td><div class="input-group">
+                                        <div class="input-group-addon grp_addon">
+                                            <?php echo $arrSessionData["objSystemUser"]->qrcode; ?></div>
+                                        <input type="text" data=""  class="form-control multicat location_bar"  name="qrcode_" id="qrcode_" placeholder="Enter QR Code Na" onblur="check_barcode(this);"></div>
+                                    <div id="locqrcode_err" class="locqrcode_error hide">QR Code Already Exist.</div></td>
                                 <td> <select name="site_name_" id="site_name_" class="form-control multiemail" >
                                         <option value=''>--select site--</option>
                                         <?php

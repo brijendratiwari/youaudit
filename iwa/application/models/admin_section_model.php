@@ -702,7 +702,7 @@ class Admin_Section_Model extends CI_Model {
             return False;
         }
     }
-    
+
     // Archive User
     public function archive_Supplier($id) {
 
@@ -1054,7 +1054,7 @@ class Admin_Section_Model extends CI_Model {
 
     //Action For Edit Location.
     public function editLocation($editLocation) {
-        
+
         if (isset($editLocation)) {
             $data = array('name' => $editLocation['locationname'],
                 'site_id' => $editLocation['sitename'],
@@ -1063,11 +1063,14 @@ class Admin_Section_Model extends CI_Model {
             $this->db->where('id', $editLocation['adminuser_id']);
             $this->db->update('locations', $data);
             if ($this->input->post('edit_owner_id')) {
-                $this->db->set('location_id','')->where('id',$this->input->post('editownerid'))->update('owner');
-                $arr = array('location_id'=>$editLocation['adminuser_id']);
+                $this->db->set('location_id', '')->where('id', $this->input->post('editownerid'))->update('owner');
+                $arr = array('location_id' => $editLocation['adminuser_id']);
                 $this->db->where('id', $this->input->post('edit_owner_id'));
-                $this->db->update('owner',$arr);
+                $this->db->update('owner', $arr);
             }
+            $this->db->set('site',$editLocation['sitename']);
+            $this->db->where('location_now', $editLocation['adminuser_id']);
+            $this->db->update('items');
             return 1;
         } else {
             return False;
@@ -1557,7 +1560,7 @@ class Admin_Section_Model extends CI_Model {
 
         $strHtml .= "<body><div>";
         $strHtml .= "<table><tr><td>";
-        $strHtml .= "<h1>".$this->session->userdata('objSystemUser')->firstname." ".$this->session->userdata('objSystemUser')->lastname."/".$this->session->userdata('objSystemUser')->accountname."</h1>";
+        $strHtml .= "<h1>" . $this->session->userdata('objSystemUser')->firstname . " " . $this->session->userdata('objSystemUser')->lastname . "/" . $this->session->userdata('objSystemUser')->accountname . "</h1>";
         $strHtml .= "<h2>" . $strReportName . "</h2>";
         $strHtml .= "</td><td class=\"right\">";
 
@@ -2302,38 +2305,33 @@ class Admin_Section_Model extends CI_Model {
         }
     }
 
-    
-  //update fault,safety and default alert email....
-    public function addFaultEmail($accountId,$emailData){
-        
-        $this->db->where('id',$accountId);
+    //update fault,safety and default alert email....
+    public function addFaultEmail($accountId, $emailData) {
+
+        $this->db->where('id', $accountId);
         $this->db->set($emailData);
-       $res =  $this->db->update('accounts');
-       
-       if($res){
-           
-           return TRUE;
-           
-       } else{
-           
-           return FALSE;
-       }
-    }
-    
-  // get all set alert email from user table...
-    
-    public function alertEmailList($accountId){
-        $result = $this->db->where('id',$accountId)->select('support_email,fault_alert_email,safety_alert_email')->from('accounts')->get();
-                        
-        if($result->num_rows() > 0){
-            
-            return $result->result_array();
-            
-        }else{
+        $res = $this->db->update('accounts');
+
+        if ($res) {
+
+            return TRUE;
+        } else {
+
             return FALSE;
         }
-            
-        
     }
-    
+
+    // get all set alert email from user table...
+
+    public function alertEmailList($accountId) {
+        $result = $this->db->where('id', $accountId)->select('support_email,fault_alert_email,safety_alert_email')->from('accounts')->get();
+
+        if ($result->num_rows() > 0) {
+
+            return $result->result_array();
+        } else {
+            return FALSE;
+        }
+    }
+
 }
