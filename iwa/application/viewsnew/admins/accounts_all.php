@@ -291,7 +291,7 @@
                     $('#edit_profile').attr('disabled', true);
                     $('#edit_contact_username').val(customerdata.contact_email);
                     $('#edit_package_type').val(customerdata.package_id);
-
+                    $('#edit_add_owner').val(customerdata.add_owner);
                 }
 
             });

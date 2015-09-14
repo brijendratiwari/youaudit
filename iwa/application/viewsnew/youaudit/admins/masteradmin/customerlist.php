@@ -54,8 +54,10 @@
                         },
                 company_postcode:
                         {
-                            required: true,
+//                            required: true,
                             digits: true,
+                            minlength: 4,
+                            maxlength: 4
                         },
                 first_name: "required",
                 last_name: "required",
@@ -92,10 +94,10 @@
                 company_city: "Please Enter Company City",
                 company_state: "Please Enter Company State",
                 contact_name: "Please Enter Contact Name",
-                company_postcode: {
-                    required: "Please Enter Company Postcode",
-                    digits: "Please Enter Valid Postal Code"
-                },
+//                company_postcode: {
+//                    required: "Please Enter Company Postcode",
+//                    digits: "Please Enter Valid Postal Code"
+//                },
                 first_name: "Please Enter First Name",
                 last_name: "Please Enter Last Name",
                 username: {
@@ -506,7 +508,7 @@
             </li>
             <li><a data-toggle="" href="<?php echo base_url("youaudit/Adminuser/$masterid"); ?>">Admin Users</a>
             </li>
-            <li><a data-toggle="" href="<?php echo base_url("youaudit/master_admins/complianceChecks/$masterid"); ?>">Compliance Templates</a>
+            <li><a data-toggle="" href="<?php echo base_url("youaudit/master_admins/complianceChecks/$masterid"); ?>">Safety Templates</a>
             </li>
             <li><a data-toggle="" href="<?php echo base_url("youaudit/profiles/$masterid"); ?>">Profiles</a>
             </li>

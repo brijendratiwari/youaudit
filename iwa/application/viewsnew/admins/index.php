@@ -392,7 +392,8 @@ if ($this->session->flashdata('arrCourier')) {
                             </tr>
                         </thead>
                         <tbody>
-<?php foreach ($arrAccounts['results'] As $customer_detail) {
+<?php foreach ($arrAccounts['results'] As $customer_detail) {     
+//     if((($customer_detail->item_limit - $customer_detail->noOfAsset)*10/$customer_detail->item_limit)==5){
     ?>
 
                                 <tr> 
@@ -403,7 +404,9 @@ if ($this->session->flashdata('arrCourier')) {
 
                                 </tr>
     <?php
-}
+//}
+
+     }
 ?>
 
                         </tbody>

@@ -63,6 +63,15 @@ class Franchise_Model extends CI_Model {
                         'active' => 1,
                     );
                     $this->db->insert('users', $users);
+                    $userid = $this->db->insert_id();
+                    if ($userid) {
+                        if ($arrCustomer['add_owner'] != 0) {
+                            $newOwner = array('owner_name' => $arrCustomer['firstname'] . ' ' . $arrCustomer['lastname'],
+                                'account_id' => $id, 'active' => 1, 'archive' => 1, 'is_user' => $userid);
+                            $this->db->insert('owner', $newOwner);
+                        }
+                    }
+                    
                     $profiles = $this->db->where('profile_id', $this->input->post('profile'))->get('profile')->result();
 
                     if ($profiles[0]->custom_field) {
@@ -162,6 +171,11 @@ class Franchise_Model extends CI_Model {
             if ($this->input->post('edit_contact_password')) {
                 $this->db->where('username', $this->input->post('edit_contact_username'));
                 $this->db->update('users', array('password' => $this->input->post('edit_contact_password')));
+            }
+            if ($editArrCustomer['add_owner'] == 0) {
+                $userid = $this->db->select('id as user')->where('account_id',$editArrCustomer['customer_id'])->get('users')->row();
+                $this->db->where('is_user', $userid->user);
+                $this->db->delete('owner');
             }
             return 1;
         } else {
@@ -696,8 +710,8 @@ COUNT( accounts.id ) >=1
 )";
         }
         $res = $this->db->query($query);
-        
-         $res1 = $this->db->where('id',$account_id)->select('company_name,contact_name')->from('franchise_ac')->get()->result_array();
+
+        $res1 = $this->db->where('id', $account_id)->select('company_name,contact_name')->from('franchise_ac')->get()->result_array();
 
         if ($export == 'CSV') {
 
@@ -721,7 +735,7 @@ COUNT( accounts.id ) >=1
                 array('strName' => 'Reporting', 'strFieldReference' => 'reporting_module', 'strConversion' => 'reporting_module', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
                 array('strName' => 'AC Created Date', 'strFieldReference' => 'create_date', 'strConversion' => 'create_date', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
             );
-            $this->outputPdfFile(date('d/m/Y Gis') . '.pdf', $arrFields, $res->result_array(),$res1[0]['contact_name'],$res1[0]['company_name']);
+            $this->outputPdfFile(date('d/m/Y Gis') . '.pdf', $arrFields, $res->result_array(), $res1[0]['contact_name'], $res1[0]['company_name']);
         }
     }
 
@@ -732,8 +746,8 @@ COUNT( accounts.id ) >=1
                   FROM systemadmin_franchise WHERE franchise_account_id =" . $master_id;
         }
         $res = $this->db->query($query);
-        
-        $res1 = $this->db->where('id',$master_id)->select('company_name,contact_name')->from('franchise_ac')->get()->result_array();
+
+        $res1 = $this->db->where('id', $master_id)->select('company_name,contact_name')->from('franchise_ac')->get()->result_array();
 
         if ($export == 'CSV') {
 
@@ -746,7 +760,7 @@ COUNT( accounts.id ) >=1
                 array('strName' => 'Last Name', 'strFieldReference' => 'lastname', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
                 array('strName' => 'Username', 'strFieldReference' => 'username', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
             );
-            $this->outputPdfFile(date('d/m/Y Gis') . '.pdf', $arrFields, $res->result_array(),$res1[0]['contact_name'],$res1[0]['company_name']);
+            $this->outputPdfFile(date('d/m/Y Gis') . '.pdf', $arrFields, $res->result_array(), $res1[0]['contact_name'], $res1[0]['company_name']);
         }
     }
 
@@ -757,8 +771,8 @@ COUNT( accounts.id ) >=1
         }
         $res = $this->db->query($query);
 
-        $res1 = $this->db->where('id',$masterid)->select('company_name,contact_name')->from('franchise_ac')->get()->result_array();
-        
+        $res1 = $this->db->where('id', $masterid)->select('company_name,contact_name')->from('franchise_ac')->get()->result_array();
+
         if ($export == 'CSV') {
 
             $this->load->dbutil();
@@ -772,21 +786,21 @@ COUNT( accounts.id ) >=1
                 array('strName' => 'Item/Manu', 'strConversion' => 'manu', 'strFieldReference' => 'manu', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
                 array('strName' => 'Manufacturer', 'strConversion' => 'manufacturer', 'strFieldReference' => 'manufacturer', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
             );
-            $this->outputPdfFile(date('d/m/Y Gis') . '.pdf', $arrFields, $res->result_array(),$res1[0]['contact_name'],$res1[0]['company_name']);
+            $this->outputPdfFile(date('d/m/Y Gis') . '.pdf', $arrFields, $res->result_array(), $res1[0]['contact_name'], $res1[0]['company_name']);
         }
     }
 
-    public function outputPdfFile($strReportName, $arrFields, $arrResults,$customerName,$cmpName, $booOutputHtml = false) {
+    public function outputPdfFile($strReportName, $arrFields, $arrResults, $customerName, $cmpName, $booOutputHtml = false) {
 
-        
-        
+
+
 
 
         $strHtml = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"><html><head><link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\"includes/css/report.css\" /></head>";
 
         $strHtml .= "<body><div>";
         $strHtml .= "<table><tr><td>";
-        $strHtml .= "<h1>".$customerName."/".$cmpName."</h1>";
+        $strHtml .= "<h1>" . $customerName . "/" . $cmpName . "</h1>";
         $strHtml .= "<h2>" . $strReportName . "</h2>";
         $strHtml .= "</td><td class=\"right\">";
 
@@ -993,8 +1007,8 @@ COUNT( accounts.id ) >=1
             $strHtml .= "<p>Produced by " . $arrPageData['arrSessionData']['YouAuditSystemAdmin']['firstname'] . " " . $arrPageData['arrSessionData']['YouAuditSystemAdmin']['lastname'] . " (" . $arrPageData['arrSessionData']['YouAuditSystemAdmin']['username'] . ") on " . date('d/m/Y') . "</p>";
             $strHtml .= "</div></body></html>";
         }
-echo $strHtml;
-            die();
+        echo $strHtml;
+        die();
 
         if (!$booOutputHtml) {
             $this->load->library('Mpdf');
@@ -1118,7 +1132,7 @@ echo $strHtml;
 
     // Profile name
     public function checkProfile($profilename, $account_id) {
- 
+
         $this->db->select('profile_name');
         $this->db->where('account_type', 2);
         $this->db->where('account_id', $account_id);
