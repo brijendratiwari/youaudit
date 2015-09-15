@@ -2,7 +2,7 @@
 <?php $this->load->helper('text'); ?>
 <style>
     th {
-    text-align: center;
+        text-align: center;
     }
     #fix_jobs thead tr th, #fix_jobs tbody tr td, .list_table thead tr th, .list_table tfoot tr th {
         text-align: center !important;
@@ -15,13 +15,13 @@
         min-width: 100% !important;
         width: 100% !important;
     }
-/*	.fault-action, #asset_body tr td:last-child {
-        max-width: 300px !important;
-        min-width: 300px !important;
-        width: 300px !important;
-    }*/
+    /*	.fault-action, #asset_body tr td:last-child {
+            max-width: 300px !important;
+            min-width: 300px !important;
+            width: 300px !important;
+        }*/
     /*.dataTables_scrollHeadInner table thead tr:last-child { display:none}*/
-    
+
     /*#open_jobs thead tr th { padding: 0!important; margin: 0!important; max-height: 0!important; min-height: 0!important;}*/
 
 
@@ -57,13 +57,13 @@
         padding: 0px;
         border-color: #686868;
     }
-    
-    
-     #fix_jobs tbody {
-     height: 230px;
-     overflow-y: auto;
-     width: 100%;
-}
+
+
+    #fix_jobs tbody {
+        height: 230px;
+        overflow-y: auto;
+        width: 100%;
+    }
 </style>
 <script type="text/javascript">
     $(document).ready(function()
@@ -151,21 +151,21 @@
                     {
                         $('.fault_photo').css('display', 'none');
                     }
-                    
-                    if(data.allNotes){
-                    var jobnotes = data.allNotes.split(',');
-                    $(".job_notes_div").empty();
-                       var job_div='';
-                      
-                       job_div +="<ul>";
-                    for(var i=0;i<jobnotes.length;i++){
-                        
-                       job_div +="<li>"+jobnotes[i]+"</li>";
-                    }
-                
-                            job_div +="</ul>";
-                     console.log(job_div);
-                    $(".job_notes_div").html(job_div);
+
+                    if (data.allNotes) {
+                        var jobnotes = data.allNotes.split(',');
+                        $(".job_notes_div").empty();
+                        var job_div = '';
+
+                        job_div += "<ul>";
+                        for (var i = 0; i < jobnotes.length; i++) {
+
+                            job_div += "<li>" + jobnotes[i] + "</li>";
+                        }
+
+                        job_div += "</ul>";
+                        console.log(job_div);
+                        $(".job_notes_div").html(job_div);
                     }
 
                     $("#view_fault #v_job_notes").val(data.jobnote);
@@ -252,8 +252,8 @@
                 type: "POST",
                 url: site_server + "/youaudit/iwa/faults/ajaxfetchItem",
                 dataType: 'json',
-                data: "&id=" + iId + "&account_id=" + account_id + "&type=" + type ,
-                success: function(data) { 
+                data: "&id=" + iId + "&account_id=" + account_id + "&type=" + type,
+                success: function(data) {
                     $("#uu_item_manu").val(data.item_manu_name);
                     $("#uu_manufacturer").val(data.manufacturer);
                     $("#uu_serial_number").val(data.barcode);
@@ -315,8 +315,8 @@
                 dataType: 'json',
                 data: "&id=" + iId + "&account_id=" + account_id + "&type=" + type,
                 success: function(data) {
-                    console.log('I am result'); 
-                   
+                    console.log('I am result');
+
                     $("#u_item_manu").val(data.item_manu_name);
                     $("#u_manufacturer").val(data.manufacturer);
                     $("#u_serial_number").val(data.barcode);
@@ -406,21 +406,17 @@
             "aLengthMenu": [[10, 20, 40, -1], [10, 20, 40, "All"]],
             "iDisplayLength": 10,
             "bSortCellsTop": true,
-           
-
             "bDestroy": true, //!!!--- for remove data table warning.
-             "fnDrawCallback": function() {
+            "fnDrawCallback": function() {
                 var api = this.api();
                 var rowCount = $('#open_jobs tbody tr').length;
 
                 $(api.column(3).footer()).html(
-                        
                         rowCount
                         );
-               
-             
-            },
 
+
+            },
             "aoColumnDefs": [
                 {"sClass": "eamil_conform aligncenter", "aTargets": [0]},
                 {"sClass": "eamil_conform aligncenter", "bSortable": false, "aTargets": [1]},
@@ -598,24 +594,23 @@
             "sScrollX": "100%",
             "bScrollCollapse": false,
             "bDestroy": true, //!!!--- for remove data table warning.
-             "fnDrawCallback": function() {
+            "fnDrawCallback": function() {
                 var api = this.api();
                 var rowCount = $('#fix_jobs tbody tr').length;
 
-                $(api.column(3).footer()).html(
-                        
+                $(api.column(2).footer()).html(
                         rowCount
                         );
-               
-             
+
+
             },
             "aoColumnDefs": [
-                {"sClass": "eamil_conform aligncenter", "aTargets": [0]},
-                {"sClass": "eamil_conform aligncenter", "bSortable": false, "aTargets": [1]},
+                {"sClass": "eamil_conform aligncenter", "bSortable": false, "aTargets": [0]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [1]},
                 {"sClass": "eamil_conform aligncenter", "aTargets": [2]},
                 {"sClass": "eamil_conform aligncenter", "aTargets": [3]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [4]},
-                {"sClass": "eamil_conform aligncenter", "bSortable": false, "aTargets": [5]},
+                {"sClass": "eamil_conform aligncenter", "bSortable": false, "aTargets": [4]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [5]},
                 {"sClass": "eamil_conform aligncenter", "aTargets": [6]},
                 {"sClass": "eamil_conform aligncenter", "aTargets": [7]},
                 {"sClass": "eamil_conform aligncenter", "aTargets": [8]},
@@ -623,17 +618,19 @@
                 {"sClass": "eamil_conform aligncenter", "aTargets": [10]},
                 {"sClass": "eamil_conform aligncenter", "aTargets": [11]},
                 {"sClass": "eamil_conform aligncenter", "aTargets": 12},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [13]},
+                {"sClass": "eamil_conform aligncenter", "bSortable": false, "aTargets": [13]},
                 {"sClass": "eamil_conform aligncenter", "bSortable": false, "aTargets": [14]},
                 {"sClass": "eamil_conform aligncenter", "bSortable": false, "aTargets": [15]},
                 {"sClass": "eamil_conform aligncenter", "bSortable": false, "aTargets": [16]},
+                {"sClass": "eamil_conform aligncenter", "bSortable": false, "aTargets": [17]},
+                {"sClass": "eamil_conform aligncenter", "bSortable": false, "aTargets": [18]}
             ]}
 
         );
-		// $("#fix_jobs thead tr:eq(1) th:first").html(<input id="selectAll1" type="checkbox" title="Select ALL">
-  //                                       <button id="multiComEditBtn1" class="btn btn-warning fade hide" style="padding:0 5px;" type="button">Edit</button>);
+        // $("#fix_jobs thead tr:eq(1) th:first").html(<input id="selectAll1" type="checkbox" title="Select ALL">
+        //                                       <button id="multiComEditBtn1" class="btn btn-warning fade hide" style="padding:0 5px;" type="button">Edit</button>);
         $(".dataTable thead tr:eq(1) th").each(function(i) {
-            if (i == 2) {
+            if (i == 1) {
 
                 var select = $('<select class="categorylist"><option value=""></option></select>')
                         .appendTo($(this).empty())
@@ -649,7 +646,7 @@
                     }
                 });
             }
-            if (i == 3) {
+            if (i == 2) {
 
                 var select = $('<select class="itemmanu"><option value=""></option></select>')
                         .appendTo($(this).empty())
@@ -665,7 +662,7 @@
                     }
                 });
             }
-            if (i == 4) {
+            if (i == 3) {
 
                 var select = $('<select class="manufacturer"><option value=""></option></select>')
                         .appendTo($(this).empty())
@@ -681,7 +678,7 @@
                     }
                 });
             }
-            if (i == 6) {
+            if (i == 5) {
 
                 var select = $('<select class="sitelist"><option value=""></option></select>')
                         .appendTo($(this).empty())
@@ -697,7 +694,7 @@
                     }
                 });
             }
-            if (i == 7) {
+            if (i == 6) {
 
                 var select = $('<select class="locations"><option value=""></option></select>')
                         .appendTo($(this).empty())
@@ -713,7 +710,7 @@
                     }
                 });
             }
-            if (i == 8) {
+            if (i == 7) {
 
                 var select = $('<select class="ownerlist"><option value=""></option></select>')
                         .appendTo($(this).empty())
@@ -729,7 +726,7 @@
                     }
                 });
             }
-            if (i == 9) {
+            if (i == 8) {
 
                 var select = $('<select class="statuslist"><option value=""></option></select>')
                         .appendTo($(this).empty())
@@ -745,23 +742,23 @@
                     }
                 });
             }
-            if (i == 10) {
-
-                var select = $('<select class="actionlist"><option value=""></option></select>')
-                        .appendTo($(this).empty())
-                        .on('change', function() {
-                    var val = $(this).val();
-                    fix_job.column(i)
-                            .search(val ? '^' + $(this).val() + '$' : val, true, false)
-                            .draw();
-                });
-                fix_job.column(i).data().unique().sort().each(function(d, j) {
-                    if (d != "") {
-                        select.append('<option id="level" value="' + d + '">' + d + '</option>');
-                    }
-                });
-            }
-            if (i == 13) {
+//            if (i == 9) {
+//
+//                var select = $('<select class="actionlist"><option value=""></option></select>')
+//                        .appendTo($(this).empty())
+//                        .on('change', function() {
+//                    var val = $(this).val();
+//                    fix_job.column(i)
+//                            .search(val ? '^' + $(this).val() + '$' : val, true, false)
+//                            .draw();
+//                });
+//                fix_job.column(i).data().unique().sort().each(function(d, j) {
+//                    if (d != "") {
+//                        select.append('<option id="level" value="' + d + '">' + d + '</option>');
+//                    }
+//                });
+//            }
+            if (i == 11) {
 
                 var select = $('<select class="severity"><option value=""></option></select>')
                         .appendTo($(this).empty())
@@ -816,8 +813,8 @@
             $('#multiComIds').val(ids.join(','));
             $('#multiUserEditModal').modal('show');
         });
-        
-        
+
+
         // Multiple Checked
         $('body').find('.multiComSelect1:checked').prop('checked', false);
         $('body').find('#selectAll1').prop('checked', false);
@@ -856,7 +853,7 @@
             $('#multiComIds').val(ids.join(','));
             $('#multiUserEditModal').modal('show');
         });
-        
+
     }
     );
 </script>
@@ -921,7 +918,6 @@
                         <table id="fix_jobs" class="table table-striped table-bordered table-hover table-fixed" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
-                                    <th>Select</th>
                                     <th>QR Code</th>
                                     <th>Category</th>
                                     <th>Item</th>
@@ -931,20 +927,19 @@
                                     <th>Location</th>
                                     <th>Owner</th>
                                     <th>Incident Type</th>
-                                    <th>Stage</th>
                                     <th>Fault Date</th>
-                                  
                                     <th>Incident Length</th>
                                     <th>Severity</th>
+                                    <th>Fix Date</th>
                                     <th>Order No</th>
                                     <th>Job Notes</th>
+                                    <th>Fault Logged By</th>
+                                    <th>Fix Logged By</th>
+                                    <th>Fix Reason Code</th>
                                     <th class="fault-action">Actions</th>
                                 </tr>
 
                                 <tr>
-                                	
-                                    <th><input id="selectAll1" type="checkbox" title="Select ALL">
-                                        <button id="multiComEditBtn1" class="btn btn-warning fade hide" style="padding:0 5px;" type="button">Edit</button></th>
                                     <th></th>
                                     <th></th>
                                     <th></th>
@@ -953,7 +948,7 @@
                                     <th></th>
                                     <th></th>
                                     <th></th>
-                            
+
                                     <th></th>
                                     <th></th>
                                     <th></th>
@@ -961,14 +956,16 @@
                                     <th></th>
                                     <th></th>
                                     <th></th>
-                                    <th></th> 
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
                                 </tr>
                             </thead>
 
 
                             <tbody id="asset_body">
                                 <?php
-                                                    
                                 if (!empty($fixed_job)) {
 
                                     foreach ($fixed_job as $value) {
@@ -980,24 +977,24 @@
                                         }
                                         ?>
                                         <tr>
-                                            <td><input type="checkbox" value="<?php echo $ticket_id; ?>" class="multiComSelect1"><input class="" type="hidden" id="customer_id_<?php echo $ticket_id; ?>" value=""></td>
                                             <td><a href="<?php echo base_url('items/view/' . $value->itemid); ?>"><?php echo $value->barcode; ?></td>
                                             <td><?php echo $value->categoryname ?></td>
-                                            <td><?php echo $value->item_manu_name?></td>
+                                            <td><?php echo $value->item_manu_name ?></td>
                                             <td><?php echo $value->manufacturer ?></td>
                                             <td><?php echo $value->model ?></td>
                                             <td><?php echo $value->sitename ?></td>
                                             <td><?php echo $value->locationname ?></td>
                                             <td><?php echo $value->owner_name; ?></td>
                                             <td><?php echo $value->statusname ?></td>
-                                            <td><?php echo $value->ticket_action; ?></td>
-                                             <?php  if ($value->dt) {
+                                            <!--<td><?php echo $value->ticket_action; ?></td>-->
+
+                                            <?php
+                                            if ($value->dt) {
                                                 $arr_date = explode(' ', $value->dt);
 //                                                    echo $arr_date[0]; 
-                                            }?>
-                                            <td><?php echo date('d/m/Y',  strtotime($arr_date[0])); ?></td>
-                                           
-                                            
+                                            }
+                                            ?>
+                                            <td><?php echo date('d/m/Y', strtotime($arr_date[0])); ?></td>
                                             <td><?php
                                                 if (isset($value->dt)) {
                                                     $date2 = date('d-m-Y', strtotime($value->dt));
@@ -1012,9 +1009,12 @@
                                                 }
                                                 ?></td>
                                             <td><?php echo $value->severity ?></td>
+                                            <td><?php echo $value->fix_date; ?></td>
                                             <td><?php echo $value->order_no; ?></td>
                                             <td><?php echo ellipsize($value->jobnote, 50); ?></td>
-
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
                                             <td><span class="action-w"><a data-toggle="modal" actionmode="reportfault"  ticket_id = "<?php echo $ticket_id ?>"  id="itm_<?php echo $value->itemid ?>" account_id="<?php echo $value->account_id ?>" href="#view_fault" title="View Fault" class="viewfault" data_customer_id=''><i class="fa fa-eye franchises-i"></i></a>View Incident</span></td>
                                         </tr>
                                         <?php
@@ -1026,7 +1026,7 @@
 
                             <tfoot><tr><th colspan="3">Totals / Count</th>
                                     <th></th>
-                                    <th colspan="13"></th>
+                                    <th colspan="12"></th>
                                 </tr></tfoot>
                         </table>
                     </div>
@@ -1201,11 +1201,11 @@
                 <div class="form-group col-md-12">
                     <div class="col-md-6"><label>Job Notes</label>
                     </div>
-                     <div class="col-md-6 job_notes_div">
+                    <div class="col-md-6 job_notes_div">
                     </div>
                 </div>
                 <div class="form-group col-md-12" >
-                   
+
                 </div>
                 <div class="form-group col-md-12 fault_photo">
                     <div class="col-md-6"><label>Photos</label>   </div>
