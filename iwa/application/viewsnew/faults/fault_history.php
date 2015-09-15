@@ -91,6 +91,7 @@
                     $("#view_fault #v_locationname").val(data.locationname);
                     $("#view_fault #v_itemstatusname").val(data.itemstatusname);
                     $("#view_fault #v_order_no").val(data.order_no);
+                    $("#view_fault .actionData").html(data.actionData);
 
 
                     $("#view_fault  #v_status").find('option').each(function(i, opt) {
@@ -152,21 +153,39 @@
                         $('.fault_photo').css('display', 'none');
                     }
 
-                    if (data.allNotes) {
-                        var jobnotes = data.allNotes.split(',');
-                        $(".job_notes_div").empty();
-                        var job_div = '';
+//                    if (data.allNotes) {
+//                        var jobnotes = data.allNotes.split(',');
+//                        $(".job_notes_div").empty();
+//                        var job_div = '';
+//
+//                        job_div += "<ul>";
+//                        for (var i = 0; i < jobnotes.length; i++) {
+//
+//                            job_div += "<li>" + jobnotes[i] + "</li>";
+//                        }
+//
+//                        job_div += "</ul>";
+//                        console.log(job_div);
+//                        $(".job_notes_div").html(job_div);
+//                    }
+                      var notes_div = '';
+                    if (data.allNotes != "") {
+                        var allNote = data.allNotes.split(',');
+                        var noteDate = data.notesDate.split(',');
+                            $(".job_notes_div").empty();
+                       
+                        notes_div += "<ul>";
+                        for (var i = 0; i < allNote.length; i++) {
+                            notes_div += "<li style='list-style:none;'>"+noteDate[i]+ " - "+ allNote[i] + "</li>";
 
-                        job_div += "<ul>";
-                        for (var i = 0; i < jobnotes.length; i++) {
-
-                            job_div += "<li>" + jobnotes[i] + "</li>";
                         }
-
-                        job_div += "</ul>";
-                        console.log(job_div);
-                        $(".job_notes_div").html(job_div);
+                        notes_div += "</ul>";
+                    }else{
+                    $(".job_notes_div").empty();
+                       notes_div += "<ul><li style='list-style:none;'>" +data.loggedByDate+ " - "+ data.jobnote + "</li></ul>";
                     }
+                  
+                        $(".job_notes_div").html(notes_div);
 
                     $("#view_fault #v_job_notes").val(data.jobnote);
                     $("#save_button").show();
@@ -966,6 +985,7 @@
 
                             <tbody id="asset_body">
                                 <?php
+//                                var_dump($fixed_job);
                                 if (!empty($fixed_job)) {
 
                                     foreach ($fixed_job as $value) {
@@ -988,13 +1008,7 @@
                                             <td><?php echo $value->statusname ?></td>
                                             <!--<td><?php echo $value->ticket_action; ?></td>-->
 
-                                            <?php
-                                            if ($value->dt) {
-                                                $arr_date = explode(' ', $value->dt);
-//                                                    echo $arr_date[0]; 
-                                            }
-                                            ?>
-                                            <td><?php echo date('d/m/Y', strtotime($arr_date[0])); ?></td>
+                                            <td><?php echo date('d/m/Y', strtotime($value->dt)); ?></td>
                                             <td><?php
                                                 if (isset($value->dt)) {
                                                     $date2 = date('d-m-Y', strtotime($value->dt));
@@ -1009,12 +1023,12 @@
                                                 }
                                                 ?></td>
                                             <td><?php echo $value->severity ?></td>
-                                            <td><?php echo $value->fix_date; ?></td>
+                                            <td><?php echo  date('d/m/Y', strtotime($value->fix_date)); ?></td>
                                             <td><?php echo $value->order_no; ?></td>
                                             <td><?php echo ellipsize($value->jobnote, 50); ?></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
+                                            <td><?php echo Faults::getUserData($value->fault_by);?></td>
+                                            <td><?php echo Faults::getUserData($value->fixed_by);?></td>
+                                            <td><?php echo $value->fix_code; ?></td>
                                             <td><span class="action-w"><a data-toggle="modal" actionmode="reportfault"  ticket_id = "<?php echo $ticket_id ?>"  id="itm_<?php echo $value->itemid ?>" account_id="<?php echo $value->account_id ?>" href="#view_fault" title="View Fault" class="viewfault" data_customer_id=''><i class="fa fa-eye franchises-i"></i></a>View Incident</span></td>
                                         </tr>
                                         <?php
@@ -1109,6 +1123,7 @@
                         <div class="col-md-6"><input type="text" name="order_no" class="form-control" id="order_no" value="" /></div></div> <!-- /.form-group -->
                     <div class="form-group col-md-12">
                     </div>
+                     
 
                     <!-- Job Notes -->
                     <div class="form-group col-md-12">
@@ -1196,7 +1211,9 @@
                     <div class="col-md-6"><input type="text" name="order_no" id="v_order_no" class="form-control" value="" disabled="" /></div></div> <!-- /.form-group -->
                 <div class="form-group col-md-12">
                 </div>
+                       <div class="actionData">
 
+                        </div> 
                 <!-- Job Notes -->
                 <div class="form-group col-md-12">
                     <div class="col-md-6"><label>Job Notes</label>

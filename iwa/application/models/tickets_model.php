@@ -189,7 +189,8 @@ class Tickets_model extends CI_Model {
                 tickets.jobnote,
                 tickets.photoid as photo_id,
                 tickets.date as dt,
-                tickets.ticket_action');
+                tickets.ticket_action,
+                tickets.reason_code');
             }
 
             $this->db->from('items');
@@ -1046,6 +1047,7 @@ OR `categories`.`name` LIKE '%$strfreetext%')");
                 pat.pattest_name AS pat_status,
                 itemstatus.name AS statusname,
                 users.firstname,users.lastname,
+                tickets.user_id as fixed_by,
                 tickets.description,
                 tickets.severity,
                tickets.id as ticket_id,
@@ -1054,7 +1056,8 @@ OR `categories`.`name` LIKE '%$strfreetext%')");
                 tickets.order_no,
                 tickets.jobnote,
                 tickets.date as dt,
-                tickets.ticket_action');
+                tickets.fix_date,
+                tickets.ticket_action,tickets_history.user_id as fault_by');
             } else {
                 $this->db->select('
                 items.item_manu, 
@@ -1072,7 +1075,8 @@ OR `categories`.`name` LIKE '%$strfreetext%')");
                 tickets.order_no,
                 tickets.jobnote,
                 tickets.date as dt,
-                tickets.ticket_action');
+                tickets.ticket_action,
+                tickets.reason_code');
             }
 
             $this->db->from('items');
@@ -1083,6 +1087,7 @@ OR `categories`.`name` LIKE '%$strfreetext%')");
             $this->db->join('locations', 'items.location_now = locations.id', 'left');
             $this->db->join('sites', 'items.site = sites.id', 'left');
             $this->db->join('tickets', 'tickets.item_id = items.id', 'LEFT');
+            $this->db->join('tickets_history', 'tickets.id = tickets_history.ticket_id', 'LEFT');
             $this->db->join('suppliers', 'items.supplier = suppliers.supplier_id', 'left');
             $this->db->join('itemstatus', 'items.status_id = itemstatus.id', 'left');
             $this->db->join('pat', 'items.pattest_status = pat.id', 'left');

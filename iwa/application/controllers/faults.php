@@ -656,6 +656,16 @@ class Faults extends MY_Controller {
         }
     }
     
+  public function getUserData($user_id){
+      
+      $faultBy = $this->db->select('firstname,lastname')
+                    ->from('users')
+                    ->where('id',$user_id)
+                    ->get()
+                    ->result_array();
+      
+      return $faultBy[0]['firstname'].' '.$faultBy[0]['lastname'];
+  }  
 }
 
 /* End of file faults.php */
