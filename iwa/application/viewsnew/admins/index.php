@@ -217,7 +217,7 @@
 
             });
         });
-        
+
         $("body").on("change", "#package_type", function() {
 
             var base_url = $("#base_url").val();
@@ -354,13 +354,13 @@ if ($this->session->flashdata('arrCourier')) {
                             </tr>
                         </thead>
                         <tbody>
-<?php foreach ($accounts as $acc) {
-    ?>
+                            <?php foreach ($accounts as $acc) {
+                                ?>
                                 <tr>
                                     <td><?php echo $acc->company_name; ?></td>
                                     <td><?php echo $acc->name . ' ' . $acc->item_limit; ?></td>
                                 </tr>
-<?php } ?>
+                            <?php } ?>
                         </tbody>
                     </table>
                 </div>
@@ -392,22 +392,22 @@ if ($this->session->flashdata('arrCourier')) {
                             </tr>
                         </thead>
                         <tbody>
-<?php foreach ($arrAccounts['results'] As $customer_detail) {     
-//     if((($customer_detail->item_limit - $customer_detail->noOfAsset)*10/$customer_detail->item_limit)==5){
-    ?>
+                            <?php
+                            foreach ($arrAccounts['results'] As $customer_detail) {
+                                if (intval(($customer_detail->item_limit - $customer_detail->noOfAsset) * 10 / $customer_detail->item_limit) == 5) {
+                                    ?>
 
-                                <tr> 
-                                    <td><?php echo $customer_detail->company_name; ?></td>
-                                    <td><?php echo $customer_detail->package_name; ?></td>
-                                    <td><?php echo $customer_detail->noOfAsset; ?></td>
-                                    <td><?php echo ($customer_detail->item_limit - $customer_detail->noOfAsset); ?></td>
+                                    <tr> 
+                                        <td><?php echo $customer_detail->company_name; ?></td>
+                                        <td><?php echo $customer_detail->package_name; ?></td>
+                                        <td><?php echo $customer_detail->noOfAsset; ?></td>
+                                        <td><?php echo ($customer_detail->item_limit - $customer_detail->noOfAsset); ?></td>
 
-                                </tr>
-    <?php
-//}
-
-     }
-?>
+                                    </tr>
+                                    <?php
+                                }
+                            }
+                            ?>
 
                         </tbody>
                     </table>
@@ -580,9 +580,9 @@ if ($this->session->flashdata('arrCourier')) {
                                 foreach ($customer_package as $val) {
                                     ?>
                                     <option value="<?php echo $val['id']; ?>"><?php echo $val['name']; ?></option>  
-    <?php
-}
-?>
+                                    <?php
+                                }
+                                ?>
                             </select>
                         </div>
                     </div>
@@ -668,10 +668,10 @@ if ($this->session->flashdata('arrCourier')) {
                         <div class="col-md-6">       
                             <select name="profile" id="profile" class="form-control">
                                 <option value="0">None</option>
-<?php foreach ($profilelist as $pro) { ?>
+                                <?php foreach ($profilelist as $pro) { ?>
                                     <option value="<?php echo $pro->profile_id; ?>"><?php echo $pro->profile_name; ?></option>
 
-<?php } ?>
+                                <?php } ?>
                             </select>
                         </div>
                     </div>
