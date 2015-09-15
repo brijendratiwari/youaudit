@@ -117,9 +117,7 @@ class Tickets_model extends CI_Model {
                 'status' => $open_history->status,
                 'severity' => $open_history->severity,
                 'jobnote' => $open_history->jobnote,
-                'jobnote' => $open_history->jobnote,
                 'order_no' => $open_history->order_no,
-                'reason_code' => $open_history->reason_code,
                 'reason_code' => $open_history->reason_code,
                 'photoid' => $open_history->photoid,
                 'ticket_id' => $open_history->id
@@ -169,6 +167,7 @@ class Tickets_model extends CI_Model {
                 tickets.fix_code,
                 tickets.reason_code,
                 tickets.order_no,
+                tickets.photoid,
                 tickets.jobnote,
                 tickets.date as dt,
                 tickets.ticket_action');
@@ -188,6 +187,7 @@ class Tickets_model extends CI_Model {
                 tickets.severity,
                 tickets.order_no,
                 tickets.jobnote,
+                tickets.photoid as photo_id,
                 tickets.date as dt,
                 tickets.ticket_action');
             }
@@ -219,6 +219,7 @@ class Tickets_model extends CI_Model {
             } elseif ($export == 'PDF') {
                 $arrFields = array(
                     array('strName' => 'QR Code', 'strFieldReference' => 'barcode', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Photos','strConversion' => 'img', 'strFieldReference' => 'photo_id', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
                     array('strName' => 'Category', 'strFieldReference' => 'categoryname', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
                     array('strName' => 'Item', 'strFieldReference' => 'item_manu_name', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
                     array('strName' => 'Manufacturer', 'strFieldReference' => 'manufacturer', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
@@ -228,13 +229,12 @@ class Tickets_model extends CI_Model {
                     array('strName' => 'Owner', 'strConversion' => 'user', 'strFieldReference' => 'firstname', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
                     array('strName' => 'Status', 'strFieldReference' => 'statusname', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
                     array('strName' => 'Action', 'strFieldReference' => 'ticket_action', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
-                    array('strName' => 'Date Default Reported', 'strFieldReference' => 'dt', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Date Default Reported','strConversion' => 'dt', 'strFieldReference' => 'dt', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
                     array('strName' => 'Fault Time', 'strConversion' => 'fault_time', 'strFieldReference' => 'dt', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
                     array('strName' => 'Severity', 'strFieldReference' => 'severity', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
                     array('strName' => 'Order No', 'strFieldReference' => 'order_no', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
                     array('strName' => 'Job Notes', 'strFieldReference' => 'jobnote', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0))
                 );
-
                 $this->outputPdfFile(date('d/m/Y Gis') . '.pdf', $arrFields, $resQuery->result_array());
             }
             if ($resQuery->num_rows() > 0) {
@@ -733,7 +733,6 @@ OR `categories`.`name` LIKE '%$strfreetext%')");
         $strHtml .= "</thead><tbody>";
         $arrTotals = array();
         foreach ($arrResults as $objItem) {
-
             $strHtml .= "<tr>";
             $arrPageData['arrSessionData'] = $this->session->userdata;
 
@@ -743,6 +742,13 @@ OR `categories`.`name` LIKE '%$strfreetext%')");
                 if (array_key_exists('strConversion', $arrReportField)) {
                     switch ($arrReportField['strConversion']) {
 
+                        case 'dt':
+                            if ($objItem['dt'] != '') {
+                                $strHtml .= date('d/m/Y',strtotime($objItem['dt']));
+                            } else {
+                                $strHtml .= "Unknown";
+                            }
+                            break;
                         case 'date':
 
                             $arrDate = explode('-', $objItem->{$arrReportField['strFieldReference']});
@@ -1164,6 +1170,30 @@ OR `categories`.`name` LIKE '%$strfreetext%')");
         }
     }
 
+  public function addUpdateHistory($data){
+      
+      $result = $this->db->insert('tickets_history',$data);
+      if($this->db->affected_rows() > 0){
+          return TRUE;
+      }else{
+          return FALSE;
+      }
+      
+  }  
+  public function getAllJobData($ticket_id){
+      
+      $this->db->select('users.firstname,users.lastname,tickets_history.jobnote,tickets_history.reason_code,tickets_history.action,tickets_history.date');
+      $this->db->from('tickets_history');
+      $this->db->where('tickets_history.ticket_id',$ticket_id);
+      $this->db->join('users','users.id=tickets_history.user_id');
+      $result = $this->db->get();
+      if($result->num_rows() > 0){
+          return $result->result_array();
+      }else{
+          return FALSE;
+      }
+      
+  }  
 }
 
 ?>

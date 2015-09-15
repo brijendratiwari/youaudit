@@ -2849,7 +2849,7 @@ items.id AS itemid,
                         sites.name AS sitename,
                         items.supplier,
                         suppliers.supplier_name,
-                        suppliers.supplier_title AS suppliers_title,tickets.id as ticket_id,tickets.fix_code,tickets.reason_code,tickets.order_no,tickets.jobnote,tickets.severity,tickets.ticket_action,tickets.date as dt,tickets.order_no,tickets.photoid');
+                        suppliers.supplier_title AS suppliers_title,tickets.id as ticket_id,tickets.fix_code,tickets.user_id,tickets.reason_code,tickets.order_no,tickets.jobnote,tickets.severity,tickets.ticket_action,tickets.date as dt,tickets.order_no,tickets.photoid');
             $this->db->from('items');
             $this->db->join('users', 'items.owner_now = users.id', 'left');
             $this->db->join('item_manu', 'items.item_manu = item_manu.id', 'left');

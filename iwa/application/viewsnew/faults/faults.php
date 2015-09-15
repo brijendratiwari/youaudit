@@ -92,6 +92,9 @@
                     $("#view_fault #v_locationname").val(data.locationname);
                     $("#view_fault #v_itemstatusname").val(data.itemstatusname);
                     $("#view_fault #v_order_no").val(data.order_no);
+                    $("#view_fault #loggedBy_div").html(data.loggedBy);
+                    $("#view_fault #loggedByDate_div").html(data.loggedByDate);
+                    $("#view_fault .actionData").html(data.actionData);
 
 
                     $("#view_fault  #v_status").find('option').each(function(i, opt) {
@@ -160,28 +163,24 @@
                         $('.fault_photo').css('display', 'none');
                     }
 
-
-                    if (data.allNotes != null) {
+                     var notes_div = '';
+                    if (data.allNotes != "") {
                         var allNote = data.allNotes.split(',');
-                    }
-                    else {
-                        var allNote = data.jobnote.split(',');
-                    }
-
-                    if (allNote.length != 0) {
-                        $(".job_notes_div").empty();
-                        var notes_div = '';
+                        var noteDate = data.notesDate.split(',');
+                            $(".job_notes_div").empty();
+                       
                         notes_div += "<ul>";
-                        notes_div += "<li>" + data.jobnote + "</li>";
                         for (var i = 0; i < allNote.length; i++) {
-                            notes_div += "<li>" + allNote[i] + "</li>";
+                            notes_div += "<li style='list-style:none;'>"+noteDate[i]+ " - "+ allNote[i] + "</li>";
 
                         }
                         notes_div += "</ul>";
-
-                        $(".job_notes_div").html(notes_div);
+                    }else{
+                    $(".job_notes_div").empty();
+                       notes_div += "<ul><li style='list-style:none;'>" +data.loggedByDate+ " - "+ data.jobnote + "</li></ul>";
                     }
-
+                  
+                        $(".job_notes_div").html(notes_div);
 
 
                     $("#view_fault #v_job_notes").val(data.jobnote);
@@ -419,7 +418,7 @@
         var open_job = $("#open_jobs").DataTable({
             "ordering": true,
             "aLengthMenu": [[10, 20, 40, -1], [10, 20, 40, "All"]],
-            "iDisplayLength": 10,
+            "iDisplayLength": 20,
             "bSortCellsTop": true,
             "sScrollX": "100%",
             "bScrollCollapse": false,
@@ -457,7 +456,7 @@
         );
       //$(".dataTable thead tr:eq(1) th:eq(0)").html('<input id="selectAll" type="checkbox" title="Select ALL"><button id="multiComEditBtn" class="btn btn-warning fade hide" style="padding:0 5px;" type="button">Edit</button>');
         $(".dataTable thead tr:eq(1) th").each(function(i) {
-            if (i == 2) {
+            if (i == 3) {
 
                 var select = $('<select class="categorylist"><option value=""></option></select>')
                         .appendTo($(this).empty())
@@ -473,7 +472,7 @@
                     }
                 });
             }
-            if (i == 3) {
+            if (i == 4) {
 
                 var select = $('<select class="itemmanu"><option value=""></option></select>')
                         .appendTo($(this).empty())
@@ -489,7 +488,7 @@
                     }
                 });
             }
-            if (i == 4) {
+            if (i == 5) {
 
                 var select = $('<select class="manufacturer"><option value=""></option></select>')
                         .appendTo($(this).empty())
@@ -505,7 +504,7 @@
                     }
                 });
             }
-            if (i == 6) {
+            if (i == 7) {
 
                 var select = $('<select class="sitelist"><option value=""></option></select>')
                         .appendTo($(this).empty())
@@ -521,7 +520,7 @@
                     }
                 });
             }
-            if (i == 7) {
+            if (i == 8) {
 
                 var select = $('<select class="locations"><option value=""></option></select>')
                         .appendTo($(this).empty())
@@ -537,7 +536,7 @@
                     }
                 });
             }
-            if (i == 8) {
+            if (i == 9) {
 
                 var select = $('<select class="ownerlist"><option value=""></option></select>')
                         .appendTo($(this).empty())
@@ -553,7 +552,7 @@
                     }
                 });
             }
-            if (i == 9) {
+            if (i == 10) {
 
                 var select = $('<select class="statuslist"><option value=""></option></select>')
                         .appendTo($(this).empty())
@@ -569,7 +568,7 @@
                     }
                 });
             }
-            if (i == 10) {
+            if (i == 11) {
 
                 var select = $('<select class="actionlist"><option value=""></option></select>')
                         .appendTo($(this).empty())
@@ -585,7 +584,7 @@
                     }
                 });
             }
-            if (i == 13) {
+            if (i == 14) {
 
                 var select = $('<select class="severity"><option value=""></option></select>')
                         .appendTo($(this).empty())
@@ -917,7 +916,6 @@
         </div>
     </div>
 </div>
-
 <div id="current_fault">
     <div class="row">
         <div class="col-lg-12">
@@ -932,6 +930,7 @@
                                 <tr>
                                     <th>Select</th>
                                     <th>QR Code</th>
+                                    <th>Photos</th>
                                     <th>Category</th>
                                     <th>Item</th>
                                     <th>Manufacturer</th>
@@ -953,6 +952,7 @@
                                         <input id="selectAll" type="checkbox" title="Select ALL">
                                         <button id="multiComEditBtn" class="btn btn-warning fade hide" style="padding:0 5px;" type="button">Edit</button>
                                     </th>
+                                    <th></th>
                                     <th></th>
                                     <th></th>
                                     <th></th>
@@ -989,6 +989,58 @@
                                         <tr>
                                             <td><input type="checkbox" value="<?php echo $ticket_id; ?>" class="multiComSelect"><input class="" type="hidden" id="customer_id_<?php echo $ticket_id; ?>" value=""></td>
                                             <td><a href="<?php echo base_url('items/view/' . $value->itemid); ?>"><?php echo $value->barcode; ?></td>
+                                            <td>
+                                                <?php
+                                                
+                                                 $image_role = '';
+                                                $url_contain = base_url();
+
+                                                if ($value->photoid != '') {
+                                                    if (strpos($value->photoid, ',') !== FALSE) {
+                                                        $image_arr = explode(',',$value->photoid);
+                                                        if (is_array($image_arr)) {
+
+
+
+                                                            $image_role = "<div class='ui-lightbox-gallery_$j'>";
+                                                            foreach ($image_arr as $image_id) {
+                                                                $image_role.= "<a target='_top' title='' href='$url_contain/index.php/images/viewHero/$image_id' class=''><img width='75' alt='Gallery Image' style='display: inline-block' class='thumbnail thumb'  src='$url_contain/index.php/images/viewList/$image_id'></a>&nbsp;";
+                                                            }
+
+                                                            $image_role .= "<script>$('.ui-lightbox-gallery_" . $j . "').each(function() { // the containers for all your galleries
+    $(this).magnificPopup({
+        delegate: 'a', // the selector for gallery item
+        type: 'image',
+        gallery: {
+          enabled:true
+        }
+    });
+}); </script>";
+                                                            $image_role .= "</div>";
+                                                        }
+                                                    } else {
+
+                                                        $image_role = "<div class='image_single'>";
+                                                        $photoid =$value->photoid;
+                                                        $image_role .= "<a title='' href='$url_contain/index.php/images/viewHero/$photoid' class='ui-lightbox'><img width='75' alt='Gallery Image' style='display: inline-block' class='thumbnail thumb'  src='$url_contain/index.php/images/viewList/$photoid'></a>";
+
+                                                        $image_role .= "<script>$('.image_single').each(function() { // the containers for all your galleries
+    $(this).magnificPopup({
+        delegate: 'a', // the selector for gallery item
+        type: 'image',
+        gallery: {
+          enabled:true
+        }
+    });
+}); </script>";
+                                                        $image_role .= "</div>";
+                                                    }
+                                                } echo $image_role;
+                                                ?>
+                                             
+                                                
+                                                
+                                            </td>
                                             <td><?php echo $value->categoryname; ?></td>
                                             <td><?php echo $value->item_manu_name; ?></td>
                                             <td><?php echo $value->manufacturer; ?></td>
@@ -1200,7 +1252,21 @@
                     <div class="col-md-6"><input type="text" name="order_no" id="v_order_no" class="form-control" value="" disabled="" /></div></div> <!-- /.form-group -->
                 <div class="form-group col-md-12">
                 </div>
+                <div class="form-group col-md-12 fault_loggedBy">
+                    <div class="col-md-6"><label>Incident Logged By</label>   </div>
+                    <div class="col-md-6" id="loggedBy_div"> </div>
 
+
+                </div> 
+                <div class="form-group col-md-12 fault_loggedByDate">
+                    <div class="col-md-6"><label>Incident Logged Date</label>   </div>
+                    <div class="col-md-6" id="loggedByDate_div"> </div>
+
+
+                </div> 
+                <div class="actionData">
+
+                </div> 
                 <!-- Job Notes -->
                 <div class="form-group col-md-12">
                     <div class="col-md-6"><label>Job Notes</label>
@@ -1217,6 +1283,7 @@
 
 
                 </div>
+                
             </div>
 
             <div class="modal-footer">
@@ -1326,7 +1393,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button aria-hidden="true" data-dismiss="modal" class="close" type="button">&times;</button>
-                <h4 id="myModalLabel" class="modal-title">Update Fault</h4>
+                <h4 id="myModalLabel" class="modal-title">Update Incident</h4>
             </div>
 
             <form action="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/iwa/faults/fixfault" method="post" id="update_fault_form">

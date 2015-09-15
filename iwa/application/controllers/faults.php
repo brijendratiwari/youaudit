@@ -80,6 +80,7 @@ class Faults extends MY_Controller {
          $item_id = $this->input->post('id');   
         }
         $this->load->model('items_model');
+        $this->load->model('users_model');
         $this->load->model('tickets_model');
 
         $arrPageData = array();
@@ -94,20 +95,49 @@ class Faults extends MY_Controller {
         //echo "<pre>"; print_R($explodeArr); die;
         //echo $explodeArr[1]."===============".$intAccountId;
         $fullItemsData = $this->items_model->basicGetOneWithTicket($item_id, $intAccountId, $intAccountType);
-       
-        $all_job_notes = $this->tickets_model->getAllJob($item_id,$intAccountType);        
+        $user = $this->users_model->getOne($fullItemsData[0]->user_id,$intAccountId);
+                $loggedName = $user['result'][0]->firstname . " " . $user['result'][0]->lastname;
+        
+//        $all_job_notes = $this->tickets_model->getAllJob($item_id,$intAccountType);      
+        $all_job_notes = $this->tickets_model->getAllJobData($fullItemsData[0]->ticket_id);      
+//   var_dump($all_job_notes);
+//   $jobnote = '';
+   $allJob = array();
+   $actionData = '';
         foreach($all_job_notes as $history){
-            if($history['jobnote']!=''){
-            $jobnotes[]=$history['jobnote'];
-            }
-            if($history['photoid']!=''){
-            $photoid[]=$history['photoid'];
-            }
+             $allJob [] = $history['jobnote'];
+             $jobNoteDate [] = date('d/m/Y',  strtotime($history['date']));
+             
+             $actionData .= '<div class="col-md-12">
+                    <div class="col-md-6"><label>Action</label> </div>
+                    <div class="col-md-6">'.$history['action'].'</div>
+                     </div>
+                     <div class="col-md-12">
+                    <div class="col-md-6"><label>Reason Code</label> </div>
+                    <div class="col-md-6">'.$history['reason_code'].'</div>
+                    </div>
+                    <div class="col-md-12">
+                    <div class="col-md-6"><label>Update  Date</label> </div>
+                    <div class="col-md-6">'.date('d/m/Y',  strtotime($history['date'])).'</div>
+                    </div>
+                    <div class="col-md-12">
+                    <div class="col-md-6"><label>Logged By</label> </div>
+                    <div class="col-md-6">'.$history['firstname'].' '.$history['lastname'].'</div>
+                  </div>
+                <div class="col-md-12">&nbsp;</div>';
+             
+             
+//            echo $jobnote;
         }
-        $all_notes=  implode(',', $jobnotes);
-        $all_photos=  implode(',', $photoid);
+        $all_notes=  implode(',',$allJob);
+        $notesDate=  implode(',',$jobNoteDate);
+//        $all_photos=  implode(',', $photoid);
         $fullItemsData[0]->allNotes=$all_notes;
-        $fullItemsData[0]->allPhoto=$all_photos;
+        $fullItemsData[0]->notesDate=$notesDate;
+        $fullItemsData[0]->actionData=  $actionData;
+//        $fullItemsData[0]->allPhoto=$all_photos;
+        $fullItemsData[0]->loggedBy=$loggedName;
+        $fullItemsData[0]->loggedByDate=date('d/m/Y',strtotime($fullItemsData[0]->dt));
        
         $array = json_encode($fullItemsData[0]);
         echo $array;
@@ -451,6 +481,19 @@ class Faults extends MY_Controller {
                 $ticket_id = $this->input->post("update_ticket_id");
                 $result = $this->tickets_model->updateTicket($ticket_id, $data);
                 if ($result) {
+                     $historyData = array(
+                    'reason_code' => $this->input->post('reason_code'),
+                    'jobnote' => $this->input->post('job_notes'),
+                    'status' => $this->input->post('status'),
+                    'ticket_action'=>'Open Job',
+                    'item_id' => $item_iId[1],
+                         'date' => date("Y-m-d H:i:s"),
+                );
+                    $historyData['ticket_id']=$ticket_id;
+                    $historyData['action']="Update Incident";
+                    $historyData["user_id"] = $this->session->userdata('objSystemUser')->userid;
+                    $this->tickets_model->addUpdateHistory($historyData);
+                    
                     $this->session->set_userdata('booCourier', true);
                     $this->session->set_userdata('arrCourier', array('arrUserMessages' => array('Fault Update successfully')));
                     redirect('/faults/filter', 'refresh');
