@@ -137,9 +137,9 @@ if ($this->session->userdata['theme_design']->color != "") {
                         <tbody>
 
                             <?php if ($this->session->userdata('objSystemUser')->compliance == 1) { ?>
-                                <tr><td><label for="account_compliancecontact">Compliance Contact Name</label></td>
+                                <tr><td><label for="account_compliancecontact">Safety Contact Name</label></td>
                                     <td><input class="form-control" type="input" name="account_compliancecontact" value="<?php echo $strAccountComplianceContact; ?>" /></td><?php echo form_error('account_compliancecontact'); ?></tr>
-                                <tr><td><label for="account_complianceemail">Compliance Email Address</label></td>
+                                <tr><td><label for="account_complianceemail">Safety Email Address</label></td>
                                     <td><input class="form-control" type="input" name="account_complianceemail" value="<?php echo $strAccountComplianceEmail; ?>" /></td><?php echo form_error('account_complianceemail'); ?></tr>
                             <?php } ?>
 
@@ -150,7 +150,7 @@ if ($this->session->userdata['theme_design']->color != "") {
                                         <option value="1" <?php echo ($strAccountFleet == '1') ? 'selected="selected"' : ''; ?>>Yes</option>       
                                     </select>
                                 </td></tr>
-                            <tr><td><label for="account_compliance">Compliance Module</label></td>
+                            <tr><td><label for="account_compliance">Safety Module</label></td>
                                 <td> 
                                     <select class="form-control" name="account_compliance" id="account_compliance">
                                         <option value="0" <?php echo ($strAccountCompliance == '0') ? 'selected="selected"' : ''; ?>>No</option>

@@ -607,7 +607,7 @@ if ($this->session->flashdata('arrCourier')) {
                         </div>
                     </div>
                     <div class="form-group col-md-12">
-                        <div class="col-md-6"> <label>Compliance Modules: </label>
+                        <div class="col-md-6"> <label>Safety Modules: </label>
                         </div>
                         <div class="col-md-6">       
                             <select name="compliance_module" id="compliance_module" class="form-control">

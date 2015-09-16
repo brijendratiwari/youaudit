@@ -593,7 +593,7 @@ if ($this->session->flashdata('error')) {
                                 <th>Account Package</th>
                                 <th>Annual Value</th>
                                 <th>No of Assets</th>
-                                <th>Compliance</th>
+                                <th>Safety</th>
                                 <th>Fleet</th>
                                 <th>Condition</th>
                                 <th>Depreciation</th>
@@ -851,7 +851,7 @@ if ($this->session->flashdata('error')) {
                         </div>
                     </div>
                     <div class="form-group col-md-12">
-                        <div class="col-md-6"> <label>Compliance Modules: </label>
+                        <div class="col-md-6"> <label>Safety Modules: </label>
                         </div>
                         <div class="col-md-6">       
                             <select name="compliance_module" id="compliance_module" class="form-control">
@@ -1113,7 +1113,7 @@ if ($this->session->flashdata('error')) {
                         </div>
                     </div>
                     <div class="form-group col-md-12">
-                        <div class="col-md-6"> <label>Compliance Modules: </label>
+                        <div class="col-md-6"> <label>Safety Modules: </label>
                         </div>
                         <div class="col-md-6">       
                             <select name="edit_compliance_module" id="edit_compliance_module" class="form-control">
@@ -1230,7 +1230,7 @@ if ($this->session->flashdata('error')) {
 
 
                     <div class="form-group col-md-12">
-                        <div class="col-md-6"> <label>Compliance Modules: </label>
+                        <div class="col-md-6"> <label>Safety Modules: </label>
                         </div>
                         <div class="col-md-6">       
                             <select name="multiple_compliance_module" id="multiple_compliance_module" class="form-control">

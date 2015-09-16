@@ -3,7 +3,7 @@
 <link href="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/chosen_v1.1.0/chosen.min.css" rel="stylesheet" type="text/css" />
 <script src="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/chosen_v1.1.0/chosen.jquery.min.js"></script>
 <div class="heading">
-    <h1>Compliance Report</h1>
+    <h1>Safety Report</h1>
     <div class="buttons">
         
     </div>
@@ -39,10 +39,10 @@
 </style>
 <div class="box_content">
     <div class="ver_tabs">
-        <a class="" href="<?php  echo base_url('/compliance');  ?>"><span>Compliance Checks Due</span></a>
-      <a class="" href="<?php  echo base_url('compliance/complianceshistory');  ?>"><span>Compliance History</span></a>
-      <a class="" href="<?php  echo base_url('/compliance/complianceslist');  ?>"><span>List of Compliance Checks</span></a>
-      <a class="" href="<?php  echo base_url('/compliance/compliancesadmin');  ?>"><span>Compliance Admin</span></a>
+        <a class="" href="<?php  echo base_url('/compliance');  ?>"><span>Safety Checks Due</span></a>
+      <a class="" href="<?php  echo base_url('compliance/complianceshistory');  ?>"><span>Safety History</span></a>
+      <a class="" href="<?php  echo base_url('/compliance/complianceslist');  ?>"><span>List of Safety Checks</span></a>
+      <a class="" href="<?php  echo base_url('/compliance/compliancesadmin');  ?>"><span>Safety Admin</span></a>
       <a class="" href="<?php echo base_url('compliance/adhoc'); ?>"><span>Complete Adhoc Checks</span></a>
       <a class="" href="<?php echo base_url('compliance/templates'); ?>"><span>Templates</span></a>
       <a class="active" href="#"><span>Report</span></a>
