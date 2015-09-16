@@ -20,7 +20,7 @@ class Account extends CI_Controller {
         $arrPageData = array();
         $arrPageData['arrPageParameters']['strSection'] = get_class();
         $arrPageData['arrPageParameters']['strPage'] = "Edit";
-        $arrPageData['arrSessionData'] = $this->session->userdata;
+        $arrPageData['arrSessionData'] = $this->session->userdata; 
         $this->session->set_userdata('booCourier', false);
         $this->session->set_userdata('arrCourier', array());
         $arrPageData['arrErrorMessages'] = array();
@@ -181,22 +181,22 @@ class Account extends CI_Controller {
         $this->load->view('common/footer', $arrPageData);
     }
 
-    public function update_theme() {
+    public function update_theme() { 
         if (!$this->session->userdata('booUserLogin') && !$this->session->userdata('booInheritedUser')) {
             $this->session->set_userdata('strReferral', '/accounts/edit/');
             redirect('users/login/', 'refresh');
         }
 
         $arrPageData = array();
-        $arrPageData['arrSessionData'] = $this->session->userdata;
+        $arrPageData['arrSessionData'] = $this->session->userdata;  
         $this->load->model('accounts_model');
         $this->load->model('theme_model');
         $this->load->model('users_model');
         $this->load->model('actions_model');
         $booPermission = $this->users_model->hasPermission($this->session->userdata('objSystemUser')->userid, "Account.edit");
         $booSuccess = false;
-        if ($booPermission) {
-            if ($this->input->post()) {
+        if ($booPermission) {            
+            if ($this->input->post()) { 
                 $config = array(
                     'upload_path' => 'brochure/logo/',
                     'allowed_types' => 'gif|jpg|png|jpeg',
@@ -213,12 +213,13 @@ class Account extends CI_Controller {
                 if (!$this->upload->do_upload('file')) {
                     $msg = $this->upload->display_errors();
                     if ($msg == "<p>You did not select a file to upload.</p>") {
-                        
+                        echo $msg; 
                     } else {
+                        echo $msg;
                         $check = FALSE;
                     }
                 }
-
+                
                 if ($check) {
 
                     $theme_data = array();

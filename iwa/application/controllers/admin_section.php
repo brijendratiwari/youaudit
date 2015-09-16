@@ -619,7 +619,7 @@ class Admin_Section extends MY_Controller {
             redirect("admin_section/admin_user/", "refresh");
         }
     }
-    
+
     // Action For archive Supplier.
     public function archiveSupplier($supplier_id) {
 
@@ -639,13 +639,19 @@ class Admin_Section extends MY_Controller {
         }
         $this->load->model('admin_section_model');
         $arrPageData['arrSessionData'] = $this->session->userdata;
+        if ($this->input->post('my-checkbox') == 'on') {
+            $notification = 1;
+        } else {
+            $notification = 0;
+        }
         $data = array('firstname' => strtolower($this->input->post('first_name')),
             'lastname' => $this->input->post('last_name'),
             'username' => $this->input->post('username'),
             'password' => md5($this->input->post('contact_password')),
             'level_id' => $this->input->post('access_level'),
             'account_id' => $arrPageData['arrSessionData']['objSystemUser']->accountid,
-            'active' => 1
+            'active' => 1,
+            'push_notification' => $notification
         );
         if ($this->input->post('add_owner') == 1) {
             $data['is_owner'] = 1;
@@ -734,12 +740,18 @@ class Admin_Section extends MY_Controller {
         $data = array();
         $users = $this->input->post('users');
         for ($i = 1; $i <= $users; $i++) {
+            if ($this->input->post('multiple-notify' . $i) == 'on') {
+                $notify = 1;
+            } else {
+                $notify = 0;
+            }
             $data[] = array('first_name' => $this->input->post('first_name' . $i),
                 'last_name' => $this->input->post('last_name' . $i),
                 'user_name' => $this->input->post('user_name' . $i),
                 'mpassword' => md5($this->input->post('mpassword' . $i)),
                 'level' => $this->input->post('level' . $i),
-                'owner' => $this->input->post('add_owner' . $i));
+                'owner' => $this->input->post('add_owner' . $i),
+                'push_notification' => $notify);
         }
         $this->load->model('admin_section_model');
         $result = $this->admin_section_model->add_multiple($data);
@@ -976,7 +988,7 @@ class Admin_Section extends MY_Controller {
 
             $editLocation = array(
                 'locationname' => $this->input->post('edit_location_name'),
-                'qrcode' => $this->session->userdata('objSystemUser')->qrcode.$this->input->post('edit_qr_code'),
+                'qrcode' => $this->session->userdata('objSystemUser')->qrcode . $this->input->post('edit_qr_code'),
                 'sitename' => $this->input->post('edit_site_name'),
                 'adminuser_id' => $this->input->post('adminuser_id'),
             );
@@ -2399,7 +2411,7 @@ class Admin_Section extends MY_Controller {
             $this->session->set_userdata('strReferral', '/items/filter/');
             redirect('users/login/', 'refresh');
         }
-   
+
         $data = array();
         $this->load->model('admin_section_model');
         $arrPageData['arrSessionData'] = $this->session->userdata;

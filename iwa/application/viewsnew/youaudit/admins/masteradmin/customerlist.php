@@ -506,7 +506,7 @@
             </li>
             <li><a data-toggle="" href="<?php echo base_url("youaudit/Adminuser/$masterid"); ?>">Admin Users</a>
             </li>
-            <li><a data-toggle="" href="<?php echo base_url("youaudit/master_admins/complianceChecks/$masterid"); ?>">Compliance Templates</a>
+            <li><a data-toggle="" href="<?php echo base_url("youaudit/master_admins/complianceChecks/$masterid"); ?>">Safety Templates</a>
             </li>
             <li><a data-toggle="" href="<?php echo base_url("youaudit/profiles/$masterid"); ?>">Profiles</a>
             </li>

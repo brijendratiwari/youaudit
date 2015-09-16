@@ -517,7 +517,7 @@
             </li>
             <li><a data-toggle="" href="<?php echo base_url("youaudit/franchiseAdminUser/$masterid"); ?>">Admin Users</a>
             </li>
-            <li><a data-toggle="" href="<?php echo base_url("youaudit/franchise_admins/complianceChecksForFranchise/$masterid"); ?>">Compliance Templates</a>
+            <li><a data-toggle="" href="<?php echo base_url("youaudit/franchise_admins/complianceChecksForFranchise/$masterid"); ?>">Safety Templates</a>
             </li>
             <li><a data-toggle="" href="<?php echo base_url("youaudit/franchise_profiles/$masterid"); ?>">Profiles</a>
             </li>

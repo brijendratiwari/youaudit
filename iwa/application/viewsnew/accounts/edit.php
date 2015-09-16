@@ -17,14 +17,13 @@ if ($this->session->userdata['theme_design']->color != "") {
     function Handlechange()
     {
         var fileinput = document.getElementById("item_photo");
-        document.getElementById("select_file").innerHTML = fileinput.value;
+        document.getElementById("select_file").innerHTML = fileinput.value.replace("C:\\fakepath\\", "");
     }
     function Showfile()
     {
         var fileinput = document.getElementById("fevicon_icon");
-        document.getElementById("choose_file").innerHTML = fileinput.value;
+        document.getElementById("choose_file").innerHTML = fileinput.value.replace("C:\\fakepath\\", "");
     }
-
 </script>
 <style>
     #acc_details .table tr {
