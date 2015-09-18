@@ -834,7 +834,6 @@ class Items_model extends CI_Model {
 
     public function editOne($arrInput = array(), $intId = -1, $intCategoryId = -1, $intLocationId = -1, $intUserId = -1, $intFacultyId = -1) {
         if (($intId > 0) && ($intCategoryId > 0) && (($intLocationId > 0) || ($intFacultyId > 0) || ($intUserId > 0))) {
-
             $this->db->where('id', $intId);
             $this->db->update('items', $arrInput);
 
@@ -1094,7 +1093,7 @@ class Items_model extends CI_Model {
     }
 
     public function linkThisToPat($intItemId = -1, $intPatId = NULL, $user_id = -1) {
-
+//echo $intPatId;die;
         $this->db->insert('items_pat_link', array('item_id' => $intItemId, 'pattest_status' => (int) $intPatId, 'user_id' => $user_id, 'date' => date('Y-m-d H:i:s')));
     }
 
@@ -1258,7 +1257,7 @@ class Items_model extends CI_Model {
             $this->db->where('items.account_id', $intAccountId);
 
             //isn't already deleted
-            $this->db->where('items.active', 1);
+//            $this->db->where('items.active', 1);
 
             //check which user deleted them
             if ($intLevelId == 4) {

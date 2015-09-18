@@ -2078,19 +2078,27 @@ class Items extends MY_Controller {
                                 'compliance_start' => $this->doFormatDate($this->input->post('compliance_start')),
                                 'quantity' => $quantity,
                                 'item_manu' => $this->input->post('item_manu'),
-                                'owner_now' => $this->input->post('owner_id'),
+//                                'owner_now' => $this->input->post('owner_id'),
                                 'owner_since' => date('Y-m-d H:i:s'),
                                 'condition_now' => $condition,
                                 'condition_since' => date('Y-m-d H:i:s'),
                             );
+                            
+                            if($this->input->post('owner_id') > 0 && $this->input->post('owner_id') != $this->session->userdata('ownerName') ){
+                                $arrItemData['owner_now'] = $this->input->post('owner_id');
+                            }
 
-                            if ($this->input->post('item_patteststatus')) {
+//                            if ($this->input->post('item_patteststatus')) {
+//                                echo $this->input->post('item_patteststatus')."if";die;
+                                if($this->session->userdata('pattestStatus') != $this->input->post('item_patteststatus')){
                                 $arrItemData['pattest_status'] = $this->input->post('item_patteststatus');
-                            } else {
-                                $arrItemData['pattest_status'] = 5;
+                                }
+//                            } else {
+//                                echo $this->input->post('item_patteststatus')."else";die;
+//                                $arrItemData['pattest_status'] = 5;
 //                                $arrItemData['pattest_status'] = null;
 //                                $arrItemData['pattest_date'] = null;
-                            }
+//                            }
 
 //                            if ($this->input->post('item_barcode') != $mixItemsData[0]->barcode) {
 //                                $arrItemData['barcode'] = $this->input->post('item_barcode');
@@ -2124,10 +2132,14 @@ class Items extends MY_Controller {
                                 }
 
 // Add Pat History
-                                if ($this->input->post('item_patteststatus')) {
-
-                                    $this->items_model->linkThisToPat($intId, $this->input->post('item_patteststatus'), $this->input->post('owner_id'));
-                                }
+//                                if ($this->input->post('item_patteststatus')) {
+//                                    echo $this->session->userdata('pattestStatus')."post".$this->input->post('item_patteststatus');die;
+                                        if($this->session->userdata('pattestStatus') != $this->input->post('item_patteststatus')){
+                                            $this->session->unset_userdata('pattestStatus');
+                                             $this->items_model->linkThisToPat($intId, $this->input->post('item_patteststatus'), $this->input->post('owner_id'));
+                                        }
+//                                     $this->session->unset_userdata('pattestStatus');
+//                                    }
 
                                 if (array_key_exists('photo_file', $_FILES) && ($_FILES['photo_file']['size'] > 0)) {
                                     $arrConfig['upload_path'] = './uploads/';

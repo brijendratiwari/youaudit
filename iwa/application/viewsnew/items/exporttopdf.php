@@ -1,8 +1,8 @@
 <?php // echo '<pre>';var_dump($allData);echo '</pre>';
 $logo = 'logo.png';
-if (isset($this->session->userdata['theme_design']->logo)) {
-    $logo = $this->session->userdata['theme_design']->logo;
-}
+//if (isset($this->session->userdata['theme_design']->logo)) {
+//    $logo = $this->session->userdata['theme_design']->logo;
+//}
 ?>
 <!doctype html>
 <html>
@@ -19,14 +19,15 @@ if (isset($this->session->userdata['theme_design']->logo)) {
     <body>
         <div class="main_container" style='width: 100%;'>
             <div class="border_top">
-                <img src="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/report_files/images/border_bg.png"/>
+                <!--<img src="<?php // echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/report_files/images/border_bg.png"/>-->
+                <img alt='Youaudit' src='<?php echo base_url('brochure/logo/' . $logo); ?>'>
             </div>
 <!--            <div class="logo">
                 <img src="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/includes/report_files/images/logo.png"/>
             </div>-->
-            <div class="insert1">
+<!--            <div class="insert1">
                 <img width="200px" src="<?php echo 'http://' . $_SERVER['HTTP_HOST'] . '/youaudit/iwa/brochure/logo/' . $logo; ?>">
-            </div>
+            </div>-->
 <!--            <div class="insert2">
                 <?php // echo $accountDetails['result'][0]->accountname; ?>
             </div>-->

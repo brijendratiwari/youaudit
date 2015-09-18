@@ -654,6 +654,7 @@
                         </tr>
                         <tr>
                             <td>Owner*</td>
+                            <?php $this->session->set_userdata('ownerName',$objItem->userid);?>
                             <td> <select name="owner_id" id="owner_id" class="form-control" disabled>
                                     <option value="0">----SELECT----</option>
                                     <?php
@@ -847,7 +848,7 @@
                 <table class="table" >
                     <tbody>
                         <tr class="tb_header_success">
-                            <td>Electrical Test Date</td>
+                            <td>Electrical Test</td>
                             <td></td>
                         </tr>
                         <tr class="tb_font_success">
@@ -862,10 +863,12 @@
                         </tr>
                         <tr class="tb_font_success">
                             <td>Electrical Test Result</td>
+                            <!--set status value in session for testing result is updated or not ...-->
+                            <?php  $this->session->set_userdata('pattestStatus',$objItem->pattest_status); ?>
                             <td>  <select name="item_patteststatus" id="item_patteststatus" class="form-control" disabled>
                                     <option value="">----SELECT----</option>
                                     <option value="-1" <?php
-                                    if ($objItem->pattest_status === null) {
+                                    if ($objItem->pattest_status === "-1") {
                                         echo "selected=\"selected\"";
                                     }
                                     ?>>Unknown</option>
@@ -1073,7 +1076,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
             </div></div>
         <div class="row">
             <div class="col-md-12">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div id="second_table_container" class="log_container">
                         <table id="ownership" class="table table-striped table-bordered table-hover" width="100%" cellspacing="0">
                             <thead>
@@ -1148,12 +1151,14 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                     </div>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-5">
                     <table id="audit_history" class="table table-striped table-bordered table-hover" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th class="left">Date</th>
-                                <th class="left">User</th>
+                                <th class="left">Date of Audit</th>
+                                <th class="left">Time of Audit</th>
+                                <th class="left">User Logged Audit</th>
+                                <th class="left">Audit Result</th>
                                 <th class="left">Location</th>
                                 <th class="left">Site</th>
 
@@ -1164,30 +1169,30 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                             foreach ($arrItemHistory as $strDate => $arrRecord) {
                                 ?>
                                 <tr>
-                                    <td><?php echo date('d/m/Y H:i:s', strtotime($strDate)); ?></td>
+                                    <td><?php echo date('d/m/Y', strtotime($strDate)); ?></td>
+                                    <td><?php echo date('H:i:s', strtotime($strDate)); ?></td>
+                                     <td><?php
+                                            if (isset($arrRecord['user'])) {
+                                                echo $arrRecord['user']->userfirstname . " " . $arrRecord['user']->userlastname;
+                                            }
+                                            ?></td>
                                     <?php
-                                    if (isset($arrRecord['audit'])) {
+//                                    if (isset($arrRecord['audit'])) {
                                         ?>
-                                        <td colspan="3"><em><strong>Item was marked as <?php
+                                        <td><em><strong><?php
                                                     if ($arrRecord['audit']->present == 1) {
                                                         echo "present";
                                                     } else {
                                                         echo "missing";
                                                     }
 
-                                                    echo " by " . $arrRecord['audit']->userfirstname . " " . $arrRecord['audit']->userlastname;
-                                                    echo " on an audit of location " . $arrRecord['audit']->name;
-                                                    ?></strong></em>
+                                                 ?></strong></em>
                                         </td>
                                         <?php
-                                    } else {
+//                                    } else {
                                         ?>
 
-                                        <td><?php
-                                            if (isset($arrRecord['user'])) {
-                                                echo $arrRecord['user']->userfirstname . " " . $arrRecord['user']->userlastname;
-                                            }
-                                            ?></td>
+                                       
                                         <td><?php
                                             if (isset($arrRecord['location'])) {
                                                 echo $arrRecord['location']->locationname;
@@ -1200,7 +1205,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                                             ?></td>
 
                                         <?php
-                                    }
+//                                    }
                                     ?>
                                 </tr>
                                 <?php

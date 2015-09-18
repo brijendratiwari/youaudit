@@ -873,11 +873,13 @@
                                 var opt1 = new Array();
                                 var list = v['value'];
                                 var temp = list.split(',');
+                                opt1.push('<option value="">--Please Select--</option>');
                                 for (var j = 0; j < temp.length; j++) {
-                                    var opt = '<option value="' + temp[j] + '">' + temp[j] + '</option>';
+                                   var opt = '<option value="' + temp[j] + '">' + temp[j] + '</option>';
                                     opt1.push(opt);
                                 }
                                 var option = opt1.join('');
+                                console.log(option);
                             }
                             var html_content = '<div class="row col-md-12"><div class="col-md-4">' +
                                     '<label>' + v['name'] + '</label></div><div class="col-md-8">' +
@@ -960,7 +962,7 @@
                 console.log($(this).html());
                 cloneFoot.push($(this).html());
             });
-            cloneHead = '<thead><tr><th>' + cloneHead.join('</th><th>') + '</th></tr></thead>';
+            cloneHead = '<thead style="background-color: #00aeef;"><tr><th>' + cloneHead.join('</th><th>') + '</th></tr></thead>';
             cloneFoot = '<tfoot><tr><th>Summary- TOTAL / COUNT' + cloneFoot.join('</th><th>') + '</th></tr></tfoot>';
             console.log(cloneHead);
 
@@ -1128,7 +1130,8 @@
     $(function() {
         $('#payment_asset').on('keyup blur', function() {
             var payment = $(this).val();
-            var current_value = $(this).attr('data-currentvalue');
+//            var current_value = $(this).attr('data-currentvalue');
+            var current_value = $('body').find('#currentvalue').val();
 
             var numericRegex = /[(0-9)+.?(0-9)*]+/igm;
             //        console.log(numericRegex.test(payment));
