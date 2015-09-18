@@ -1,3 +1,5 @@
+<link href="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/css/sub_style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" language="javascript" src="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/bootbox/bootbox.min.js"></script>
 <script>
     $(document).ready(function() {
 
@@ -17,18 +19,96 @@ if ($this->session->userdata['theme_design']->color != "") {
     function Handlechange()
     {
         var fileinput = document.getElementById("item_photo");
-        document.getElementById("select_file").innerHTML = fileinput.value;
+        document.getElementById("select_file").innerHTML = fileinput.value.replace("C:\\fakepath\\", "");
     }
     function Showfile()
     {
         var fileinput = document.getElementById("fevicon_icon");
-        document.getElementById("choose_file").innerHTML = fileinput.value;
+        document.getElementById("choose_file").innerHTML = fileinput.value.replace("C:\\fakepath\\", "");
     }
+    $('body').on('change', '#account_fleet', function()
+    {
+        var fleet = $('#account_fleet option:selected').val();
+        if (fleet == 0)
+        {
+         bootbox.confirm("Do you want to remove this Module ?", function(result) {
+            if (result) {
+               return true;
+            } else {
+               $("#account_fleet option[value='1']").prop("selected", "selected");
+            }
+        });
+        }
+    });
+    $('body').on('change', '#account_compliance', function()
+    {
+        var compliance = $('#account_compliance option:selected').val();
+        if (compliance == 0)
+        {
+         bootbox.confirm("Do you want to remove this Module ?", function(result) {
+            if (result) {
+               return true;
+            } else {
+               $("#account_compliance option[value='1']").prop("selected", "selected");
+            }
+        });
+        }
+    });
+    $('body').on('change', '#account_condition', function()
+    {
+        var condition = $('#account_condition option:selected').val();
+        if (condition == 0)
+        {
+         bootbox.confirm("Do you want to remove this Module ?", function(result) {
+            if (result) {
+               return true;
+            } else {
+               $("#account_condition option[value='1']").prop("selected", "selected");
+            }
+        });
+        }
+    });
+    $('body').on('change', '#account_depreciation', function()
+    {
+        var depreciation = $('#account_depreciation option:selected').val();
+        if (depreciation == 0)
+        {
+         bootbox.confirm("Do you want to remove this Module ?", function(result) {
+            if (result) {
+               return true;
+            } else {
+               $("#account_depreciation option[value='1']").prop("selected", "selected");
+            }
+        });
+        }
+    });
+    $('body').on('change', '#account_reporting', function()
+    {
+        var reporting = $('#account_reporting option:selected').val();
+        if (reporting == 0)
+        {
+         bootbox.confirm("Do you want to remove this Module ?", function(result) {
+            if (result) {
+               return true;
+            } else {
+               $("#account_reporting option[value='1']").prop("selected", "selected");
+            }
+        });
+        }
+    });
+    
 
 </script>
 <style>
     #acc_details .table tr {
         box-shadow: 0 -1px 0 0 #00aeef inset;
+    }
+     .bootbox .modal-dialog{
+        width: 400px;
+    }
+    .bootbox .modal-body{
+        min-height: 75px;
+        overflow: auto !important;
     }
 </style>
 <div class="box">
@@ -122,9 +202,9 @@ if ($this->session->userdata['theme_design']->color != "") {
                             <tr><td><label for="account_supportaddress">Support eMail*</label></td><td><input class="form-control" type="input" name="account_supportaddress" value="<?php echo $strAccountSupportAddress; ?>" /></td><?php echo form_error('account_supportaddress'); ?></tr>
                             <?php if ($this->session->userdata('objSystemUser')->fleet == 1) { ?>
                                 <tr><td><label for="account_fleetcontact">Fleet Contact Name</label></td>
-                                    <td><input class="form-control" type="input" name="account_fleetcontact" value="<?php echo $strAccountFleetContact; ?>" /></td><?php echo form_error('account_fleetcontact'); ?></tr>
+                                    <td><input class="form-control" type="input" name="account_fleetcontact" value="<?php if($strAccountFleetContact) echo $strAccountFleetContact; ?>" /></td><?php echo form_error('account_fleetcontact'); ?></tr>
                                 <tr><td><label for="account_fleetemail">Fleet Email Address</label></td>
-                                    <td><input class="form-control" type="input" name="account_fleetemail" value="<?php echo $strAccountFleetEmail; ?>" /></td><?php echo form_error('account_fleetemail'); ?></tr>
+                                    <td><input class="form-control" type="input" name="account_fleetemail" value="<?php if($strAccountFleetEmail)echo $strAccountFleetEmail; ?>" /></td><?php echo form_error('account_fleetemail'); ?></tr>
                             <?php } ?>
                         </tbody>
                     </table>
@@ -137,10 +217,10 @@ if ($this->session->userdata['theme_design']->color != "") {
                         <tbody>
 
                             <?php if ($this->session->userdata('objSystemUser')->compliance == 1) { ?>
-                                <tr><td><label for="account_compliancecontact">Compliance Contact Name</label></td>
-                                    <td><input class="form-control" type="input" name="account_compliancecontact" value="<?php echo $strAccountComplianceContact; ?>" /></td><?php echo form_error('account_compliancecontact'); ?></tr>
-                                <tr><td><label for="account_complianceemail">Compliance Email Address</label></td>
-                                    <td><input class="form-control" type="input" name="account_complianceemail" value="<?php echo $strAccountComplianceEmail; ?>" /></td><?php echo form_error('account_complianceemail'); ?></tr>
+                                <tr><td><label for="account_compliancecontact">Safety Contact Name</label></td>
+                                    <td><input class="form-control" type="input" name="account_compliancecontact" value="<?php if($strAccountComplianceContact) echo $strAccountComplianceContact; ?>" /></td><?php echo form_error('account_compliancecontact'); ?></tr>
+                                <tr><td><label for="account_complianceemail">Safety Email Address</label></td>
+                                    <td><input class="form-control" type="input" name="account_complianceemail" value="<?php if($strAccountComplianceEmail) echo $strAccountComplianceEmail; ?>" /></td><?php echo form_error('account_complianceemail'); ?></tr>
                             <?php } ?>
 
                             <tr><td><label for="account_fleet">Fleet Module</label></td>
@@ -150,7 +230,7 @@ if ($this->session->userdata['theme_design']->color != "") {
                                         <option value="1" <?php echo ($strAccountFleet == '1') ? 'selected="selected"' : ''; ?>>Yes</option>       
                                     </select>
                                 </td></tr>
-                            <tr><td><label for="account_compliance">Compliance Module</label></td>
+                            <tr><td><label for="account_compliance">Safety Module</label></td>
                                 <td> 
                                     <select class="form-control" name="account_compliance" id="account_compliance">
                                         <option value="0" <?php echo ($strAccountCompliance == '0') ? 'selected="selected"' : ''; ?>>No</option>

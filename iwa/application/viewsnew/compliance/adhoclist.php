@@ -2,17 +2,17 @@
 <link href="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/css/sub_style.css" rel="stylesheet" type="text/css" />
 
 <div class="heading">
-    <h1>COMPLIANCE CHECKS DUE</h1>
+    <h1>SAFETY CHECKS DUE</h1>
     <div class="buttons">
         
     </div>
 </div>
 <div class="box_content">
     <div class="ver_tabs">
-        <a class="" href="<?php echo base_url('compliance'); ?>" class="active"><span>Compliance Checks Due</span></a>
-        <a class="" href="<?php echo base_url('compliance/complianceshistory'); ?>"><span>Compliance History</span></a>
-        <a class="" href="<?php echo base_url('compliance/complianceslist'); ?>"><span>List of Compliance Checks</span></a>
-        <a class="" href="<?php echo base_url('compliance/compliancesadmin'); ?>"><span>Compliance Admin</span></a>
+        <a class="" href="<?php echo base_url('compliance'); ?>" class="active"><span>Safety Checks Due</span></a>
+        <a class="" href="<?php echo base_url('compliance/complianceshistory'); ?>"><span>Safety History</span></a>
+        <a class="" href="<?php echo base_url('compliance/complianceslist'); ?>"><span>List of Safety Checks</span></a>
+        <a class="" href="<?php echo base_url('compliance/compliancesadmin'); ?>"><span>Safety Admin</span></a>
         <a class="active" href="#"><span>Complete Adhoc Checks</span></a>
         <a class="" href="<?php echo base_url('compliance/templates'); ?>"><span>Templates</span></a>
         <a class="" href="<?php echo base_url('compliance/report'); ?>"><span>Report</span></a>
@@ -74,7 +74,7 @@
             <table id="due_table" class="list_table">
                 <thead>
                     <tr>
-                        <th data-export="true">Compliance Name</th>
+                        <th data-export="true">Safety Name</th>
                         <th data-export="true">QR Code</th>
                         <th data-export="true">Manufacturer</th>
                         <th data-export="true">Model</th>
@@ -82,7 +82,7 @@
                         <th data-export="true">Owner</th>
                         <th data-export="true">Location</th>
                         <th data-export="true">Site</th>
-                        <th class="hider" hidden="">Compliance id</th>
+                        <th class="hider" hidden="">Safety id</th>
                         <th class="hider" hidden="">item id</th>
                         <th class="hider" hidden=""></th>
                         <th class="hider" hidden=""></th>
@@ -629,7 +629,7 @@
                                 <tr>
                                     <td colspan="2">
                                         <input id="check_id" name="compliance_check_id" hidden="">
-                                        <label class="col-md-6">Compliance Name</label></td><td colspan="2"><input id="m_comaplianceName" hidden="" name="compliance_check_name"> <span id="compliance_name" class="col-md-6">Compliance Name</span></td>
+                                        <label class="col-md-6">Safety Name</label></td><td colspan="2"><input id="m_comaplianceName" hidden="" name="compliance_check_name"> <span id="compliance_name" class="col-md-6">Safety Name</span></td>
                                 </tr>
                                 <tr>
                                     <td colspan="2">
@@ -676,7 +676,7 @@
                 <form id="chooseColumnsForm">
                     <table class="chooseColumnsTable" width="100%">
                         <tr>
-                            <th><input checked="" type="checkbox" value="0"> Compliance Name</th>
+                            <th><input checked="" type="checkbox" value="0"> Safety Name</th>
                             <th><input checked="" type="checkbox" value="1"> QR Code</th>
                             
                         </tr>

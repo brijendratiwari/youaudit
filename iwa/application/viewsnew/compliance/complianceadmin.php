@@ -225,15 +225,15 @@
 </script>
 
 <div class="heading">
-    <h1>Compliance Admin</h1>
+    <h1>Safety Admin</h1>
 
 </div>
 <div class="box_content">
     <div class="ver_tabs" style="">
-        <a class="" href="<?php echo base_url('compliance'); ?>" class="active"><span>Compliance Checks Due</span></a>
-        <a class="" href="<?php echo base_url('compliance/complianceshistory'); ?>"><span>Compliance History</span></a>
-        <a class="" href="<?php echo base_url('compliance/complianceslist'); ?>"><span>List of Compliance Checks</span></a>
-        <a class="active" href="#"><span>Compliance Admin</span></a>
+        <a class="" href="<?php echo base_url('compliance'); ?>" class="active"><span>Safety Checks Due</span></a>
+        <a class="" href="<?php echo base_url('compliance/complianceshistory'); ?>"><span>Safety History</span></a>
+        <a class="" href="<?php echo base_url('compliance/complianceslist'); ?>"><span>List of Safety Checks</span></a>
+        <a class="active" href="#"><span>Safety Admin</span></a>
         <a class="" href="<?php echo base_url('compliance/adhoc'); ?>"><span>Complete Adhoc Checks</span></a>
         <a class="" href="<?php echo base_url('compliance/templates'); ?>"><span>Templates</span></a>
         <a class="" href="<?php echo base_url('compliance/report'); ?>"><span>Report</span></a>
@@ -251,11 +251,11 @@
                     <thead>
                     <th colspan="4">
                         <!--<a href="<?php echo site_url('/items/changelinks/' . $arrItem->itemid . '/'); ?>" style=" margin-right: 100%;" ><img width="30px" src="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/img/add_icon.png" title="Change Links" alt="Change Links" /></a>-->
-                    <h3>Add Compliance Check</h3></th>
+                    <h3>Add Safety Check</h3></th>
                     </thead>
                     <tbody id="compliance_add">
                         <tr>
-                            <td><strong>Compliance Name</strong><sup> *</sup></td>
+                            <td><strong>Safety Name</strong><sup> *</sup></td>
                             <td colspan="3"><input type="input" id='Compliance_check_name' name="Compliance_check_name"/></td>
                         </tr>
                         <tr>    
@@ -331,7 +331,7 @@
                         </tr>
                     </tbody>
                 </table>
-                <div id='atleastOneTaskLabel'><p>One Task MUST be added to a compliance check.</p></div>
+                <div id='atleastOneTaskLabel'><p>One Task MUST be added to a safety check.</p></div>
                 <p>Drag & Drop Required Tasks into the Box Above.</p>
                 <p>Fields Marked <sup>*</sup> are Mandatory.</p>
                         <input id="task_details" name="task_details" hidden="true">

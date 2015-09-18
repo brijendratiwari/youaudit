@@ -25,7 +25,7 @@
         if ($arrPageParameters['strSection'] == 'Compliance') {
             echo " class=\"selected\"";
         }
-        ?>><a href="<?php echo site_url('/compliance/'); ?>">Compliance</a></li>       
+        ?>><a href="<?php echo site_url('/compliance/'); ?>">Safety</a></li>       
     <?php } ?>
     <li <?php
     if ($arrPageParameters['strSection'] == 'Faults') {

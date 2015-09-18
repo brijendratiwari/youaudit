@@ -243,7 +243,7 @@
                     </thead>
                     <tbody id="compliance_add">
                         <tr>
-                            <td><strong>Compliance Name</strong><sup> *</sup></td>
+                            <td><strong>Safety Name</strong><sup> *</sup></td>
                             <td colspan="3"><input type="input" id='Compliance_check_name' name="Compliance_check_name"/></td>
                             <input type="hidden" name="masterid" value="<?php echo $masterid; ?>" 
                         </tr>

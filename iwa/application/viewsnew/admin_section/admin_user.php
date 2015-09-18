@@ -67,9 +67,9 @@
                 var rowCount = currentVal + 1;
                 $('.qty').attr('value', rowCount);
 
-                var recRow = '<tr id="row_' + rowCount + '" class="multiple"><input type="hidden" name="users" value="' + rowCount + '"><td><input name="first_name' + rowCount + '" class="form-control" type="text" required/></td><td><input name="last_name' + rowCount + '" class="form-control" type="text" required/></td><td><input name="user_name' + rowCount + '" id="username' + rowCount + '" type="text" class="form-control" required/><div id="username_err' + rowCount + '" class="username_err hide">Username Is Already Exist.</div></td><td><input name="mpassword' + rowCount + '" class="form-control" type="password" required/></td><td><select name="level' + rowCount + '" class="form-control" id="multiple_access" required><option value="">-----select-----</option><option value="1">User</option><option value="2">Manager</option><option value="3">Admin</option><option value="4">Superadmin</option><option value="5">AppOnly</option></select></td><td><select name="add_owner' + rowCount + '" class="form-control" name="add_owner" id="add_owner"><option value="1">Yes</option><option value="0">No</option></select></td></tr>';
+                var recRow = '<tr id="row_' + rowCount + '" class="multiple"><input type="hidden" name="users" value="' + rowCount + '"><td><input name="first_name' + rowCount + '" class="form-control" type="text" required/></td><td><input name="last_name' + rowCount + '" class="form-control" type="text" required/></td><td><input name="user_name' + rowCount + '" id="username' + rowCount + '" type="text" class="form-control" required/><div id="username_err' + rowCount + '" class="username_err hide">Username Is Already Exist.</div></td><td><input name="mpassword' + rowCount + '" class="form-control" type="password" required/></td><td><select name="level' + rowCount + '" class="form-control" id="multiple_access" required><option value="">-----select-----</option><option value="1">User</option><option value="2">Manager</option><option value="3">Admin</option><option value="4">Superadmin</option><option value="5">AppOnly</option></select></td><td><select name="add_owner' + rowCount + '" class="form-control" name="add_owner" id="add_owner"><option value="1">Yes</option><option value="0">No</option></select></td><td><input type="checkbox" name="multiple-notify' + rowCount + '" data-size="mini" class="form-control" checked></td></tr>';
                 $('#multiple_user tbody').append(recRow);
-
+                $("[name='multiple-notify" + rowCount + "']").bootstrapSwitch();
                 $("#username" + rowCount).on("keyup blur", function() {
 
                     var username = $("#username" + rowCount).val();
@@ -245,7 +245,7 @@
             var firstname = $(this).attr("data_firstname");
             var lastname = $(this).attr("data_lastname");
             var username = $(this).attr("data_username");
-                editUserName = $(this).attr("data_username");
+            editUserName = $(this).attr("data_username");
             var access = $(this).attr("data_access");
             var owner = $(this).attr("data_owner");
             var adminuser_id = $(this).attr("data_adminuser_id");
@@ -458,42 +458,43 @@
 //  Adding Switch for Push notification
         $("[name='my-checkbox']").bootstrapSwitch();
         $("[name='notification']").bootstrapSwitch();
+        $("[name='multiple-notify1']").bootstrapSwitch();
 //  Adding Switch for Push notification
 //        $('#edit_notify').bootstrapSwitch();
 
 
 
 // check username on edit user information....
-    $("#edit_username").on("keyup blur", function() {
+        $("#edit_username").on("keyup blur", function() {
 
             var username = $(this).val();
             var base_url_str = $("#base_url").val();
-    if(editUserName != username){
+            if (editUserName != username) {
 
-            $.ajax({
-                type: "POST",
-                url: base_url_str + "admin_section/checkUsername",
-                data: {
-                    'username': username
-                },
-                success: function(msg) {
+                $.ajax({
+                    type: "POST",
+                    url: base_url_str + "admin_section/checkUsername",
+                    data: {
+                        'username': username
+                    },
+                    success: function(msg) {
 
-                    // we need to check if the value is the same
-                    if (msg == "1") {
-                        //Receiving the result of search here
-                        $("#edit_button_system").addClass('disabled');
-                        $("#edit_username_error").removeClass("hide");
-                    } else {
-                        $("#edit_button_system").removeClass('disabled');
-                        $("#edit_username_error").addClass("hide");
+                        // we need to check if the value is the same
+                        if (msg == "1") {
+                            //Receiving the result of search here
+                            $("#edit_button_system").addClass('disabled');
+                            $("#edit_username_error").removeClass("hide");
+                        } else {
+                            $("#edit_button_system").removeClass('disabled');
+                            $("#edit_username_error").addClass("hide");
+                        }
                     }
-                }
 
-            });
-        }else{
-             $("#edit_username_error").addClass("hide");
-              $("#edit_button_system").removeClass('disabled');
-        }
+                });
+            } else {
+                $("#edit_username_error").addClass("hide");
+                $("#edit_button_system").removeClass('disabled');
+            }
 
         });
 
@@ -948,7 +949,7 @@ if ($this->session->flashdata('error')) {
                         <div class="col-md-6">         <label>Username :</label> </div> 
 
                         <div class="col-md-6">  <input type="text" placeholder="Enter UserName" class="form-control" name="edit_username" id="edit_username">
-                                <div id="edit_username_error" class="username_error hide">Username Is Already Exist.</div> 
+                            <div id="edit_username_error" class="username_error hide">Username Is Already Exist.</div> 
                         </div>
 
                     </div> 
@@ -1029,6 +1030,7 @@ if ($this->session->flashdata('error')) {
                                 <th>Password</th>
                                 <th>Access Level</th>
                                 <th>Add to Owner List</th>
+                                <th>Push Notification</th>
                             </tr>
                         <tbody>
                             <tr id="row_1">
@@ -1045,6 +1047,7 @@ if ($this->session->flashdata('error')) {
                                         <option value="1">Yes</option>
                                         <option value="0">No</option>
                                     </select></td>
+                                <td><input type="checkbox" name="multiple-notify1" data-size="mini" class="form-control" checked></td>
                             </tr>
                         </tbody>
                         </thead>

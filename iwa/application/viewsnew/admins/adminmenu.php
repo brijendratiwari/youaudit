@@ -33,7 +33,7 @@
         echo " class=\"selected\"";
     }?>><a href="<?php
         echo site_url('/admins/complianceChecks');
-        ?>">Compliance Templates</a></li>
+        ?>">Safety Templates</a></li>
       <li<?php if ($arrPageParameters['strTab'] == 'Profile') {
         echo " class=\"selected\"";
     }?>><a href="<?php

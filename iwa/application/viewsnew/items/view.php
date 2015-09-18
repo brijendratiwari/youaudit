@@ -51,13 +51,23 @@
     function Handlechange()
     {
         var fileinput = document.getElementById("item_photo");
-        document.getElementById("select_file").innerHTML = fileinput.value;
+        document.getElementById("select_file").innerHTML = fileinput.value.replace("C:\\fakepath\\", "");
+    }
+    function Handle_change(img_id)
+    {
+        var fileinput = document.getElementById("photo_file_" + img_id);
+        document.getElementById("select_file" + img_id).innerHTML = fileinput.value.replace("C:\\fakepath\\", "");
     }
 
     function Handlefilechange()
     {
-        var fileinput = document.getElementById("pdf");
-        document.getElementById("select-pdf").innerHTML = fileinput.value;
+        var fileinput = document.getElementById('pdf');
+        document.getElementById("select-pdf").innerHTML = fileinput.value.replace("C:\\fakepath\\", "");
+    }
+    function Handle_filechange(doc)
+    {
+        var fileinput = document.getElementById('pdf_file_' + doc);
+        document.getElementById("select-pdf" + doc).innerHTML = fileinput.value.replace("C:\\fakepath\\", "");
     }
     function goBack() {
 //    base_url = $('#base_url').val();
@@ -125,7 +135,7 @@
             e.preventDefault();
             if (x < max_fields) { //max input box allowed
                 x++; //text box increment
-                $(wrapper).append('<div style="height:48px;"><span class="col-lg-12" style="padding-top:10px;"><span class="col-lg-5" style="padding: 0"><span class="file-select" id="select_file">choose file <i class="fa fa-sort pull-right"></i></span><input class="item_photo col-lg-10" id="photo_file_' + x + '" type="file" name="photo_file_' + x + '" value="upload" onChange="Handlechange();" style="opacity: 0"></span><button class="btn btn-primary btn-circle btn-xs remove_file" onclick="rem(' + x + ')" title="remove image" type="button"><i class="glyphicon glyphicon-minus"></i></button></span></div>');
+                $(wrapper).append('<div style="height:48px;"><span class="col-lg-12" style="padding-top:10px;"><span class="col-lg-5" style="padding: 0"><span class="file-select" id="select_file' + x + '">choose file <i class="fa fa-sort pull-right"></i></span><input class="item_photo col-lg-10" id="photo_file_' + x + '" type="file" name="photo_file_' + x + '" value="upload" onChange="Handle_change(' + x + ');" style="opacity: 0"></span><button class="btn btn-primary btn-circle btn-xs remove_file" onclick="rem(' + x + ')" title="remove image" type="button"><i class="glyphicon glyphicon-minus"></i></button></span></div>');
 //            $(wrapper).append(' <div> <input class="fileupload upload form-control" type="file" name="photo_file_' + x + '" size="20"><a href="#" class="remove_field">Remove</a></div>'); //add input box
             }
         });
@@ -133,7 +143,7 @@
             e.preventDefault();
             if (y < max_fields) { //max input box allowed
                 y++; //text box increment
-                $(".input_pdf_wrap").append('<div style="height:48px;"><span class="col-lg-12" style="padding-top:10px;"><span class="col-lg-5" style="padding: 0"><span class="file-select" id="select_file">choose file <i class="fa fa-sort pull-right"></i></span><input class="item_photo col-lg-10" id="pdf_file_' + y + '" type="file" name="pdf_file_' + y + '" value="upload" onChange="Handlechange();" style="opacity: 0"></span><button class="btn btn-primary btn-circle btn-xs remove_file" onclick="rem_pdf(' + y + ')" title="remove image" type="button"><i class="glyphicon glyphicon-minus"></i></button></span></div>');
+                $(".input_pdf_wrap").append('<div style="height:48px;"><span class="col-lg-12" style="padding-top:10px;"><span class="col-lg-5" style="padding: 0"><span class="file-select" id="select-pdf' + y + '">choose file <i class="fa fa-sort pull-right"></i></span><input class="item_photo col-lg-10" id="pdf_file_' + y + '" type="file" name="pdf_file_' + y + '" value="upload" onChange="Handle_filechange(' + y + ');" style="opacity: 0"></span><button class="btn btn-primary btn-circle btn-xs remove_file" onclick="rem_pdf(' + y + ')" title="remove image" type="button"><i class="glyphicon glyphicon-minus"></i></button></span></div>');
 //            $(wrapper).append(' <div> <input class="fileupload upload form-control" type="file" name="photo_file_' + x + '" size="20"><a href="#" class="remove_field">Remove</a></div>'); //add input box
             }
         });
@@ -186,8 +196,7 @@
             } else {
                 ?>
         <!--                <a href="<?php echo site_url('/items/itsmine/' . $objItem->itemid . '/'); ?>" class="button icon-with-text round"> <i class="fa fa-fw">&#xf0f0;</i>I Have This Now</a> -->
-                <?php
-                ?>
+                <?php ?>
                 <a data-toggle="modal" data-target="#change_owner_model" id="change_owner" class="button icon-with-text round"> <i class="fa fa-fw">&#xf007;</i>  Change Owner or Location</a>
                 <?php
             }
@@ -223,7 +232,7 @@
     </div>
 </div>
 
-<?php // if ($objItem->active != 0) {   ?>
+<?php // if ($objItem->active != 0) {    ?>
 
 <div class="tabs itemview"><ul>
 
@@ -243,7 +252,7 @@
         <?php } ?>
 <!--<li class="pull-right backarrow back-btn"><a href="#" class="back" onclick="goBack();"><i class="fa fa-arrow-left"></i></a></li>-->
     </ul></div>
-<?php // } else {   ?>
+<?php // } else {    ?>
 
 <!--    <div class="tabs tabview"><ul>
 
@@ -256,7 +265,7 @@
             <li class="pull-right back back-btn"><a href="#" class="back" onclick="goBack();"><i class="fa fa-arrow-left"></i></a></li>
         </ul></div>-->
 
-<?php // }   ?>
+<?php // }    ?>
 
 <h1><?php
     if ($objItem->item_manu_name) {
@@ -645,7 +654,7 @@
                                             echo 'selected="selected"';
                                         }
                                         ?>><?php echo $con['condition']; ?></option>
-<?php } ?>
+                                            <?php } ?>
                                 </select></td>
                         </tr>
                         <tr class="tb_header">
@@ -700,7 +709,7 @@
                                     }
                                     ?>
                                 </select>
-<?php echo form_error('location_id'); ?>  
+                                <?php echo form_error('location_id'); ?>  
                             </td>
                         </tr>
                         <tr>
@@ -904,7 +913,7 @@
                     ?>
 
                     <div class="col-md-4">
-    <?php echo $custom_name->field_name; ?>
+                        <?php echo $custom_name->field_name; ?>
                     </div>
                     <div id="custom_field_id" class="col-md-8">
                         <?php if ($custom_name->field_value == 'text_type') { ?>
@@ -913,19 +922,19 @@
                                 echo $custom_name->content;
                             }
                             ?>" ></br>
-                            <?php } elseif ($custom_name->field_value == 'value_type') { ?>
+                               <?php } elseif ($custom_name->field_value == 'value_type') { ?>
                             <div class="input-group"><div class="input-group-addon">$</div><input type="number" class="form-control" placeholder="Enter Content" disabled="" name="<?php echo $custom_name->id; ?>" id="asset_type" type="text" min="0" value="<?php
                                 if (isset($custom_name->content)) {
                                     echo $custom_name->content;
                                 }
                                 ?>" ></div></br>
-                        <?php } elseif ($custom_name->field_value == 'num') { ?>
+                            <?php } elseif ($custom_name->field_value == 'num') { ?>
                             <input class="form-control" placeholder="Enter Content" disabled="" name="<?php echo $custom_name->id; ?>" id="asset_type" type="number" min="0" value="<?php
                             if (isset($custom_name->content)) {
                                 echo $custom_name->content;
                             }
                             ?>" ></br>
-                        <?php } elseif ($custom_name->field_value == 'date_type') { ?>
+                               <?php } elseif ($custom_name->field_value == 'date_type') { ?>
                             <input placeholder="Enter Asset Type" class="form-control pickdate" placeholder="Enter Content" disabled="" name="<?php echo $custom_name->id; ?>" id="asset_type" type="text" value="<?php
                             if (isset($custom_name->content)) {
                                 echo $custom_name->content;
@@ -938,10 +947,10 @@
                             <select class="form-control" name="<?php echo $custom_name->id; ?>" disabled>
                                 <?php foreach ($arr as $value) { ?>
                                     <option value="<?php echo $value; ?>" <?php if ($value == $custom_name->content) echo 'selected=selected'; ?>><?php echo $value; ?></option>  
-        <?php } ?>
+                                <?php } ?>
 
                             </select></br>
-    <?php } ?>
+                        <?php } ?>
                     </div>
 
                     <?php
@@ -949,7 +958,7 @@
                 ?>
 
             </div>
-<?php echo form_close(); ?>
+            <?php echo form_close(); ?>
         </div>
 
         <!--</form>-->
@@ -969,11 +978,11 @@
                                     $arr_image = explode(',', $objItem->photo_id);
                                     ?>
 
-        <?php for ($i = 0; $i < count($arr_image); $i++) { ?>
+                                    <?php for ($i = 0; $i < count($arr_image); $i++) { ?>
 
 
                                         <a target='_top' title='' href='<?php echo base_url(); ?>/index.php/images/viewAsset/<?php echo $arr_image[$i] ?>' class=''><img width='23%' height="150" alt='Gallery Image' style='display: inline-block' class='thumbnail thumb'  src='<?php echo base_url(); ?>/index.php/images/viewAsset/<?php echo $arr_image[$i] ?>'></a>&nbsp;      
-            <?php if ($arrSessionData['objSystemUser']->levelid > 2) { ?>
+                                        <?php if ($arrSessionData['objSystemUser']->levelid > 2) { ?>
                                             <button class="delete btn-warning" delete_item_id="<?php echo $objItem->itemid; ?>" delete_id="<?php echo $arr_image[$i] ?>" href='<?php echo site_url('/items/delete_photo/' . $arr_image[$i]); ?>'>
                                                 <i class="fa fa-times-circle"></i>
                                             </button>
@@ -984,7 +993,7 @@
                                     ?>
 
                                     <a target='_top' title='' href='<?php echo base_url(); ?>/index.php/images/viewAsset/<?php echo $objItem->photo_id ?>' class=''><img width='23%' height="150" alt='Gallery Image' style='display: inline-block' class='thumbnail thumb'  src='<?php echo base_url(); ?>/index.php/images/viewAsset/<?php echo $objItem->photo_id; ?>'></a>&nbsp;         
-        <?php if ($arrSessionData['objSystemUser']->levelid > 2) { ?>
+                                    <?php if ($arrSessionData['objSystemUser']->levelid > 2) { ?>
                                         <button class="delete btn-warning" delete_item_id="<?php echo $objItem->itemid; ?>" delete_id="<?php echo $objItem->photo_id ?>" href='<?php echo site_url('/items/delete_photo/' . $objItem->photo_id); ?>'>
                                             <i class="fa fa-times-circle"></i>
                                         </button>  
@@ -1025,11 +1034,11 @@
                                     <div  class="pdf_upload">
                                         <a href='<?php echo site_url('/items/pdf_download/' . $list['s3_key']); ?>'>
                                             <i class="fa fa-file-pdf-o"></i></a>
-    <?php if ($arrSessionData['objSystemUser']->levelid > 2) { ?>
+                                        <?php if ($arrSessionData['objSystemUser']->levelid > 2) { ?>
                                             <a class="delete" href='<?php echo site_url('/items/pdf_delete/' . $objItem->itemid . '/' . $list['s3_key']); ?>'>
                                                 <i class="fa fa-times-circle"></i>
                                             </a>  
-    <?php } ?>
+                                        <?php } ?>
                                         <label for="nickname"><?php echo $list['file_name']; ?>    </label>
                                     </div>
                                 </li>
@@ -1041,7 +1050,7 @@
                         <div class="panel-footer input_pdf_wrap">
                             <span class="col-lg-12"><span class="col-lg-4" style="padding: 0">
                                     <span class="file-select" id="select-pdf">choose file <i class="fa fa-sort pull-right"></i></span>
-                                    <input class="item_photo" id="pdf" type="file" name="pdf_file_1" value="upload" style="opacity: 0" onChange="Handlefilechange();"> </span>
+                                    <input class="item_photo" id="pdf" type="file" name="pdf_file_1" value="upload" style="opacity: 0" onChange="Handlefilechange(this);"> </span>
                                 <span class="col-lg-4"><button type="button" title="add more pdf" class="btn btn-primary btn-circle btn-xs add_pdf_button"><i class="glyphicon glyphicon-plus"></i> Add More<br>Pdf</button></span>
                                 <span class="col-lg-3" style="padding: 0"><button type="submit" class="pic_button grad">UPLOAD</button></span>
                             </span>
@@ -1096,7 +1105,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                                 <?php
                                 if (isset($arrRecord['audit'])) {
                                     ?>
-                                                                                                                                                                                            <td colspan="3"><em><strong>Item was marked as <?php
+                                                                                                                                                                                                                <td colspan="3"><em><strong>Item was marked as <?php
                                     if ($arrRecord['audit']->present == 1) {
                                         echo "present";
                                     } else {
@@ -1106,12 +1115,12 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                                     echo " by " . $arrRecord['audit']->userfirstname . " " . $arrRecord['audit']->userlastname;
                                     echo " on an audit of location " . $arrRecord['audit']->name;
                                     ?></strong></em>
-                                                                                                                                                                                            </td>
+                                                                                                                                                                                                                </td>
                                     <?php
                                 } else {
                                     ?>
 
-                                                                                                                                                                                            <td><?php
+                                                                                                                                                                                                                <td><?php
                                     if (isset($arrRecord['user'])) {
                                         echo $arrRecord['user']->owner_name;
                                     }
@@ -1243,7 +1252,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
     <!--                                <tr>
     <td colspan="3">No Logs Found</td>
     </tr>-->
-    <? // }          ?>
+                            <? // }           ?>
                         </tbody>
 
                     </table>
@@ -1870,7 +1879,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
         ?>
         <div class="alert alert-success alert-dismissable">
             <button aria-hidden="true" data-dismiss="alert" class="close" type="button">&times;</button>
-        <?php echo $this->session->flashdata('success'); ?>
+            <?php echo $this->session->flashdata('success'); ?>
         </div>
         <?php
     }
@@ -1878,12 +1887,12 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
         ?>
         <div class="alert alert-warning alert-dismissable">
             <button aria-hidden="true" data-dismiss="alert" class="close" type="button">&times;</button>
-        <?php echo $this->session->flashdata('error'); ?>
+            <?php echo $this->session->flashdata('error'); ?>
         </div>
         <?php
     }
     ?>
-<?php // echo $this->view('users/assets/asset_sidemenu');               ?>
+    <?php // echo $this->view('users/assets/asset_sidemenu');                ?>
     <div class="row">
         <div class="col-lg-12">
 
@@ -1905,7 +1914,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                                 </tr>
                             </thead>
                             <tbody id="asset_body"> 
-<?php foreach ($conditionhistory as $asset) { ?>
+                                <?php foreach ($conditionhistory as $asset) { ?>
                                     <tr>
                                         <td>
                                             <?php
@@ -1987,7 +1996,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                                         <td><?php echo $asset['firstname'] . ' ' . $asset['lastname']; ?></td>
                                         <td><?php echo $asset['notes']; ?></td>
                                     </tr>
-<?php } ?>
+                                <?php } ?>
                             </tbody>
                         </table>
                     </div>
@@ -2285,7 +2294,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                         </tr>
 
 
-    <?php } ?>
+                    <?php } ?>
                 </tbody>
                 <tfoot>
                 <th>Actions</th>
@@ -2402,7 +2411,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                         <div class="col-md-6"><select name="new_condition" class="form-control"><option>----SELECT----</option>  
                                 <?php foreach ($conditionlist as $condition) { ?>
                                     <option value="<?php echo $condition['id']; ?>"><?php echo $condition['condition']; ?></option>
-<?php } ?>
+                                <?php } ?>
                             </select>
                         </div>
                     </div>
@@ -2644,7 +2653,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                         <div class="col-md-6">  <label>Enter QR Code*</label> </div>
                         <div class="col-md-6">  <div class="input-group">
                                 <div class="input-group-addon grpaddon">
-<?php echo $this->session->userdata('objSystemUser')->qrcode; ?></div>
+                                    <?php echo $this->session->userdata('objSystemUser')->qrcode; ?></div>
                                 <input placeholder="Enter QR Code" class="form-control barcss" name="item_barcode_similar" id="item_barcode_similar">
                             </div>
                             <div id="qrcodeerror_similar" class="qrcodeerror hide">QR Code Already Exist.</div>
@@ -3723,7 +3732,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
             $('#genPdf_form input#pdfAllData').val(rowData);
             $('#genPdf_form').submit();
         });
-                 // Establish Link to Owner,Location and Site
+        // Establish Link to Owner,Location and Site
         $('body').find('#owner_id').change(function() {
             var owner_id = this.value;
             if (owner_id != 0) {
@@ -3732,7 +3741,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                     if (data.results.length != 0) {
                         $('.multi_location_class option[value="' + data.results[0].location_id + '"]').attr('selected', 'selected');
                         $.getJSON("<?php echo base_url('items/getsitebylocation'); ?>" + '/' + data.results[0].location_id, function(site_data) {
-                           if (site_data!= null)
+                            if (site_data != null)
                             {
                                 $('.multi_site_class option[value="' + site_data.results[0].site_id + '"]').attr('selected', 'selected');
                             }
@@ -3753,7 +3762,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                 $('.multi_site_class option[value="0"]').attr('selected', 'selected');
             }
         });
-        
+
         // estblish link and site link
 
         $(document).find('.multi_site_class').change(function() {

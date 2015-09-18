@@ -45,13 +45,13 @@
     }
 </style>
 <div class="heading">
-    <h1>List of Compliance Checks</h1>
+    <h1>List of Safety Checks</h1>
 
 </div>
 <div class="box_content">
     <div class="ver_tabs" style="">
         <a class="" href="<?php echo base_url('admins/complianceChecks'); ?>" class="active"><span>Customer Template</span></a>
-        <a class="active" href="<?php echo base_url('admins/compliancesList'); ?>"><span>List Of Compliance Check </span></a>
+        <a class="active" href="<?php echo base_url('admins/compliancesList'); ?>"><span>List Of Safety Check </span></a>
     </div> 
     <div class="content_main">
 
@@ -62,7 +62,7 @@
                 <thead>
                     <tr>
                         <th data-export="false">Select</th>
-                        <th data-export="true">Compliance Name</th>
+                        <th data-export="true">Safety Name</th>
 
                         <th data-export="true">Frequency</th>
                         <th data-export="true">Mandatory</th>
@@ -78,7 +78,7 @@
                 <tfoot>
                     <tr>
                         <th style="padding:8px;"><input type="checkbox" title="Select ALL" id="selectAllchk"><button type="button" id="multiComEditBtn" class="btn btn-warning fade hide" style="padding:0 5px;" onclick="multiComInit()">Edit</button></th>
-                        <th>Compliance Name</th>
+                        <th>Safety Name</th>
 
                         <th>Frequency</th>
                         <th>Mandatory</th>
@@ -122,12 +122,12 @@
                 <form action="<?php echo base_url() ?>admins/editTemplateCompliance" method="post">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title" id="myModalLabel">Edit Compliance</h4>
+                        <h4 class="modal-title" id="myModalLabel">Edit Safety</h4>
                     </div>
                     <div class="modal-body">
                         <div class="row">
                             <input name="compliance_check_id" hidden="">
-                            <label class="col-md-4">Compliance Name</label><input name="compliance_check_name" class="col-md-6">
+                            <label class="col-md-4">Safety Name</label><input name="compliance_check_name" class="col-md-6">
                         </div>
                         <!--                        <div class="row">
                                                     <label class="col-md-4">Category</label>
@@ -206,7 +206,7 @@
                 <form action="<?php echo base_url() ?>admins/editMultiTemplateCompliance" method="post">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title" id="myModalLabel">Edit Multiple Compliance</h4>
+                        <h4 class="modal-title" id="myModalLabel">Edit Multiple Safety</h4>
                     </div>
                     <div class="modal-body">
                         <div class="row">

@@ -181,13 +181,13 @@
 </script>
 
 <div class="heading">
-    <h1>Compliance Checks - Customer Templates</h1>
+    <h1>Safety Checks - Customer Templates</h1>
 
 </div>
 <div class="box_content">
     <div class="ver_tabs" style="">
         <a class="active" href="<?php echo base_url('admins/complianceChecks'); ?>" class="active"><span>Customer Template</span></a>
-        <a class="" href="<?php echo base_url('admins/compliancesList'); ?>"><span>List Of Compliance Check </span></a>
+        <a class="" href="<?php echo base_url('admins/compliancesList'); ?>"><span>List Of Safety Check </span></a>
     </div> 
     <script>
         $(function() {
@@ -202,11 +202,11 @@
                     <thead>
                     <th colspan="4">
 
-                    <h3>Add Compliance Check</h3></th>
+                    <h3>Add Safety Check</h3></th>
                     </thead>
                     <tbody id="compliance_add">
                         <tr>
-                            <td><strong>Compliance Name</strong><sup> *</sup></td>
+                            <td><strong>Safety Name</strong><sup> *</sup></td>
                             <td colspan="3"><input type="input" id='Compliance_check_name' name="Compliance_check_name"/></td>
                              <input type="hidden" name="masterid" value="<?php echo $arrSessionData["objAdminUser"]->id; ?>" 
                         </tr>
@@ -241,7 +241,7 @@
 
                     </tbody>
                 </table>
-                <div id='atleastOneTaskLabel'><p>One Task MUST be added to a compliance check.</p></div>
+                <div id='atleastOneTaskLabel'><p>One Task MUST be added to a safety check.</p></div>
                 <p>Drag & Drop Required Tasks into the Box Above.</p>
                 <p>Fields Marked <sup>*</sup> are Mandatory.</p>
                 <input id="task_details" name="task_details" hidden="true">

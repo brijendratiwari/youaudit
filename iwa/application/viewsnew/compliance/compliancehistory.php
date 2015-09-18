@@ -1,7 +1,7 @@
 <?php // print "<pre>"; print_r($missedTests); print "</pre>"; ?>
 <link href="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/css/sub_style.css" rel="stylesheet" type="text/css" />
 <div class="heading">
-    <h1>Compliance History</h1>
+    <h1>Safety History</h1>
     <div class="buttons">
         
     </div>
@@ -26,10 +26,10 @@
 </style>
 <div class="box_content">
     <div class="ver_tabs">
-        <a class="" href="<?php  echo base_url('index.php/compliance');  ?>"><span>Compliance Checks Due</span></a>
-      <a class="active" href="#"><span>Compliance History</a>
-      <a class="" href="<?php  echo base_url('index.php/compliance/complianceslist');  ?>"><span>List of Compliance Checks</span></a>
-      <a class="" href="<?php  echo base_url('index.php/compliance/compliancesadmin');  ?>"><span>Compliance Admin</span></a>
+        <a class="" href="<?php  echo base_url('index.php/compliance');  ?>"><span>Safety Checks Due</span></a>
+      <a class="active" href="#"><span>Safety History</a>
+      <a class="" href="<?php  echo base_url('index.php/compliance/complianceslist');  ?>"><span>List of Safety Checks</span></a>
+      <a class="" href="<?php  echo base_url('index.php/compliance/compliancesadmin');  ?>"><span>Safety Admin</span></a>
       <a class="" href="<?php echo base_url('compliance/adhoc'); ?>"><span>Complete Adhoc Checks</span></a>
       <a class="" href="<?php echo base_url('compliance/templates'); ?>"><span>Templates</span></a>
       <a class="" href="<?php echo base_url('compliance/report'); ?>"><span>Report</span></a> 
@@ -79,7 +79,7 @@
                         <th data-export="true">Owner</th>
                         <th data-export="true">Location</th>
                         <th data-export="true">Site</th>
-                        <th data-export="true">Compliance Name</th>
+                        <th data-export="true">Safety Name</th>
                         <th data-export="true">Logged By</th>
                         <th data-export="true">Due Date</th>
                         <th data-export="true">Complete Date</th>
@@ -103,7 +103,7 @@
                     <th>Owner</th>
                     <th>Location</th>
                     <th>Site</th>
-                    <th data-thSel="true">Compliance Name</th>
+                    <th data-thSel="true">Safety Name</th>
                     <th>Logged By</th>
                     <th></th>
                     <th></th>
@@ -544,7 +544,7 @@
                             </tr>
                             <tr>
                                 <th><input checked="" type="checkbox" value="7"> Site</th>
-                                <th><input checked="" type="checkbox" value="8"> Compliance Name</th>
+                                <th><input checked="" type="checkbox" value="8"> Safety Name</th>
                             </tr>
                             <tr>
                                 <th><input checked="" type="checkbox" value="9"> Logged By</th>

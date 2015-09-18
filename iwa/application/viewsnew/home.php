@@ -632,7 +632,7 @@
 <!--<input type="hidden" id="similar_data" value="<?php echo $this->session->flashdata('item'); ?>">-->
 
 <input type="hidden" id="asset_qrcode" value="<?php echo $this->session->userdata('objSystemUser')->qrcode; ?>">
-<div id="page-wrapper" style="min-height: 573px;">
+<div id="page-wrapper" class="dashboard_sidebar" style="min-height: 573px;">
 
     <?php // var_dump($arrSessionData['objSystemUser']->levelid);die;   ?>
     <div style="margin-bottom: 20px;margin-top: 15px;" class="row">
@@ -643,16 +643,16 @@
                 <div class="panel-body" id="app_icons">
                     <div class="col-md-12">
                         <div class="col-md-6"><a id="audit_location" class="button icon-with-text round"><i class="fa fa-fw">&#xf044;</i><b>Audit Location</b></a> </div>
-                        <div class="col-md-6"><a id="change_owner" class="button icon-with-text round"><i class="fa fa-fw">&#xf007;</i><b>Condition By Location</b></a></div>
+                        <div class="col-md-6"><a id="change_owner" class="button icon-with-text round"><i class="fa fa-thumbs-o-up"></i><b>Condition By Location</b></a></div>
                     </div>
                     <div class="col-md-12">
-                        <div class="col-md-6"><a type="button" id="check_condition" class="button icon-with-text round">  <i class="fa fa-fw">&#xf058;</i><b>Condition Check</b></a></div>
-                        <div class="col-md-6"><a type="button" id="ownership" class="button icon-with-text round"><i class="fa fa-fw">&#xf007;</i><b>Ownership</b></a></div>
+                        <div class="col-md-6"><a type="button" id="check_condition" class="button icon-with-text round">  <i class="fa fa-thumbs-o-up"></i><b>Condition Check</b></a></div>
+                        <div class="col-md-6"><a type="button" id="ownership" class="button icon-with-text round"><i class="fa fa-users"></i><b>Ownership</b></a></div>
                     </div>
 
                     <div class="col-md-12">
                         <div class="col-md-6"><a id="report_fault" class="button icon-with-text round"><i class="fa fa-fw">&#xf071;</i><b>Report Fault</b></a></div>
-                        <div class="col-md-6"><a id="addsimilaritem" class="add_similar button icon-with-text round" data_item_id="<?php echo $arrItem->itemid; ?>"><i class="glyphicon glyphicon-arrow-up"></i><b>Add similar Item</b></a></div></div>
+                        <div class="col-md-6"><a id="addsimilaritem" class="add_similar button icon-with-text round" data_item_id="<?php echo $arrItem->itemid; ?>"><i class="fa  fa-plus-circle"></i><b>Add similar Item</b></a></div></div>
                     <div class="col-md-12"><div class="col-md-6"><a href="#" data-toggle="modal" data-target="#add_item" class="button icon-with-text round" id="additem"><i class="fa  fa-plus-circle"></i><b>Add New</b></a></div></div>                    
                 </div>
                 <div class="panel-body" id="search_box">
@@ -774,7 +774,7 @@
                         <div class="col-md-6"><a id="item_edit" href="<?php echo base_url('compliance'); ?>" class="button icon-with-text round"><i class="fa fa-fw">&#xf044;</i><b>Safety Check</b></a></div>
                     </div>
                     <div class="col-md-12">
-                        <div class="col-md-6"><a href="<?php echo base_url('faults'); ?>" title="Fix item" class="button icon-with-text round"><i class="fa fa-fw">&#xf0ad;</i><b>Fix Item</b></a></div>
+                        <div class="col-md-6"><a href="<?php echo base_url('faults'); ?>" title="Fix item" class="button icon-with-text round"><i class="fa fa-gear"></i><b>Fix Item</b></a></div>
                         <div class="col-md-6"><a href="<?php echo base_url('faults'); ?>" id="item_add" class="button icon-with-text round"><i class="fa fa-fw">&#xf071;</i><b>Current Faults</b></a></div>
                     </div>                    
                 </div>
