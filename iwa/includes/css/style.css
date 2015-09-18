@@ -4,18 +4,7 @@
 /* DD9900 */
 /* E59900 */
 /* D68F00 */
-.img_replace{
-    display: block;
-    text-indent: -99999px;
-}
-.imgreplace{
-    display: block;
-    text-indent: -99999px;
-    height: 80px;
-    width: 150px!important;
-    padding-top: 0px;
-    
-}
+
 #filtermanufacturer, #filteritem_manu, #filtercategoryname, #filtersitename, #filterlocationid, #filteruserid, #filtersupplier, #filteritemstatusid, #filterconstatus,.categorylist, .itemmanu, .manufacturer, .sitelist, .locations, .ownerlist, .statuslist, .actionlist, .severity {
     width: 100% !important; border-radius: 9px !important; height: 25px;
 }
@@ -669,7 +658,10 @@ label .form_help{
     font-size: 10px !important;
     text-align: center;
 }
-
+.dashboard_sidebar .panel-body .col-md-12, .dashboard_sidebar .panel-body .col-md-6 {
+    padding-left: 0;
+    padding-right: 0;
+}
 #item_table td  {
     text-align: center;
 }
@@ -677,6 +669,7 @@ label .form_help{
     display: inline-block; font-size: 12px;
 }
 .icon-with-text{background: none !important;border: none !important;color: #000 !important;}
+.dashboard_sidebar .icon-with-text{width: 100%}
 .icon-with-text i{border: 1px solid #00AEEF;
                   border-radius: 3px;
                   display: table;
@@ -687,7 +680,7 @@ label .form_help{
                   font-size: 18px;
                   margin: auto;
                   width: 25px;}
-.icon-with-text b{color: #000 !important;}
+.icon-with-text b{color: #000 !important;display: block;}
 .tb{border: solid 1px #333 !important;}
 .icon-with-text.round i{border-radius: 100%;padding: 10px}.tb tr th{background: #e1e1e1;}
 .tb tr th, .tb tr td{padding: 10px 2px !important;font-size: 12px;border-color: #cdcdcd !important;}
@@ -869,13 +862,29 @@ table.dataTable thead .sorting{background: url("../images/sort_both.png") no-rep
     color:red; 
     font-weight:bold
 }
+.logo_cls {
+    margin: 20px 5px !important;
+    max-width: 350px !important;
+}
 .logocls {
         float: right;
         padding: 10px 5px;
-/*        max-height: 130px;
-        max-width: 130px;*/
-    }
-	
+        width: 140px;
+        overflow: hidden;
+}
+.img_replace{
+    display: block;
+    text-indent: -99999px;
+}
+.imgreplace{
+    display: block;
+    text-indent: -99999px;
+    height: auto;
+    width: 100%;
+    background-size: 100% auto;
+    padding-top: 0px;
+    
+}	
 .back {
     border-radius: 4px !important;
     font-size: 22px;

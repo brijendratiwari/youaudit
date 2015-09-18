@@ -100,6 +100,7 @@ class Users_model extends CI_Model {
                             photos.image_height AS photoheight,
                             photos.path AS photopath,
                             accounts.id AS accountid,
+                            accounts.support_email,
 			    accounts.name AS accountname,
                             accounts.qr_refcode AS qrcode,
                             accounts.fleet AS fleet,

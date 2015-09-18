@@ -20,7 +20,7 @@ class Account extends CI_Controller {
         $arrPageData = array();
         $arrPageData['arrPageParameters']['strSection'] = get_class();
         $arrPageData['arrPageParameters']['strPage'] = "Edit";
-        $arrPageData['arrSessionData'] = $this->session->userdata; 
+        $arrPageData['arrSessionData'] = $this->session->userdata;        
         $this->session->set_userdata('booCourier', false);
         $this->session->set_userdata('arrCourier', array());
         $arrPageData['arrErrorMessages'] = array();
@@ -89,12 +89,12 @@ class Account extends CI_Controller {
                 $this->form_validation->set_rules('account_city', 'City', 'trim|required');
                 $this->form_validation->set_rules('account_postcode', 'Post Code', 'trim|required');
                 $this->form_validation->set_rules('account_state', 'Account State', 'required');
-                    $this->form_validation->set_rules('account_package', 'Account Package', 'required');
+//                $this->form_validation->set_rules('account_package', 'Account Package', 'required');
                 $this->form_validation->set_rules('account_contactname', 'Contact Name', 'trim|required');
                 $this->form_validation->set_rules('account_contactemail', 'Contact Email', 'trim|required');
                 $this->form_validation->set_rules('account_contactnumber', 'Contact Number', 'trim|required');
                 $this->form_validation->set_rules('account_supportaddress', 'Support eMail', 'trim|required');
-                $this->form_validation->set_rules('account_fleetcontact', 'Fleet Contact Name', 'trim|required');
+//                $this->form_validation->set_rules('account_fleetcontact', 'Fleet Contact Name', 'trim|required');
 //                    $this->form_validation->set_rules('color', 'color', 'trim|required');
 //                    if ($this->input->post('account_fleetemail')) {
 //                        $this->form_validation->set_rules('account_fleetcontact', 'Fleet Contact Name', 'trim|required');
@@ -105,7 +105,7 @@ class Account extends CI_Controller {
 
                 $this->form_validation->set_error_delimiters('<span class="error">', '</span></br>');
 
-                if ($this->form_validation->run()) {
+                if ($this->form_validation->run()) { 
 
                     $arrInput = array(
                         'name' => $this->input->post('account_name'),
@@ -130,7 +130,41 @@ class Account extends CI_Controller {
                         'reporting_module' => $this->input->post('account_reporting'),
                         'color' => $this->input->post('color'),
                     );
+                    if($this->input->post('account_fleet')==1)
+                    {
+                        $fleet = 'Fleet Module';
+                    }
+                    if($this->input->post('account_compliance')==1)
+                    {
+                        $safety = 'Safety Module';
+                    }
+                    if($this->input->post('account_condition')==1)
+                    {
+                        $condition = 'Condition Module';
+                    }
+                    
+                    
+                    $this->load->library('email');
+                    $this->email->from($this->session->userdata('objSystemUser')->support_email, "YouAudit Additional Modules");
+                    if($this->session->userdata('objSystemUser')->team_type=='1')
+                    {
+                     $acc = $this->db->select('email')->where('id',$this->session->userdata('objSystemUser')->team_type)->get('master_ac')->row();  
+                    }
+                    else
+                    {
+                     $acc = $this->db->select('email')->where('id',$this->session->userdata('objSystemUser')->team_type)->get('franchise_ac')->row();   
+                    }
+                    
+                    $this->email->to($acc->email);
+                    $this->email->subject('Additional Modules');
+                    $this->email->message($this->session->userdata('objSystemUser')->firstname . " " . $this->session->userdata('objSystemUser')->lastname.'added'.$fleet.' '.$safety.' '.$condition);
 
+                    if ($this->email->send()) {
+                        
+                    }
+                    else {
+                        $arrPageData['arrErrorMessages'][] = "Unable to send Module Updation mail.";
+                    }
                     if ($this->accounts_model->update($this->session->userdata('objSystemUser')->accountid, $arrInput)) {
 
                         // Yes				

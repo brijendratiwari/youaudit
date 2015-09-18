@@ -56,9 +56,12 @@ class Admin_Section extends MY_Controller {
                 'item_manu_name' => $items[$i],
                 'account_id' => $arrPageData['arrSessionData']['objSystemUser']->accountid,
             );
-            $result = $this->admin_section_model->addItem_Manu($data);
+            $result[] = $this->admin_section_model->addItem_Manu($data);
         }
         if ($result) {
+            for ($i = 0; $i < count($result); $i++) {
+                $this->logThis("Added Item Manu", "item_manu", $result[$i]);
+            }
             $this->session->set_flashdata('success', 'Item(s) Added Successfully');
             redirect("admin_section/", "refresh");
         } else {
@@ -92,10 +95,13 @@ class Admin_Section extends MY_Controller {
                 'account_id' => $arrPageData['arrSessionData']['objSystemUser']->accountid,
             );
 
-            $result = $this->admin_section_model->addManufacturer($data);
+            $result[] = $this->admin_section_model->addManufacturer($data);
         }
 
         if ($result) {
+            for ($i = 0; $i < count($result); $i++) {
+                $this->logThis("Added Manufacturer", "manufacturer_list", $result[$i]);
+            }
             $this->session->set_flashdata('success', 'Manufacturer(s) Added Successfully');
             redirect("admin_section/", "refresh");
         } else {
@@ -123,15 +129,33 @@ class Admin_Section extends MY_Controller {
             $result = $this->admin_section_model->editItems_Manu($data);
         }
         if ($this->input->post('manufacturer_name')) {
-            $data = array(
+            $data1 = array(
                 'manufacturer_name' => $this->input->post('manufacturer_name'),
                 'manufacturer_id' => $this->input->post('manufacturer_id'),
             );
 
-            $result1 = $this->admin_section_model->editManufacturer($data);
+            $result1 = $this->admin_section_model->editManufacturer($data1);
         }
 
         if ($result || $result1 || ($result && $result1)) {
+            if (($result) && (!$result1)) {
+                for ($m = 0; $m < count($result); $m++) {
+                    $this->logThis("Updated Item Manu", "item_manu", $result[$m]);
+                }
+            }
+            if (($result1) && (!$result)) {
+                for ($n = 0; $n < count($result1); $n++) {
+                    $this->logThis("Updated Manufacturer", "manufacturer_list", $result1[$n]);
+                }
+            }
+            if (($result) && ($result1)) {
+                for ($m = 0; $m < count($result); $m++) {
+                    $this->logThis("Updated Item Manu", "item_manu", $result[$m]);
+                }
+                for ($n = 0; $n < count($result1); $n++) {
+                    $this->logThis("Updated Manufacturer", "manufacturer_list", $result1[$n]);
+                }
+            }
             $this->session->set_flashdata('success', 'Item(s) and Manufacturer(s) Updated Successfully');
             redirect("admin_section/", "refresh");
         } else {
@@ -249,6 +273,7 @@ class Admin_Section extends MY_Controller {
 
 
         if ($result) {
+            $this->logThis("Archived Owner", "owner", $ownerid);
             $this->session->set_flashdata('success', 'Owner Archive Successfully');
             redirect("admin_section/admin_owner/", "refresh");
         } else {
@@ -267,6 +292,7 @@ class Admin_Section extends MY_Controller {
         $this->load->model('admin_section_model');
         $response = $this->admin_section_model->add_owner();
         if ($response) {
+            $this->logThis("Added Owner", "owner", $response);
             $this->session->set_flashdata('success', 'Owner Added Successfully');
             redirect("admin_section/admin_owner", "refresh");
         } else {
@@ -296,6 +322,7 @@ class Admin_Section extends MY_Controller {
 
             $result = $this->admin_section_model->edit_owner($editOwner);
             if ($result) {
+                $this->logThis("Updated Owner", "owner", $editOwner['adminuser_id']);
                 $this->session->set_flashdata('success', 'Owner Edited Successfully');
                 redirect("admin_section/admin_owner/", "refresh");
             }
@@ -392,6 +419,7 @@ class Admin_Section extends MY_Controller {
             }
             $result = $this->admin_section_model->addCategory($arrCategory);
             if ($result) {
+                $this->logThis("Added Category", "categories", $result);
                 $this->session->set_flashdata('success', 'Category Added Successfully');
                 redirect("admin_section/admin_categories/", "refresh");
             }
@@ -441,6 +469,7 @@ class Admin_Section extends MY_Controller {
             $result = $this->admin_section_model->editCategory($editCategory);
 
             if ($result) {
+                $this->logThis("Updated Category", "categories", $editCategory['category_id']);
                 $this->session->set_flashdata('success', 'Category Edited Successfully');
                 redirect("admin_section/admin_categories/", "refresh");
             }
@@ -527,6 +556,7 @@ class Admin_Section extends MY_Controller {
         $result = $this->categories_model->deleteOne($category_id);
 
         if ($result) {
+            $this->logThis("Archived Category", "categories", $category_id);
             $this->session->set_flashdata('success', 'Category Archived Successfully');
             redirect("admin_section/admin_categories/", "refresh");
         } else {
@@ -615,6 +645,7 @@ class Admin_Section extends MY_Controller {
         $this->load->model('admin_section_model');
         $result = $this->admin_section_model->archiveUser($user_id);
         if ($result) {
+            $this->logThis("Archive User", "users", $user_id);
             $this->session->set_flashdata('success', 'User Archived Successfully');
             redirect("admin_section/admin_user/", "refresh");
         }
@@ -626,6 +657,7 @@ class Admin_Section extends MY_Controller {
         $this->load->model('admin_section_model');
         $result = $this->admin_section_model->archive_Supplier($supplier_id);
         if ($result) {
+            $this->logThis("Archived Supplier", "suppliers", $supplier_id);
             $this->session->set_flashdata('success', 'Supplier Archived Successfully');
             redirect("admin_section/admin_supplier/", "refresh");
         }
@@ -659,6 +691,7 @@ class Admin_Section extends MY_Controller {
 
         $response = $this->admin_section_model->add_users($data);
         if ($response) {
+            $this->logThis("Added User", "users", $response);
             $this->session->set_flashdata('success', 'User Added Successfully');
             redirect("admin_section/admin_user", "refresh");
         } else {
@@ -725,6 +758,7 @@ class Admin_Section extends MY_Controller {
 
             $result = $this->admin_section_model->editUser($editUser);
             if ($result) {
+                $this->logThis("Updated User", "users", $editUser['adminuser_id']);
                 $this->session->set_flashdata('success', 'User Edited Successfully');
                 redirect("admin_section/admin_user/", "refresh");
             }
@@ -756,6 +790,9 @@ class Admin_Section extends MY_Controller {
         $this->load->model('admin_section_model');
         $result = $this->admin_section_model->add_multiple($data);
         if ($result) {
+            for ($k = 0; $k < count($result); $k++) {
+                $this->logThis("Added User", "users", $result[$k]);
+            }
             $this->session->set_flashdata('success', 'User(s) Added Successfully');
             redirect("admin_section/admin_user/", "refresh");
         } else {
@@ -801,6 +838,7 @@ class Admin_Section extends MY_Controller {
 
         $response = $this->admin_section_model->add_site();
         if ($response) {
+            $this->logThis("Added Sites", "sites", $response);
             $this->session->set_flashdata('success', 'Site Added Successfully');
             redirect("admin_section/admin_sites", "refresh");
         } else {
@@ -827,6 +865,7 @@ class Admin_Section extends MY_Controller {
 
             $result = $this->admin_section_model->editSite($editSite);
             if ($result) {
+                $this->logThis("Updated Sites", "sites", $editSite['adminuser_id']);
                 $this->session->set_flashdata('success', 'Site Edited Successfully');
                 redirect("admin_section/admin_sites/", "refresh");
             }
@@ -892,6 +931,9 @@ class Admin_Section extends MY_Controller {
         $this->load->model('admin_section_model');
         $result = $this->admin_section_model->multiple_site($data);
         if ($result) {
+            for ($j = 0; $j < count($result); $j++) {
+                $this->logThis("Added Site", "sites", $result[$j]);
+            }
             $this->session->set_flashdata('success', 'Site(s) Added Successfully');
             redirect("admin_section/admin_sites/", "refresh");
         } else {
@@ -910,6 +952,7 @@ class Admin_Section extends MY_Controller {
         $this->load->model('admin_section_model');
         $result = $this->admin_section_model->archiveSite($site_id);
         if ($result) {
+            $this->logThis("Archived Sites", "sites", $site_id);
             $this->session->set_flashdata('success', 'Site Archived Successfully');
             redirect("admin_section/admin_sites/", "refresh");
         } else {
@@ -966,6 +1009,7 @@ class Admin_Section extends MY_Controller {
         $this->load->model('admin_section_model');
         $response = $this->admin_section_model->add_location();
         if ($response) {
+            $this->logThis("Added Location", "locations", $response);
             $this->session->set_flashdata('success', 'Location Added Successfully');
             redirect("admin_section/admin_location", "refresh");
         } else {
@@ -995,6 +1039,7 @@ class Admin_Section extends MY_Controller {
 
             $result = $this->admin_section_model->editLocation($editLocation);
             if ($result) {
+                $this->logThis("Updated Location", "locations", $editLocation['adminuser_id']);
                 $this->session->set_flashdata('success', 'Location Edited Successfully');
                 redirect("admin_section/admin_location", "refresh");
             }
@@ -1055,6 +1100,9 @@ class Admin_Section extends MY_Controller {
         $this->load->model('admin_section_model');
         $result = $this->admin_section_model->multiple_location($data);
         if ($result) {
+            for ($j = 0; $j < count($result); $j++) {
+                $this->logThis("Added Location", "locations", $result[$j]);
+            }
             $this->session->set_flashdata('success', 'Location(s) Added Successfully');
             redirect("admin_section/admin_location/", "refresh");
         } else {
@@ -1070,6 +1118,7 @@ class Admin_Section extends MY_Controller {
         $this->load->model('admin_section_model');
         $result = $this->admin_section_model->archiveLocation($location_id);
         if ($result) {
+            $this->logThis("Archived Locations", "locations", $location_id);
             $this->session->set_flashdata('success', 'Location Archived Successfully');
             redirect("admin_section/admin_location/", "refresh");
         } else {
@@ -1145,6 +1194,7 @@ class Admin_Section extends MY_Controller {
 //            var_dump($arrPageData['arrSessionData']['objSystemUser']->custom_count);
             $result = $this->admin_section_model->addField($data);
             if ($result) {
+                $this->logThis("Added Custom Field", "custom_fields", $result);
                 $this->session->set_flashdata('success', 'Custom Field Added Successfully');
                 redirect("admin_section/customFields", "refresh");
             } else {
@@ -1188,6 +1238,7 @@ class Admin_Section extends MY_Controller {
 
             $result = $this->admin_section_model->editField($data);
             if ($result) {
+                $this->logThis("Updated Custom Field", "custom_fields", $data['id']);
                 $this->session->set_flashdata('success', 'Custom Field Updated Successfully');
                 redirect("admin_section/customFields", "refresh");
             } else {
@@ -1207,6 +1258,7 @@ class Admin_Section extends MY_Controller {
         $result = $this->admin_section_model->deleteField($field_id);
 
         if ($result) {
+            $this->logThis("Archived Custom Field", "custom_fields", $field_id);
             $this->session->set_flashdata('success', 'Custom Field Deleted Successfully');
             redirect("admin_section/customFields", "refresh");
         } else {
@@ -1306,7 +1358,7 @@ class Admin_Section extends MY_Controller {
         $this->load->model('admin_section_model');
         $result = $this->admin_section_model->archivesupplier($supplierid);
         if ($result) {
-
+            $this->logThis("Archived Supplier", "suppliers", $supplierid);
             $this->session->set_flashdata('success', 'Supplier Added To Archive Successfully');
             redirect("admin_section/admin_supplier", "refresh");
         }
@@ -1321,6 +1373,7 @@ class Admin_Section extends MY_Controller {
         $this->load->model('admin_section_model');
         $response = $this->admin_section_model->add_suppliers();
         if ($response) {
+            $this->logThis("Added Supplier", "suppliers", $response);
             $this->session->set_flashdata('success', 'Supplier Added Successfully');
             redirect("admin_section/admin_supplier", "refresh");
         } else {
@@ -1339,9 +1392,10 @@ class Admin_Section extends MY_Controller {
         if ($this->input->post()) {
 
             $this->load->model('admin_section_model');
-
+            $supplier_id = $this->input->post('adminuser_id');
             $result = $this->admin_section_model->editSupplier();
             if ($result) {
+                $this->logThis("Updated Supplier", "suppliers", $supplier_id);
                 $this->session->set_flashdata('success', 'Supplier Edited Successfully');
                 redirect("admin_section/admin_supplier", "refresh");
             }
@@ -1662,6 +1716,7 @@ class Admin_Section extends MY_Controller {
         $this->load->model('admin_section_model');
         $result = $this->admin_section_model->archiveItem($item_id);
         if ($result) {
+            $this->logThis("Archived Item", "item_manu", $item_id);
             $this->session->set_flashdata('success', 'Item Deleted Successfully');
             redirect("admin_section/", "refresh");
         } else {
@@ -1681,6 +1736,7 @@ class Admin_Section extends MY_Controller {
         $this->load->model('admin_section_model');
         $result = $this->admin_section_model->archiveManufacturer($manufacturer_id);
         if ($result) {
+            $this->logThis("Archived Manufacturer", "manufacturer_list", $manufacturer_id);
             $this->session->set_flashdata('success', 'Manufacturer Deleted Successfully');
             redirect("admin_section/", "refresh");
         } else {
@@ -1708,6 +1764,7 @@ class Admin_Section extends MY_Controller {
         );
         $response = $this->admin_section_model->add_supplier_user($data, $this->input->post('supplier_id'));
         if ($response) {
+            $this->logThis("Added Supplier", "users", $response);
             $this->session->set_flashdata('success', 'Supplier User Added Successfully');
             redirect("admin_section/admin_user", "refresh");
         } else {
@@ -1737,6 +1794,7 @@ class Admin_Section extends MY_Controller {
             $result = $this->admin_section_model->editSupplierUser($editUser);
 
             if ($result) {
+                $this->logThis("Updated Supplier", "users", $editUser['adminuser_id']);
                 $this->session->set_flashdata('success', 'Supplier User Edited Successfully');
                 redirect("admin_section/admin_user/", "refresh");
             }
@@ -2428,6 +2486,9 @@ class Admin_Section extends MY_Controller {
         }
 
         if ($result) {
+            for ($s = 0; $s < count($result); $s++) {
+                $this->logThis("Updated category", "categories", $result[$s]);
+            }
             $this->session->set_flashdata('success', 'Category(s) Updated Successfully');
             redirect("admin_section/admin_categories", "refresh");
         } else {

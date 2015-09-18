@@ -104,6 +104,7 @@ class Admin_Section_Model extends CI_Model {
             $this->load->model('items_model');
 
             for ($i = 0; $i < count($editItem['item_id']); $i++) {
+
                 $data = array(
                     'item_manu_name' => $editItem['item_manu_name'][$i],
                 );
@@ -119,11 +120,14 @@ class Admin_Section_Model extends CI_Model {
 
                     $this->s3->putObjectFile($file, "smartaudit", 'youaudit/' . $editItem['item_id'][$i] . '/' . $strFileName, S3::ACL_PUBLIC_READ);
                 }
-
-                $this->db->where('id', $editItem['item_id'][$i]);
-                $this->db->update('item_manu', $data);
+                if ($this->checkitem($editItem['item_manu_name'][$i], $this->session->userdata('objSystemUser')->accountid) == 0) {
+                    $this->db->set('item_manu_name', $editItem['item_manu_name'][$i]);
+                    $this->db->where('id', $editItem['item_id'][$i]);
+                    $this->db->update('item_manu');
+                    $arr_item[] = $editItem['item_id'][$i];
+                }
             }
-            return TRUE;
+            return $arr_item;
         } else {
             return FALSE;
         }
@@ -135,6 +139,7 @@ class Admin_Section_Model extends CI_Model {
         if (isset($editdata)) {
 
             for ($i = 0; $i < count($editdata['category_id']); $i++) {
+                
                 $data = array(
                     'name' => $editdata['category_name'][$i],
                 );
@@ -163,11 +168,14 @@ class Admin_Section_Model extends CI_Model {
 //                var_dump($editdata['supportemails'][$i]);
 //                die;
 //                var_dump($editdata['supportemails'][$i]);
+                if ($this->checkcategory($editdata['category_name'][$i], $this->session->userdata('objSystemUser')->accountid) == 0) {
                 $this->db->where('id', $editdata['category_id'][$i]);
                 $this->db->update('categories', $data);
+                $arr_category[] = $editdata['category_id'][$i];
+                }
             }
 
-            return TRUE;
+            return $arr_category;
         } else {
             return FALSE;
         }
@@ -183,10 +191,15 @@ class Admin_Section_Model extends CI_Model {
                 $data = array(
                     'manufacturer_name' => $editManufacturer['manufacturer_name'][$i]
                 );
-                $this->db->where('id', $editManufacturer['manufacturer_id'][$i]);
-                $this->db->update('manufacturer_list', $data);
+
+                if ($this->checkmanufacturer($editManufacturer['manufacturer_name'][$i], $this->session->userdata('objSystemUser')->accountid) == 0) {
+                    $this->db->set('manufacturer_name', $editManufacturer['manufacturer_name'][$i]);
+                    $this->db->where('id', $editManufacturer['manufacturer_id'][$i]);
+                    $this->db->update('manufacturer_list');
+                    $arr_manu[] = $editManufacturer['manufacturer_id'][$i];
+                }
             }
-            return TRUE;
+            return $arr_manu;
         } else {
             return FALSE;
         }
@@ -324,7 +337,7 @@ class Admin_Section_Model extends CI_Model {
             $id = $this->db->insert_id();
         }
         if ($id) {
-            return TRUE;
+            return $id;
         } else {
             return FALSE;
         }
@@ -729,7 +742,7 @@ class Admin_Section_Model extends CI_Model {
                     'is_user' => $id);
                 $this->db->insert('owner', $data);
             }
-            return TRUE;
+            return $id;
         } else {
             return FALSE;
         }
@@ -815,6 +828,7 @@ class Admin_Section_Model extends CI_Model {
         $this->load->model('users_model');
         $arrPageData['arrSessionData'] = $this->session->userdata;
         $owners = array();
+//        if ($userdata) {
         foreach ($userdata as $value) {
             $multiple = array('firstname' => $value['first_name'],
                 'lastname' => $value['last_name'],
@@ -832,7 +846,7 @@ class Admin_Section_Model extends CI_Model {
                     $multiple['is_owner'] = 1;
                 }
                 $rs = $this->db->insert('users', $multiple);
-                $id = $this->db->insert_id();
+                $userid = $this->db->insert_id();
             }
             if ($value['owner'] == 1) {
                 $data = array('owner_name' => $value['user_name'],
@@ -841,9 +855,11 @@ class Admin_Section_Model extends CI_Model {
                     'is_user' => $id);
                 $this->db->insert('owner', $data);
             }
+            $arr[] = $userid;
         }
-        if ($rs) {
-            return TRUE;
+
+        if ($arr) {
+            return $arr;
         } else {
             return FALSE;
         }
@@ -895,7 +911,7 @@ class Admin_Section_Model extends CI_Model {
         $this->db->insert('sites', $sitedata);
         $id = $this->db->insert_id();
         if ($id) {
-            return TRUE;
+            return $id;
         } else {
             return FALSE;
         }
@@ -955,10 +971,11 @@ class Admin_Section_Model extends CI_Model {
                 'archive' => 1
             );
 
-            $rs = $this->db->insert('sites', $multiple);
+            $this->db->insert('sites', $multiple);
+            $rs[] = $this->db->insert_id();
         }
         if ($rs) {
-            return TRUE;
+            return $rs;
         } else {
             return FALSE;
         }
@@ -1047,7 +1064,7 @@ class Admin_Section_Model extends CI_Model {
             $this->db->where('id', $this->input->post('new_owner_id'));
             $this->db->update('owner', array('location_id' => $id));
 
-            return TRUE;
+            return $id;
         } else {
             return FALSE;
         }
@@ -1121,13 +1138,14 @@ class Admin_Section_Model extends CI_Model {
 
 
             $rs = $this->db->insert('locations', $multiple);
-            $id = $this->db->insert_id();
-            if ($id) {
+            $location_id = $this->db->insert_id();
+            if ($location_id) {
                 $this->db->where('id', $value['owner_id']);
-                $this->db->update('owner', array('location_id' => $id));
+                $this->db->update('owner', array('location_id' => $location_id));
             }
+            $loc[] = $location_id;
         }
-        return TRUE;
+        return $loc;
     }
 
     // archive Location
@@ -1397,7 +1415,7 @@ class Admin_Section_Model extends CI_Model {
         $this->db->insert('suppliers', $supplierdata);
         $id = $this->db->insert_id();
         if ($id) {
-            return TRUE;
+            return $id;
         } else {
             return FALSE;
         }
@@ -1919,7 +1937,7 @@ class Admin_Section_Model extends CI_Model {
                 );
                 $this->db->insert('supplier_user', $data);
             }
-            return TRUE;
+            return $id;
         } else {
             return FALSE;
         }

@@ -629,7 +629,7 @@
 <!--<input type="hidden" id="similar_data" value="<?php echo $this->session->flashdata('item'); ?>">-->
 
 <input type="hidden" id="asset_qrcode" value="<?php echo $this->session->userdata('objSystemUser')->qrcode; ?>">
-<div id="page-wrapper" style="min-height: 573px;">
+<div id="page-wrapper" class="dashboard_sidebar" style="min-height: 573px;">
 
     <?php // var_dump($arrSessionData['objSystemUser']->levelid);die;   ?>
     <div style="margin-bottom: 20px;margin-top: 15px;" class="row">
