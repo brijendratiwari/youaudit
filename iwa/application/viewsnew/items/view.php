@@ -6,6 +6,25 @@
     .panel-footer{
         background: #DFF2F9;
     }
+    .tabs li.selected{
+        background: #eee none repeat scroll 0 0 !important;
+        transform: skewX(20deg);
+        -webkit-transform: skewX(20deg);
+        -moz-transform: skewX(20deg);
+        -ms-transform: skewX(20deg);
+    }
+    .tabs li.selected a{
+        background: rgba(0, 0, 0, 0) none repeat scroll 0 0 !important;
+        color: #000 !important;
+        display: block;
+        font-size: 14px;
+        font-weight: bold;
+        text-decoration: none;
+        transform: skewX(-20deg);
+        -moz-transform: skewX(-20deg);
+        -webkit-transform: skewX(-20deg);
+        -ms-transform: skewX(-20deg);
+    }
     .panel-body.blue-border li {
         float: left; width: 30%;display: flex;
     }
@@ -147,6 +166,14 @@
 //            $(wrapper).append(' <div> <input class="fileupload upload form-control" type="file" name="photo_file_' + x + '" size="20"><a href="#" class="remove_field">Remove</a></div>'); //add input box
             }
         });
+        
+        
+        // add selectedd class on sub tab..
+        $("body").find(".itemview ul li").click(function(){
+        
+        $(this).addClass('selected').siblings().removeClass('selected');
+          
+        })
     });
     $("body").on("click", "#reportfault", function()
     {
@@ -236,7 +263,7 @@
 
 <div class="tabs itemview"><ul>
 
-        <li>   <a href="#first_table">Item Details</a></li>
+        <li class="selected">   <a href="#first_table">Item Details</a></li>
         <li>   <a href="#second_table">Item History</a></li>
         <li>   <a href="#fourth_table">Item Fault History</a></li>
         <?php if ($this->session->userdata('objSystemUser')->compliance == 1) { ?>

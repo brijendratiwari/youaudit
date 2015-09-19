@@ -319,7 +319,7 @@ class Items extends MY_Controller {
             $query .=" and ( item_condition.condition REGEXP '$words'
                          ) ";
         }
-        for ($k = 30; $k < $_GET['iColumns']; $k++) {
+        for ($k = 22; $k < $_GET['iColumns']; $k++) {
             if (isset($_GET['sSearch_' . $k]) && $_GET['sSearch_' . $k] != "") {
 
                 $words = $_GET['sSearch_' . $k];

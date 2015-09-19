@@ -137,7 +137,7 @@
         var base_url_str = $("#base_url").val();
         var num_of_th = $('#num_of_th').val();
         var numofth = num_of_th.split(',');
-//        alert(numofth.length);
+        alert(numofth.length);
         var aryJSONColTable = [];
         for (var k = 0; k < numofth.length; k++) {
 //       console.log(k+"count")
@@ -209,7 +209,7 @@
                     .search(this.value)
                     .draw();
         });
-        for (var m = 22; m < numofth.length; m++) {
+        for (var m = 22; m < num_of_th.length; m++) {
             $("body").on("keyup", "#" + m, function() {
                 var ind = this.id;
                 var val = this.value;
@@ -219,8 +219,8 @@
                         .draw();
             });
         }
-//        for (var m = 22; m < numofth.length; m++) {
-            $("body").on("change", "#22", function() {
+        for (var m = 22; m < num_of_th.length; m++) {
+            $("body").on("change", "#"+m, function() {
                 var ind = this.id;
                 var val = this.value;
 
@@ -228,7 +228,7 @@
                         .search(val)
                         .draw();
             });
-//        }
+        }
 
         $("body").on("change", "#filtercategoryname", function() {
 

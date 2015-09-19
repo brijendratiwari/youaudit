@@ -1198,7 +1198,39 @@ OR `categories`.`name` LIKE '%$strfreetext%')");
           return FALSE;
       }
       
-  }  
+  }
+  
+ public function fixedMultipleFault($tickets_Id,$ticketData){
+   
+    foreach($tickets_Id as $val){
+     $open_history = $this->getTicketData($val);
+            $history = array(
+                'item_id' => $open_history->item_id,
+                'user_id' => $open_history->user_id,
+                'date' => $open_history->date,
+                'status' => $open_history->status,
+                'severity' => $open_history->severity,
+                'jobnote' => $open_history->jobnote,
+                'order_no' => $open_history->order_no,
+                'reason_code' => $open_history->reason_code,
+                'photoid' => $open_history->photoid,
+                'ticket_id' => $open_history->id
+            );
+            foreach ($history as $key => $value) {
+                if ($value = '') {
+                    unset($history[$key]);
+                }
+            }
+            $this->db->insert('tickets_history', $history);
+     }
+     foreach($tickets_Id as $val){
+         
+         $this->db->where('id',$val);
+         $this->db->update('tickets',$ticketData);
+         
+     }
+     return TRUE;
+ } 
 }
 
 ?>

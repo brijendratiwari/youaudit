@@ -414,6 +414,14 @@
                 job_notes: "Please Enter Job Note"
             }
         });
+        $("#resolve_multiplefault").validate({
+            rules: {
+                multiple_fix_code: {required: true},
+                       },
+            messages: {
+                multiple_fix_code: "Please Select Fix Code",
+            }
+        });
 
         var open_job = $("#open_jobs").DataTable({
             "ordering": true,
@@ -434,10 +442,10 @@
 
             },
             "aoColumnDefs": [
-                {"sClass": "eamil_conform aligncenter", "aTargets": [0]},
+                {"sClass": "eamil_conform aligncenter","bSortable": false, "aTargets": [0]},
                 {"sClass": "eamil_conform aligncenter", "bSortable": false, "aTargets": [1]},
                 {"sClass": "eamil_conform aligncenter", "aTargets": [2]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [3]},
+                {"sClass": "eamil_conform aligncenter","bSortable": false, "aTargets": [3]},
                 {"sClass": "eamil_conform aligncenter", "aTargets": [4]},
                 {"sClass": "eamil_conform aligncenter", "bSortable": false, "aTargets": [5]},
                 {"sClass": "eamil_conform aligncenter", "aTargets": [6]},
@@ -448,9 +456,10 @@
                 {"sClass": "eamil_conform aligncenter", "aTargets": [11]},
                 {"sClass": "eamil_conform aligncenter", "aTargets": 12},
                 {"sClass": "eamil_conform aligncenter", "aTargets": [13]},
-                {"sClass": "eamil_conform aligncenter", "bSortable": false, "aTargets": [14]},
-                {"sClass": "eamil_conform aligncenter", "bSortable": false, "aTargets": [15]},
-                {"sClass": "eamil_conform aligncenter", "bSortable": false, "aTargets": [16]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [14]},
+                {"sClass": "eamil_conform aligncenter","aTargets": [15]},
+                {"sClass": "eamil_conform aligncenter",  "aTargets": [16]},
+                {"sClass": "eamil_conform aligncenter", "bSortable": false, "aTargets": [17]},
             ]}
 
         );
@@ -602,191 +611,192 @@
             }
         });
 
-        var fix_job = $("#fix_jobs").DataTable({
-            "ordering": true,
-            "aLengthMenu": [[10, 20, 40, -1], [10, 20, 40, "All"]],
-            "iDisplayLength": 10,
-            "bSortCellsTop": true,
-            "bDestroy": true, //!!!--- for remove data table warning.
-            "fnDrawCallback": function() {
-                var api = this.api();
-                var rowCount = $('#fix_jobs tbody tr').length;
-
-                $(api.column(3).footer()).html(
-                        rowCount
-                        );
-
-
-            },
-            "aoColumnDefs": [
-                {"sClass": "eamil_conform aligncenter", "aTargets": [0]},
-                {"sClass": "eamil_conform aligncenter", "bSortable": false, "aTargets": [1]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [2]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [3]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [4]},
-                {"sClass": "eamil_conform aligncenter", "bSortable": false, "aTargets": [5]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [6]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [7]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [8]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [9]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [10]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [11]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": 12},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [13]},
-                {"sClass": "eamil_conform aligncenter", "bSortable": false, "aTargets": [14]},
-                {"sClass": "eamil_conform aligncenter", "bSortable": false, "aTargets": [15]},
-                {"sClass": "eamil_conform aligncenter", "bSortable": false, "aTargets": [16]},
-            ]}
-
-        );
+//        var fix_job = $("#fix_jobs").DataTable({
+//            "ordering": true,
+//            "aLengthMenu": [[10, 20, 40, -1], [10, 20, 40, "All"]],
+//            "iDisplayLength": 10,
+//            "bSortCellsTop": true,
+//            "bDestroy": true, //!!!--- for remove data table warning.
+//            "fnDrawCallback": function() {
+//                var api = this.api();
+//                var rowCount = $('#fix_jobs tbody tr').length;
+//
+//                $(api.column(3).footer()).html(
+//                        rowCount
+//                        );
+//
+//
+//            },
+//            "aoColumnDefs": [
+//                {"sClass": "eamil_conform aligncenter","aTargets": [0]},
+//                {"sClass": "eamil_conform aligncenter","aTargets": [1]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [2]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [3]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [4]},
+//                {"sClass": "eamil_conform aligncenter","aTargets": [5]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [6]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [7]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [8]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [9]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [10]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [11]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": 12},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [13]},
+//                {"sClass": "eamil_conform aligncenter","aTargets": [14]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [15]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [16]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [17]},
+//            ]}
+//
+//        );
         
-        $("#fix_jobs thead tr:eq(1) th").each(function(i) {
-
-            if (i == 2) {
-
-                var select = $('<select class="categorylist"><option value=""></option></select>')
-                        .appendTo($(this).empty())
-                        .on('change', function() {
-                    var val = $(this).val();
-                    fix_job.column(i)
-                            .search(val ? '^' + $(this).val() + '$' : val, true, false)
-                            .draw();
-                });
-                fix_job.column(i).data().unique().sort().each(function(d, j) {
-                    if (d != "") {
-                        select.append('<option id="level" value="' + d + '">' + d + '</option>');
-                    }
-                });
-            }
-            if (i == 3) {
-
-                var select = $('<select class="itemmanu"><option value=""></option></select>')
-                        .appendTo($(this).empty())
-                        .on('change', function() {
-                    var val = $(this).val();
-                    fix_job.column(i)
-                            .search(val ? '^' + $(this).val() + '$' : val, true, false)
-                            .draw();
-                });
-                fix_job.column(i).data().unique().sort().each(function(d, j) {
-                    if (d != "") {
-                        select.append('<option id="level" value="' + d + '">' + d + '</option>');
-                    }
-                });
-            }
-            if (i == 4) {
-
-                var select = $('<select class="manufacturer"><option value=""></option></select>')
-                        .appendTo($(this).empty())
-                        .on('change', function() {
-                    var val = $(this).val();
-                    fix_job.column(i)
-                            .search(val ? '^' + $(this).val() + '$' : val, true, false)
-                            .draw();
-                });
-                fix_job.column(i).data().unique().sort().each(function(d, j) {
-                    if (d != "") {
-                        select.append('<option id="level" value="' + d + '">' + d + '</option>');
-                    }
-                });
-            }
-            if (i == 6) {
-
-                var select = $('<select class="sitelist"><option value=""></option></select>')
-                        .appendTo($(this).empty())
-                        .on('change', function() {
-                    var val = $(this).val();
-                    fix_job.column(i)
-                            .search(val ? '^' + $(this).val() + '$' : val, true, false)
-                            .draw();
-                });
-                fix_job.column(i).data().unique().sort().each(function(d, j) {
-                    if (d != "") {
-                        select.append('<option id="level" value="' + d + '">' + d + '</option>');
-                    }
-                });
-            }
-            if (i == 7) {
-
-                var select = $('<select class="locations"><option value=""></option></select>')
-                        .appendTo($(this).empty())
-                        .on('change', function() {
-                    var val = $(this).val();
-                    fix_job.column(i)
-                            .search(val ? '^' + $(this).val() + '$' : val, true, false)
-                            .draw();
-                });
-                fix_job.column(i).data().unique().sort().each(function(d, j) {
-                    if (d != "") {
-                        select.append('<option id="level" value="' + d + '">' + d + '</option>');
-                    }
-                });
-            }
-            if (i == 8) {
-
-                var select = $('<select class="ownerlist"><option value=""></option></select>')
-                        .appendTo($(this).empty())
-                        .on('change', function() {
-                    var val = $(this).val();
-                    fix_job.column(i)
-                            .search(val ? '^' + $(this).val() + '$' : val, true, false)
-                            .draw();
-                });
-                fix_job.column(i).data().unique().sort().each(function(d, j) {
-                    if (d != "") {
-                        select.append('<option id="level" value="' + d + '">' + d + '</option>');
-                    }
-                });
-            }
-            if (i == 9) {
-
-                var select = $('<select class="statuslist"><option value=""></option></select>')
-                        .appendTo($(this).empty())
-                        .on('change', function() {
-                    var val = $(this).val();
-                    fix_job.column(i)
-                            .search(val ? '^' + $(this).val() + '$' : val, true, false)
-                            .draw();
-                });
-                fix_job.column(i).data().unique().sort().each(function(d, j) {
-                    if (d != "") {
-                        select.append('<option id="level" value="' + d + '">' + d + '</option>');
-                    }
-                });
-            }
-            if (i == 10) {
-
-                var select = $('<select class="actionlist"><option value=""></option></select>')
-                        .appendTo($(this).empty())
-                        .on('change', function() {
-                    var val = $(this).val();
-                    fix_job.column(i)
-                            .search(val ? '^' + $(this).val() + '$' : val, true, false)
-                            .draw();
-                });
-                fix_job.column(i).data().unique().sort().each(function(d, j) {
-                    if (d != "") {
-                        select.append('<option id="level" value="' + d + '">' + d + '</option>');
-                    }
-                });
-            }
-            if (i == 13) {
-
-                var select = $('<select class="severity"><option value=""></option></select>')
-                        .appendTo($(this).empty())
-                        .on('change', function() {
-                    var val = $(this).val();
-                    fix_job.column(i)
-                            .search(val ? '^' + $(this).val() + '$' : val, true, false)
-                            .draw();
-                });
-                fix_job.column(i).data().unique().sort().each(function(d, j) {
-                    if (d != "") {
-                        select.append('<option id="level" value="' + d + '">' + d + '</option>');
-                    }
-                });
-            }
-        });
+//        $("#fix_jobs thead tr:eq(1) th").each(function(i) {
+//
+//            if (i == 2) {
+//
+//                var select = $('<select class="categorylist"><option value=""></option></select>')
+//                        .appendTo($(this).empty())
+//                        .on('change', function() {
+//                    var val = $(this).val();
+//                    fix_job.column(i)
+//                            .search(val ? '^' + $(this).val() + '$' : val, true, false)
+//                            .draw();
+//                });
+//                fix_job.column(i).data().unique().sort().each(function(d, j) {
+//                    if (d != "") {
+//                        select.append('<option id="level" value="' + d + '">' + d + '</option>');
+//                    }
+//                });
+//            }
+//            if (i == 3) {
+//
+//                var select = $('<select class="itemmanu"><option value=""></option></select>')
+//                        .appendTo($(this).empty())
+//                        .on('change', function() {
+//                    var val = $(this).val();
+//                    fix_job.column(i)
+//                            .search(val ? '^' + $(this).val() + '$' : val, true, false)
+//                            .draw();
+//                });
+//                fix_job.column(i).data().unique().sort().each(function(d, j) {
+//                    if (d != "") {
+//                        select.append('<option id="level" value="' + d + '">' + d + '</option>');
+//                    }
+//                });
+//            }
+//            if (i == 4) {
+//
+//                var select = $('<select class="manufacturer"><option value=""></option></select>')
+//                        .appendTo($(this).empty())
+//                        .on('change', function() {
+//                    var val = $(this).val();
+//                    fix_job.column(i)
+//                            .search(val ? '^' + $(this).val() + '$' : val, true, false)
+//                            .draw();
+//                });
+//                fix_job.column(i).data().unique().sort().each(function(d, j) {
+//                    if (d != "") {
+//                        select.append('<option id="level" value="' + d + '">' + d + '</option>');
+//                    }
+//                });
+//            }
+//            if (i == 6) {
+//
+//                var select = $('<select class="sitelist"><option value=""></option></select>')
+//                        .appendTo($(this).empty())
+//                        .on('change', function() {
+//                    var val = $(this).val();
+//                    fix_job.column(i)
+//                            .search(val ? '^' + $(this).val() + '$' : val, true, false)
+//                            .draw();
+//                });
+//                fix_job.column(i).data().unique().sort().each(function(d, j) {
+//                    if (d != "") {
+//                        select.append('<option id="level" value="' + d + '">' + d + '</option>');
+//                    }
+//                });
+//            }
+//            if (i == 7) {
+//
+//                var select = $('<select class="locations"><option value=""></option></select>')
+//                        .appendTo($(this).empty())
+//                        .on('change', function() {
+//                    var val = $(this).val();
+//                    fix_job.column(i)
+//                            .search(val ? '^' + $(this).val() + '$' : val, true, false)
+//                            .draw();
+//                });
+//                fix_job.column(i).data().unique().sort().each(function(d, j) {
+//                    if (d != "") {
+//                        select.append('<option id="level" value="' + d + '">' + d + '</option>');
+//                    }
+//                });
+//            }
+//            if (i == 8) {
+//
+//                var select = $('<select class="ownerlist"><option value=""></option></select>')
+//                        .appendTo($(this).empty())
+//                        .on('change', function() {
+//                    var val = $(this).val();
+//                    fix_job.column(i)
+//                            .search(val ? '^' + $(this).val() + '$' : val, true, false)
+//                            .draw();
+//                });
+//                fix_job.column(i).data().unique().sort().each(function(d, j) {
+//                    if (d != "") {
+//                        select.append('<option id="level" value="' + d + '">' + d + '</option>');
+//                    }
+//                });
+//            }
+//            if (i == 9) {
+//
+//                var select = $('<select class="statuslist"><option value=""></option></select>')
+//                        .appendTo($(this).empty())
+//                        .on('change', function() {
+//                    var val = $(this).val();
+//                    fix_job.column(i)
+//                            .search(val ? '^' + $(this).val() + '$' : val, true, false)
+//                            .draw();
+//                });
+//                fix_job.column(i).data().unique().sort().each(function(d, j) {
+//                    if (d != "") {
+//                        select.append('<option id="level" value="' + d + '">' + d + '</option>');
+//                    }
+//                });
+//            }
+//            if (i == 10) {
+//
+//                var select = $('<select class="actionlist"><option value=""></option></select>')
+//                        .appendTo($(this).empty())
+//                        .on('change', function() {
+//                    var val = $(this).val();
+//                    fix_job.column(i)
+//                            .search(val ? '^' + $(this).val() + '$' : val, true, false)
+//                            .draw();
+//                });
+//                fix_job.column(i).data().unique().sort().each(function(d, j) {
+//                    if (d != "") {
+//                        select.append('<option id="level" value="' + d + '">' + d + '</option>');
+//                    }
+//                });
+//            }
+//            if (i == 13) {
+//
+//                var select = $('<select class="severity"><option value=""></option></select>')
+//                        .appendTo($(this).empty())
+//                        .on('change', function() {
+//                    var val = $(this).val();
+//                    fix_job.column(i)
+//                            .search(val ? '^' + $(this).val() + '$' : val, true, false)
+//                            .draw();
+//                });
+//                fix_job.column(i).data().unique().sort().each(function(d, j) {
+//                    if (d != "") {
+//                        select.append('<option id="level" value="' + d + '">' + d + '</option>');
+//                    }
+//                });
+//            }
+//        });
         // Multiple Checked For Open Jobs
         $('body').find('.multiComSelect:checked').prop('checked', false);
         $('body').find('#selectAll').prop('checked', false);
@@ -828,42 +838,42 @@
 
 
         // Multiple Checked
-        $('body').find('.multiComSelect1:checked').prop('checked', false);
-        $('body').find('#selectAll1').prop('checked', false);
-        $('body').on('click', '.multiComSelect1', function() {
-            if ($('html').find('.multiComSelect1:checked').length)
+        $('body').find('.multiResolveSelect:checked').prop('checked', false);
+        $('body').find('#resolveAll').prop('checked', false);
+        $('body').on('click', '.multiResolveSelect', function() {
+            if ($('html').find('.multiResolveSelect:checked').length)
             {
-                $('#multiComEditBtn1').addClass('in').removeClass('hide');
-                if ($('html').find('.multiComSelect1:not(:checked)').length == 0)
-                    $('#selectAll1').prop('checked', true);
+                $('#multiResolveBtn').addClass('in').removeClass('hide');
+                if ($('html').find('.multiResolveSelect:not(:checked)').length == 0)
+                    $('#resolveAll').prop('checked', true);
             } else {
-                $('#multiComEditBtn1').addClass('hide').removeClass('in');
-                $('#selectAll1').prop('checked', false);
+                $('#multiResolveBtn').addClass('hide').removeClass('in');
+                $('#resolveAll').prop('checked', false);
             }
         });
 
-        $('body').on('click', '#selectAll1', function() {
+        $('body').on('click', '#resolveAll', function() {
             if ($(this).is(':checked')) {
-                $('.multiComSelect1').prop('checked', true);
-                $('#multiComEditBtn1').addClass('in').removeClass('hide');
+                $('.multiResolveSelect').prop('checked', true);
+                $('#multiResolveBtn').addClass('in').removeClass('hide');
             }
             else {
-                $('.multiComSelect1').prop('checked', false);
-                $('#multiComEditBtn1').addClass('hide').removeClass('in');
+                $('.multiResolveSelect').prop('checked', false);
+                $('#multiResolveBtn').addClass('hide').removeClass('in');
             }
         });
-        $('#multiComEditBtn1').on('click', function() {
+        $('#multiResolveBtn').on('click', function() {
 
             var ids = [];
             var cat_ids = [];
 
-            $('#fix_jobs').find('input[type="checkbox"]:checked').each(function() {
+            $('#open_jobs').find('input[type="checkbox"]:checked').each(function() {
 
                 ids.push($(this).attr('value'));
             });
             console.log(ids);
-            $('#multiComIds').val(ids.join(','));
-            $('#multiUserEditModal').modal('show');
+            $('#multiResolveIds').val(ids.join(','));
+            $('#multiResolveIncident').modal('show');
         });
 
     }
@@ -929,6 +939,7 @@
                             <thead>
                                 <tr>
                                     <th>Select</th>
+                                    <th>Resolve Multiple Assets</th>
                                     <th>QR Code</th>
                                     <th>Photos</th>
                                     <th>Category</th>
@@ -951,6 +962,10 @@
                                     <th>
                                         <input id="selectAll" type="checkbox" title="Select ALL">
                                         <button id="multiComEditBtn" class="btn btn-warning fade hide" style="padding:0 5px;" type="button">Edit</button>
+                                    </th>
+                                    <th>
+                                        <input id="resolveAll" type="checkbox" title="Select ALL">
+                                        <button id="multiResolveBtn" class="btn btn-warning fade hide" type="button">Resolve</button>
                                     </th>
                                     <th></th>
                                     <th></th>
@@ -988,6 +1003,7 @@
                                         ?>
                                         <tr>
                                             <td><input type="checkbox" value="<?php echo $ticket_id; ?>" class="multiComSelect"><input class="" type="hidden" id="customer_id_<?php echo $ticket_id; ?>" value=""></td>
+                                            <td><input type="checkbox" value="<?php echo $ticket_id; ?>" class="multiResolveSelect"><input class="" type="hidden" id="customer_id_<?php echo $ticket_id; ?>" value=""></td>
                                             <td><a href="<?php echo base_url('items/view/' . $value->itemid); ?>"><?php echo $value->barcode; ?></td>
                                             <td>
                                                 <?php
@@ -1503,6 +1519,52 @@
                                 <option value="Need more time">Need more time</option>
                                 <option value="Specialist Equipment Rqd">Specialist Equipment Rqd</option>
                                 <option  value="H&S requirements">H&S requirements</option>	
+                            </select>
+                        </div>
+                    </div> 
+                    
+                    <div class="form-group col-md-12">
+                        <div class="col-md-6"> <label>Job Note</label>
+                        </div>
+                        <div class="col-md-6">       
+                            <input class="form-control" name="multiple_job_note">
+                        </div>
+                    </div> 
+
+                </div>
+
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+                    <button class="btn btn-primary" type="submit" id="edit_button_system">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--Resolve multiple incident-->
+<div class="modal fade" id="multiResolveIncident" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">&times;</button>
+                <h4 id="myModalLabel" class="modal-title">Resolve Multiple Incidents</h4>
+            </div>
+            <form action="<?php echo base_url('faults/resolveMultipleIncidents'); ?>" method="post" id="resolve_multiplefault">
+                <div class="modal-body" style="min-height:100px; overflow: auto;">
+                    <input hidden="" name="ticket_id" id="multiResolveIds">
+
+                    <div class="form-group col-md-12">
+                        <div class="col-md-6"> <label>Fix Code</label>
+                        </div>
+                        <div class="col-md-6">       
+                            <select name="multiple_fix_code" id="multiple_fix_code" class="form-control">
+                                <option value="" selected="selected">Select</option>
+                                <option value="Repaired no parts">Repaired no parts</option>
+                                <option value="Replaced Parts">Replaced Parts</option>
+                                <option value="Reset System">Reset System</option>
+                                <option value="Serviced">Serviced</option>
+                                <option value="Found Asset">Found Asset</option>
+                                <option value="Changed Consumables">Changed Consumables</option>		
                             </select>
                         </div>
                     </div> 

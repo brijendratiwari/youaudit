@@ -833,11 +833,12 @@ class Items_model extends CI_Model {
     }
 
     public function editOne($arrInput = array(), $intId = -1, $intCategoryId = -1, $intLocationId = -1, $intUserId = -1, $intFacultyId = -1) {
+
         if (($intId > 0) && ($intCategoryId > 0) && (($intLocationId > 0) || ($intFacultyId > 0) || ($intUserId > 0))) {
             $this->db->where('id', $intId);
             $this->db->update('items', $arrInput);
 
-            if (($intLocationId > 0) && ($this->whereIsThis($intId) != $intLocationId)) {
+            if (($intLocationId > 0) && (intval($this->whereIsThis($intId)) != $intLocationId)) {
                 $this->linkThisToLocation($intId, $intLocationId);
             } else {
                 if ($intLocationId == 0) {
@@ -1074,7 +1075,7 @@ class Items_model extends CI_Model {
             $this->db->where('items_locations_link.item_id', $intItemId);
             $this->db->where('items_locations_link.date', $arr['most_recent_date']);
             $resQuery = $this->db->get();
-//             var_dump($resQuery->row()->locationid);die;
+             //var_dump($resQuery->row()->locationid);die;
             if ($resQuery->num_rows() > 0) {
                 return $resQuery->row()->locationid;
             }

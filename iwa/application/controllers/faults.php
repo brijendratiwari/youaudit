@@ -666,6 +666,26 @@ class Faults extends MY_Controller {
       
       return $faultBy[0]['firstname'].' '.$faultBy[0]['lastname'];
   }  
+  
+ public function resolveMultipleIncidents(){
+     
+//     var_dump($_POST);die;
+     $tickets_Id = explode(',',$this->input->post('ticket_id'));
+     $ticketData =  array("user_id" => $this->session->userdata('objSystemUser')->userid,
+                         "fix_code" => $this->input->post('multiple_fix_code'),
+                         "status" => 1, 
+                         "jobnote" => $this->input->post('multiple_job_note'),
+                         "ticket_action" => "Fix",
+                         "fix_date" => date("Y-m-d H:i:s")
+         );
+     
+     $this->load->model('tickets_model');
+     $response = $this->tickets_model->fixedMultipleFault($tickets_Id,$ticketData);
+     if($response){
+          $this->session->set_userdata('arrCourier', array('arrUserMessages' => array('Fault fix successfully')));
+          redirect('/faults/filter');
+     }
+ } 
 }
 
 /* End of file faults.php */
