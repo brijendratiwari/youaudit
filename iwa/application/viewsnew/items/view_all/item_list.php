@@ -137,7 +137,7 @@
         var base_url_str = $("#base_url").val();
         var num_of_th = $('#num_of_th').val();
         var numofth = num_of_th.split(',');
-        alert(numofth.length);
+//        alert(numofth.length);
         var aryJSONColTable = [];
         for (var k = 0; k < numofth.length; k++) {
 //       console.log(k+"count")
