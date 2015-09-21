@@ -418,11 +418,12 @@
                     $('#site_id_similar option[value="' + assetdata[0].siteid + '"]').attr('selected', 'selected');
                     $('#location_id_similar option[value="' + assetdata[0].location_now + '"]').attr('selected', 'selected');
                     $('#supplier_similar option[value="' + assetdata[0].supplier + '"]').attr('selected', 'selected');
+                    $('#item_value_similar').val(assetdata[0].value);
                     if (assetdata[0].purchase_date != '') {
                         var newdate = assetdata[0].purchase_date.split("-").reverse().join("/");
                         $('#item_purchased_similar').val(newdate);
                     }
-                    $('#item_value_similar').val(assetdata[0].value);
+                    
                 }
 
             });
@@ -2078,7 +2079,7 @@ if (!empty($arr1)) {
                         </div>
 
                         <div class="col-md-7">       
-                            <input placeholder="Enter Purchase Price" class="form-control" name="item_value_similar" id="item_value_similar" type="text">
+                            <input placeholder="Enter Purchase Price" class="form-control" name="item_value_similar" id="item_value_similar" type="text" readonly="">
                         </div>
                         <input type="hidden" readonly name="itemID" id="itemID">
                     </div>
