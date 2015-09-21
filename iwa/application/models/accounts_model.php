@@ -24,6 +24,8 @@ class Accounts_model extends CI_Model {
     public function setOne($intId = -1) {
         $this->load->model('master_model');
         $this->load->model('franchise_model');
+        $this->load->model('admin_section_model');
+        $this->load->model('categories_model');
         $arrPageData['arrSessionData'] = $this->session->userdata;
 
         $arrInput = array(
@@ -89,13 +91,13 @@ class Accounts_model extends CI_Model {
             if ($this->db->insert('accounts', $arrInput)) {
                 $intAccountId = $this->db->insert_id();
                 $userid = $this->db->insert_id();
-                    if ($userid) {
-                        if ($arrInput['add_owner'] != 0) {
-                            $newOwner = array('owner_name' => $arrInput['firstname'] . ' ' . $arrInput['lastname'],
-                                'account_id' => $intAccountId, 'active' => 1, 'archive' => 1, 'is_user' => $userid);
-                            $this->db->insert('owner', $newOwner);
-                        }
+                if ($userid) {
+                    if ($arrInput['add_owner'] != 0) {
+                        $newOwner = array('owner_name' => $arrInput['firstname'] . ' ' . $arrInput['lastname'],
+                            'account_id' => $intAccountId, 'active' => 1, 'archive' => 1, 'is_user' => $userid);
+                        $this->db->insert('owner', $newOwner);
                     }
+                }
                 $this->sendMailConfirmation($mail_content);
 
                 $profiles = $this->db->where('profile_id', $this->input->post('profile'))->get('profile')->result();
@@ -114,17 +116,21 @@ class Accounts_model extends CI_Model {
                     $owners = json_decode($profiles[0]->owner);
                     $owners = array_filter($owners);
                     foreach ($owners as $owner) {
-                        $owner_data = array('owner_name' => $owner, 'account_id' => $intAccountId, 'active' => 1);
-                        $this->db->insert('owner', $owner_data);
+                        if ($this->admin_section_model->checkowner($owner, $intAccountId) == 0) {
+                            $owner_data = array('owner_name' => $owner, 'account_id' => $intAccountId, 'active' => 1);
+                            $this->db->insert('owner', $owner_data);
+                        }
                     }
                 }
                 if ($profiles[0]->category) {
                     $categories = json_decode($profiles[0]->category);
                     $categories = array_filter($categories);
                     foreach ($categories as $category) {
-                        $category_data = array('name' => $category, 'account_id' => $intAccountId, 'active' => 1);
-                        $this->db->insert('categories', $category_data);
-                        $cat_id = $this->db->insert_id();
+                        if ($this->categories_model->doCheckCategoryNameIsUniqueOnAccount($category, $intAccountId)) {
+                            $category_data = array('name' => $category, 'account_id' => $intAccountId, 'active' => 1);
+                            $this->db->insert('categories', $category_data);
+                            $cat_id = $this->db->insert_id();
+                        }
                         if ($cat_id) {
                             $this->db->set('custom_fields', json_encode($ids));
                             $this->db->where('id', $cat_id);
@@ -137,8 +143,10 @@ class Accounts_model extends CI_Model {
                     $manulist = json_decode($profiles[0]->manu);
                     $manulist = array_filter($manulist);
                     foreach ($manulist as $manu) {
-                        $manu_data = array('item_manu_name' => $manu, 'account_id' => $intAccountId);
-                        $this->db->insert('item_manu', $manu_data);
+                        if ($this->admin_section_model->checkitem($manu, $intAccountId) == 0) {
+                            $manu_data = array('item_manu_name' => $manu, 'account_id' => $intAccountId);
+                            $this->db->insert('item_manu', $manu_data);
+                        }
                     }
                 }
 
@@ -146,8 +154,10 @@ class Accounts_model extends CI_Model {
                     $manufacturers = json_decode($profiles[0]->manufacturer);
                     $manufacturers = array_filter($manufacturers);
                     foreach ($manufacturers as $manufacturer) {
-                        $manufacturer_data = array('manufacturer_name' => $manufacturer, 'account_id' => $intAccountId);
-                        $this->db->insert('manufacturer_list', $manufacturer_data);
+                        if ($this->admin_section_model->checkmanufacturer($manufacturer, $intAccountId) == 0) {
+                            $manufacturer_data = array('manufacturer_name' => $manufacturer, 'account_id' => $intAccountId);
+                            $this->db->insert('manufacturer_list', $manufacturer_data);
+                        }
                     }
                 }
 

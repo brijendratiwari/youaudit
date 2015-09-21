@@ -2340,11 +2340,15 @@ class Admins extends CI_Controller {
 
         if ($owner_name[0]) {
             $owner_data = explode("\n", $owner_name[0]);
+            $owner_data = array_map('trim', $owner_data);
         }
 
         for ($i = 0; $i < count($owner_data); $i++) {
             if ($owner_data[$i]) {
-                $owner[] = $owner_data[$i];
+                $check_owner = $this->db->where('owner_name', $owner_data[$i])->get('owner');
+                if ($check_owner->num_rows() < 1) {
+                    $owner[] = $owner_data[$i];
+                }
             } else {
                 $owner[] = "";
             }
@@ -2352,6 +2356,7 @@ class Admins extends CI_Controller {
 
         if ($category_name[0]) {
             $category_data = explode("\n", $category_name[0]);
+            $category_data = array_map('trim', $category_data);
         }
 
         for ($j = 0; $j < count($category_data); $j++) {
@@ -2364,6 +2369,7 @@ class Admins extends CI_Controller {
 
         if ($manu_name[0]) {
             $manu_data = explode("\n", $manu_name[0]);
+            $manu_data = array_map('trim', $manu_data);
         }
 
         for ($k = 0; $k < count($manu_data); $k++) {
@@ -2374,10 +2380,11 @@ class Admins extends CI_Controller {
             }
         }
 
-         if ($manufacturer_name[0]) {
+        if ($manufacturer_name[0]) {
             $manufacturer_data = explode("\n", $manufacturer_name[0]);
+            $manufacturer_data = array_map('trim', $manufacturer_data);
         }
-        
+
         for ($m = 0; $m < count($manufacturer_data); $m++) {
             if ($manufacturer_data[$m]) {
                 $manufacturer[] = $manufacturer_data[$m];
@@ -2385,7 +2392,7 @@ class Admins extends CI_Controller {
                 $manufacturer[] = "";
             }
         }
-
+        $data = array();
         for ($n = 1; $n <= ($this->input->post('fieldname')); $n++) {
             if ($this->input->post('field_name' . $n)) {
                 $field_name[] = $this->input->post('field_name' . $n);
@@ -2395,9 +2402,9 @@ class Admins extends CI_Controller {
             }
 
             if ($this->input->post('field_values' . $n)) {
-                $data = array();
 
                 $data = explode("\n", trim($this->input->post('field_values' . $n)));
+                $data = array_map('trim', $data);
                 $field_val = implode(',', $data);
                 $field_values[] = $field_val;
             } else {
@@ -2435,43 +2442,117 @@ class Admins extends CI_Controller {
 
         if ($this->input->post()) {
 
+//            $this->load->model('admins_model');
+//
+//            $owner = $this->input->post('owner');
+//            
+//            foreach ($owner as $key => $value) {
+//                if ($value == '') {
+//                    unset($owner[$key]);
+//                }
+//            }
+//
+//            $category = $this->input->post('category');
+//
+//            foreach ($category as $key => $value) {
+//                if ($value == '') {
+//                    unset($category[$key]);
+//                }
+//            }
+//
+//            $item = $this->input->post('item');
+//
+//            foreach ($item as $key => $value) {
+//                if ($value == '') {
+//                    unset($item[$key]);
+//                }
+//            }
+//            $manufacturer = $this->input->post('manufacturer');
+//            foreach ($manufacturer as $key => $value) {
+//                if ($value == '') {
+//                    unset($manufacturer[$key]);
+//                }
+//            }
+
+            $owner = array();
             $this->load->model('admins_model');
+            $owner_data = array();
+            $owner_name = $this->input->post('owner');
+            $category_data = array();
+            $category_name = $this->input->post('category');
+            $manu_data = array();
+            $manu_name = $this->input->post('item');
+            $manufacturer_data = array();
+            $manufacturer_name = $this->input->post('manufacturer');
 
-            $owner = $this->input->post('owner');
+            if ($owner_name[0]) {
+                $owner_data = explode("\n", $owner_name[0]);
+                $owner_data = array_map('trim', $owner_data);
+            }
 
-            foreach ($owner as $key => $value) {
-                if ($value == '') {
-                    unset($owner[$key]);
+            for ($i = 0; $i < count($owner_data); $i++) {
+                if ($owner_data[$i]) {
+                    $owner[] = $owner_data[$i];
+                } else {
+                    $owner[] = "";
                 }
             }
 
-            $category = $this->input->post('category');
+            if ($category_name[0]) {
+                $category_data = explode("\n", $category_name[0]);
+                $category_data = array_map('trim', $category_data);
+            }
 
-            foreach ($category as $key => $value) {
-                if ($value == '') {
-                    unset($category[$key]);
+            for ($j = 0; $j < count($category_data); $j++) {
+                if ($category_data[$j]) {
+                    $category[] = $category_data[$j];
+                } else {
+                    $category[] = "";
                 }
             }
 
-            $item = $this->input->post('item');
+            if ($manu_name[0]) {
+                $manu_data = explode("\n", $manu_name[0]);
+                $manu_data = array_map('trim', $manu_data);
+            }
 
-            foreach ($item as $key => $value) {
-                if ($value == '') {
-                    unset($item[$key]);
+            for ($k = 0; $k < count($manu_data); $k++) {
+                if ($manu_data[$k]) {
+                    $manu[] = $manu_data[$k];
+                } else {
+                    $manu[] = "";
                 }
             }
-            $manufacturer = $this->input->post('manufacturer');
-            foreach ($manufacturer as $key => $value) {
-                if ($value == '') {
-                    unset($manufacturer[$key]);
+
+            if ($manufacturer_name[0]) {
+                $manufacturer_data = explode("\n", $manufacturer_name[0]);
+                $manufacturer_data = array_map('trim', $manufacturer_data);
+            }
+
+            for ($m = 0; $m < count($manufacturer_data); $m++) {
+                if ($manufacturer_data[$m]) {
+                    $manufacturer[] = $manufacturer_data[$m];
+                } else {
+                    $manufacturer[] = "";
                 }
             }
 
             $field_name = $this->input->post('names');
             $field_type = $this->input->post('types');
+            $data = array();
             for ($i = 0; $i < count($field_name); $i++) {
                 $custom['name'][$i] = $field_name[$i];
                 $custom['type'][$i] = $field_type[$i];
+                if ($this->input->post('field_values' . $i)) {
+
+                    $data = explode("\n", trim($this->input->post('field_values' . $i)));
+                    $data = array_map('trim', $data);
+
+                    $field_val = implode(',', $data);
+                    $custom['values'][$i] = $field_val;
+                } else {
+                    $custom['values'][$i] = "";
+                }
             }
 
             foreach ($field_name as $key => $value) {
@@ -2487,34 +2568,8 @@ class Admins extends CI_Controller {
 
             $owner = array_values($owner);
             $category = array_values($category);
-            $item = array_values($item);
+            $item = array_values($manu);
             $manufacturer = array_values($manufacturer);
-            $fields = array_values($custom);
-//            if(!empty($owner)){
-//            $owner_list = json_encode($owner);
-//            }
-//            else{
-//            $owner_list = null;
-//            }
-//            if(!empty($category)){
-//            $category_list = json_encode($category);
-//            }
-//            else{
-//             $category_list = null;
-//            }
-//            if(!empty($item)){
-//            $item_list = json_encode($item);
-//            }
-//            else{
-//            $item_list = null;
-//            }
-//            if(!empty($manufacturer)){
-//            $manufacturer_list = json_encode($manufacturer);
-//            }
-//            else{
-//            $manufacturer_list = null;
-//            }
-
 
             $editProfile = array(
                 'profile_name' => $this->input->post('edit_profile_name'),
@@ -2524,8 +2579,7 @@ class Admins extends CI_Controller {
                 'manufacturer' => json_encode($manufacturer),
                 'custom_field' => json_encode($custom)
             );
-
-
+//            var_dump($editProfile);die;
             $result = $this->admins_model->editProfile($editProfile, $this->input->post('adminuser_id'));
             if ($result) {
                 $this->session->set_userdata('booCourier', true);
