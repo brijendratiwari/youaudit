@@ -60,8 +60,9 @@
                 },
                 company_postcode:
                         {
-                            required: true,
-                            digits: true
+                            digits: true,
+                            minlength: 4,
+                            maxlength: 4
                         },
                 first_name: "required",
                 last_name: "required",

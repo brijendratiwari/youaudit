@@ -138,8 +138,9 @@
                 edit_company_state: "required",
                 edit_company_postcode:
                         {
-                            required: true,
                             digits: true,
+                            minlength: 4,
+                            maxlength: 4
                         },
                 edit_first_name: "required",
                 edit_last_name: "required",

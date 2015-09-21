@@ -39,8 +39,9 @@
                 },
                 company_postcode:
                         {
-                            required: true,
-                            digits: true
+                            digits: true,
+                            minlength: 4,
+                            maxlength: 4
                         },
                 first_name: "required",
                 last_name: "required",
@@ -122,8 +123,9 @@
                 edit_contact_name: "required",
                 edit_company_postcode:
                         {
-                            required: true,
                             digits: true,
+                            minlength: 4,
+                            maxlength: 4
                         },
                 edit_first_name: "required",
                 edit_last_name: "required",
