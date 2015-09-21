@@ -357,7 +357,7 @@ if ($this->session->flashdata('success')) {
                                 foreach ($summary as $record) {
                                     ?>
                                     <tr> 
-                                        <td><a href="http://dev-iis.com/youaudit/iwa/youaudit/customerlist/<?php echo $record['id']; ?>"><?php echo $record['sys_admin_name']; ?></a></td>
+                                        <td><a href="<?php echo base_url(); ?>youaudit/customerlist/<?php echo $record['id']; ?>"><?php echo $record['sys_admin_name']; ?></a></td>
                                         <td><?php echo $record['type']; ?></td>
                                         <td><?php echo $record['total']; ?></td>
                                         <td><?php echo $record['enabled']; ?></td>

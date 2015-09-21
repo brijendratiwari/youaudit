@@ -1017,8 +1017,7 @@ COUNT( accounts.id ) >=1
             $strHtml .= "<p>Produced by " . $arrPageData['arrSessionData']['YouAuditSystemAdmin']['firstname'] . " " . $arrPageData['arrSessionData']['YouAuditSystemAdmin']['lastname'] . " (" . $arrPageData['arrSessionData']['YouAuditSystemAdmin']['username'] . ") on " . date('d/m/Y') . "</p>";
             $strHtml .= "</div></body></html>";
         }
-        echo $strHtml;
-        die();
+       
 
         if (!$booOutputHtml) {
             $this->load->library('Mpdf');
