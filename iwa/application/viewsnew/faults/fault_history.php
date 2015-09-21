@@ -176,13 +176,13 @@
                        
                         notes_div += "<ul>";
                         for (var i = 0; i < allNote.length; i++) {
-                            notes_div += "<li style='list-style:none;'>"+noteDate[i]+ " - "+ allNote[i] + "</li>";
+                            notes_div += "<li style='list-style:none;padding:0;margin:0;'>"+noteDate[i]+ " - "+ allNote[i] + "</li>";
 
                         }
                         notes_div += "</ul>";
                     }else{
                     $(".job_notes_div").empty();
-                       notes_div += "<ul><li style='list-style:none;'>" +data.loggedByDate+ " - "+ data.jobnote + "</li></ul>";
+                       notes_div += "<ul><li style='list-style:none;padding:0;margin:0;'>" +data.loggedByDate+ " - "+ data.jobnote + "</li></ul>";
                     }
                   
                         $(".job_notes_div").html(notes_div);
