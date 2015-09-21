@@ -57,6 +57,11 @@
         padding: 9px;
         width: 38%;   
     }
+    .errors
+    {
+        color: red;
+        font-weight: bold;
+    }
 </style>
 <script>
     $(document).ready(function() {
@@ -132,7 +137,36 @@
 
         });
 
+        $('#multiple_category').on('click', function() {
+            var total_count = $("#multiple_user tr").length;
+            for (var i = 1; i < total_count - 1; i++)
+            {
+                $('#error_msg' + i).css('display', 'none');
+                $('#location_msg' + i).css('display', 'none');
+            }
+        });
+        $('.qtyplus').on('click', function() {
+            var total_count = $("#multiple_user tr").length;
+            for (var i = 1; i < total_count - 1; i++)
+            {
+                $('#error_msg' + i).css('display', 'none');
+                $('#location_msg' + i).css('display', 'none');
+            }
+        });
 
+        $('#multiadd_button').on('click', function() {
+            var totalcount = $("#multiple_user tr").length;
+            for (var n = 1; n < totalcount - 1; n++)
+            {
+                if ($('#site_name_' + n + ' option:selected').val() == "")
+                {
+                    $('#error_msg' + n).css('display', 'block');
+                    $('#error_msg' + n).addClass('errors');
+                    $('#multiadd_button').prop('disabled', true);
+                    return false;
+                }
+            }
+        });
         $("body").on("click", ".edit", function() {
 
             var locationname = $(this).attr("data_locationname");
@@ -328,7 +362,25 @@
             });
         }
     }
-
+    function checksite(site)
+    {
+        var data = site.id;
+        var site_name = data.split('site_name_');
+        var site_id = site_name[1];
+        if ($('#site_name_' + site_id + ' option:selected').val() == "")
+        {
+            $('#error_msg' + site_id).css('display', 'block');
+            $('#error_msg' + site_id).addClass('errors');
+            $('#multiadd_button').prop('disabled', true);
+            return false;
+        }
+        else
+        {
+            $('#error_msg' + site_id).css('display', 'none');
+            $('#multiadd_button').removeAttr('disabled');
+            return true;
+        }
+    }
     function deleteTemplate(editObj) {
         var url = $(editObj).attr('data-href');
 
@@ -703,7 +755,7 @@ if ($this->session->flashdata('error')) {
                                         <input type="text" data=""  class="form-control multicat location_bar"  name="qrcode_1" id="qrcode_1" placeholder="Enter QR Code Na" onblur="check_barcode(this);"></div>
                                     <div id="locqrcode_err1" class="locqrcode_error hide">QR Code Already Exist.</div>
                                 </td>
-                                <td><select name="site_name_1" id="site_name_1" class="form-control multiemail" required="">
+                                <td><select name="site_name_1" id="site_name_1" class="form-control multiemail" required="" onchange="checksite(this);">
                                         <option value=''>--select site--</option>
                                         <?php
                                         foreach ($arrSites['results'] as $site_value) {
@@ -713,7 +765,8 @@ if ($this->session->flashdata('error')) {
                                         }
                                         ?>
 
-                                    </select></td>
+                                    </select>
+                                <div id="error_msg1">A LOCATION MUST BE ALLOCATED TO A SITE</div></td>
                                 <td><select name="multi_owner_id_1" id="multi_owner_id_1" class="form-control">
                                         <option value="0">--select owner--</option>
                                         <?php
@@ -734,7 +787,7 @@ if ($this->session->flashdata('error')) {
                                             <?php echo $arrSessionData["objSystemUser"]->qrcode; ?></div>
                                         <input type="text" data=""  class="form-control multicat location_bar"  name="qrcode_" id="qrcode_" placeholder="Enter QR Code Na" onblur="check_barcode(this);"></div>
                                     <div id="locqrcode_err" class="locqrcode_error hide">QR Code Already Exist.</div></td>
-                                <td> <select name="site_name_" id="site_name_" class="form-control multiemail" >
+                                <td> <select name="site_name_" id="site_name_" class="form-control multiemail" onchange="checksite(this);">
                                         <option value=''>--select site--</option>
                                         <?php
                                         foreach ($arrSites['results'] as $site_value) {
@@ -744,7 +797,7 @@ if ($this->session->flashdata('error')) {
                                         }
                                         ?>
 
-                                    </select></td>
+                                    </select><div id="error_msg">A LOCATION MUST BE ALLOCATED TO A SITE</div></td>
                                 <td><select name="multi_owner_id_" id="multi_owner_id_" class="form-control multiemail">
                                         <option value="0">--select owner--</option>
                                         <?php
