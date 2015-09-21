@@ -1092,7 +1092,7 @@ OR `categories`.`name` LIKE '%$strfreetext%')");
             $this->db->join('itemstatus', 'items.status_id = itemstatus.id', 'left');
             $this->db->join('pat', 'items.pattest_status = pat.id', 'left');
             $this->db->join('item_manu', 'items.item_manu = item_manu.id', 'left');
-            $where = "(items.account_id = $intAccountId AND tickets.ticket_action='Fix')";
+            $where = "(items.account_id = $intAccountId AND tickets.ticket_action='Fix' AND tickets.ticket_action='Fix')";
 
             $this->db->where($where);
 //             $this->db->group_by('items.barcode');
