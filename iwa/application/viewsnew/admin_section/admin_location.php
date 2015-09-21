@@ -142,6 +142,7 @@
             for (var i = 1; i < total_count - 1; i++)
             {
                 $('#error_msg' + i).css('display', 'none');
+                $('#errormsg' + i).css('display', 'none');
                 $('#location_msg' + i).css('display', 'none');
             }
         });
@@ -150,6 +151,7 @@
             for (var i = 1; i < total_count - 1; i++)
             {
                 $('#error_msg' + i).css('display', 'none');
+                $('#errormsg' + i).css('display', 'none');
                 $('#location_msg' + i).css('display', 'none');
             }
         });
@@ -158,6 +160,12 @@
             var totalcount = $("#multiple_user tr").length;
             for (var n = 1; n < totalcount - 1; n++)
             {
+                if ($('#location_name_' + n).val() == "")
+                {
+                    $('#errormsg' + n).css('display', 'block');
+                    $('#errormsg' + n).addClass('errors');
+                    return false;
+                }
                 if ($('#site_name_' + n + ' option:selected').val() == "")
                 {
                     $('#error_msg' + n).css('display', 'block');
@@ -381,6 +389,26 @@
             return true;
         }
     }
+    function checklocation(location)
+    {
+        var data = location.id;
+        var location_name = data.split('location_name_');
+        var location_id = location_name[1];
+        if ($('#location_name_' + location_id + ' option:selected').val() == "")
+        {
+            $('#errormsg' + location_id).css('display', 'block');
+            $('#errormsg' + location_id).addClass('errors');
+            $('#multiadd_button').prop('disabled', true);
+            return false;
+        }
+        else
+        {
+            $('#errormsg' + location_id).css('display', 'none');
+            $('#multiadd_button').removeAttr('disabled');
+            return true;
+        }
+    }
+
     function deleteTemplate(editObj) {
         var url = $(editObj).attr('data-href');
 
@@ -748,7 +776,7 @@ if ($this->session->flashdata('error')) {
                         </thead>
                         <tbody id="tbody_multiple_cat">
                             <tr>
-                                <td><input type="text" data=""  class="form-control multicat" required=""  name="location_name_1" id="location_name_1" placeholder="Enter Location Name"></td>
+                                <td><input type="text" data=""  class="form-control multicat" required=""  name="location_name_1" id="location_name_1" placeholder="Enter Location Name" onchange="checklocation(this);"><div id="errormsg1">Location name is required</div></td>
                                 <td><div class="input-group">
                                         <div class="input-group-addon grp_addon">
                                             <?php echo $arrSessionData["objSystemUser"]->qrcode; ?></div>
@@ -766,7 +794,7 @@ if ($this->session->flashdata('error')) {
                                         ?>
 
                                     </select>
-                                <div id="error_msg1">A LOCATION MUST BE ALLOCATED TO A SITE</div></td>
+                                    <div id="error_msg1">A LOCATION MUST BE ALLOCATED TO A SITE</div></td>
                                 <td><select name="multi_owner_id_1" id="multi_owner_id_1" class="form-control">
                                         <option value="0">--select owner--</option>
                                         <?php
@@ -781,7 +809,7 @@ if ($this->session->flashdata('error')) {
 
                             </tr>
                             <tr id="row_1" style="display:none">
-                                <td><input type="text" data=""   class="form-control multicat"  name="location_name_" id="location_name_" placeholder="Enter Location Name"> </td>
+                                <td><input type="text" data=""   class="form-control multicat"  name="location_name_" id="location_name_" placeholder="Enter Location Name" onchange="checklocation(this);"><div id="errormsg">Location name is required</div></td>
                                 <td><div class="input-group">
                                         <div class="input-group-addon grp_addon">
                                             <?php echo $arrSessionData["objSystemUser"]->qrcode; ?></div>
