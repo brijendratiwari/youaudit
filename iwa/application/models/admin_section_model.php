@@ -644,9 +644,11 @@ class Admin_Section_Model extends CI_Model {
         if ($export == 'CSV') {
 
             foreach ($users as $key => $value) {
+                if($value['level'] == 'AppOnly'){
+                    $value['level'] = 'Supplier Users';
+                }
                 $output[] = preg_replace('/<\/?[a-zA-Z]*[^>]*>/', '', preg_replace('/<\/?[a-zA-Z]*[^>]*>/', '', $value));
             }
-
             $this->load->helper('csv');
             getcsv($output, "Userlist.csv");
         } elseif ($export == 'PDF') {
