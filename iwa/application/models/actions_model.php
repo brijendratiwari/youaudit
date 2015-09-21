@@ -52,7 +52,11 @@ class Actions_model extends CI_Model {
                 $this->db->from($strTableName);
                 $this->db->where('id', $intObjectId);
                 $resQuery = $this->db->get();
-            } else {
+            } elseif($strTableName == 'suppliers') {
+                $this->db->from($strTableName);
+                $this->db->where('supplier_id', $intObjectId);
+                $resQuery = $this->db->get();
+            }else{
                 $this->db->from($strTableName);
                 $this->db->where('id', $intObjectId);
                 $resQuery = $this->db->get();
