@@ -123,6 +123,8 @@ class Master_Model extends CI_Model {
 
     // Add Master Customer USer
     public function addCustomerAc($arrCustomer) {
+        $this->load->model('admin_section_model');
+        $this->load->model('categories_model');
         $master_id = $arrCustomer['account_id'];
         $acc_limit = $this->db->select('account_limit')->where('id', $master_id)->get('master_ac')->row();
         $cus_count = $this->db->where(array('account_id' => $master_id, 'account_type' => 1))->get('accounts')->result();
@@ -167,17 +169,21 @@ class Master_Model extends CI_Model {
                         $owners = json_decode($profiles[0]->owner);
                         $owners = array_filter($owners);
                         foreach ($owners as $owner) {
-                            $owner_data = array('owner_name' => $owner, 'account_id' => $id, 'active' => 1);
-                            $this->db->insert('owner', $owner_data);
+                            if ($this->admin_section_model->checkowner($owner, $id) == 0) {
+                                $owner_data = array('owner_name' => $owner, 'account_id' => $id, 'active' => 1);
+                                $this->db->insert('owner', $owner_data);
+                            }
                         }
                     }
                     if ($profiles[0]->category) {
                         $categories = json_decode($profiles[0]->category);
                         $categories = array_filter($categories);
                         foreach ($categories as $category) {
-                            $category_data = array('name' => $category, 'account_id' => $id, 'active' => 1);
-                            $this->db->insert('categories', $category_data);
-                            $cat_id = $this->db->insert_id();
+                            if ($this->categories_model->doCheckCategoryNameIsUniqueOnAccount($category, $id)) {
+                                $category_data = array('name' => $category, 'account_id' => $id, 'active' => 1);
+                                $this->db->insert('categories', $category_data);
+                                $cat_id = $this->db->insert_id();
+                            }
                             if ($cat_id) {
                                 $this->db->set('custom_fields', json_encode($ids));
                                 $this->db->where('id', $cat_id);
@@ -190,8 +196,10 @@ class Master_Model extends CI_Model {
                         $manulist = json_decode($profiles[0]->manu);
                         $manulist = array_filter($manulist);
                         foreach ($manulist as $manu) {
-                            $manu_data = array('item_manu_name' => $manu, 'account_id' => $id);
-                            $this->db->insert('item_manu', $manu_data);
+                            if ($this->admin_section_model->checkitem($manu, $id) == 0) {
+                                $manu_data = array('item_manu_name' => $manu, 'account_id' => $id);
+                                $this->db->insert('item_manu', $manu_data);
+                            }
                         }
                     }
 
@@ -199,8 +207,10 @@ class Master_Model extends CI_Model {
                         $manufacturers = json_decode($profiles[0]->manufacturer);
                         $manufacturers = array_filter($manufacturers);
                         foreach ($manufacturers as $manufacturer) {
-                            $manufacturer_data = array('manufacturer_name' => $manufacturer, 'account_id' => $id);
-                            $this->db->insert('manufacturer_list', $manufacturer_data);
+                            if ($this->admin_section_model->checkmanufacturer($manufacturer, $id) == 0) {
+                                $manufacturer_data = array('manufacturer_name' => $manufacturer, 'account_id' => $id);
+                                $this->db->insert('manufacturer_list', $manufacturer_data);
+                            }
                         }
                     }
                 }
@@ -258,7 +268,7 @@ class Master_Model extends CI_Model {
             $this->db->where('username', $this->input->post('edit_contact_username'));
             $this->db->update('users', $persnal_info);
             if ($editArrCustomer['add_owner'] == 0) {
-                $userid = $this->db->select('id as user')->where('account_id',$editArrCustomer['customer_id'])->get('users')->row();
+                $userid = $this->db->select('id as user')->where('account_id', $editArrCustomer['customer_id'])->get('users')->row();
                 $this->db->where('is_user', $userid->user);
                 $this->db->delete('owner');
             }

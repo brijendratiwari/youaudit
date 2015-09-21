@@ -949,6 +949,7 @@ class Admins_model extends CI_Model {
                     $arr['type'][$i] = $field_type[$i];
                     $arr['values'][$i] = $field_values[$i];
             }}
+
             $profiledata = array(
                 'profile_name' => $this->input->post('profile_name'),
                 'owner' => (json_encode($owner) == 'null') ? 0 : json_encode($owner),
@@ -971,7 +972,6 @@ class Admins_model extends CI_Model {
                     unset($profiledata[$key]);
                 }
             }
-
             $result = $this->db->insert('profile', $profiledata);
             if ($result) {
                 return TRUE;
