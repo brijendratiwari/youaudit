@@ -640,8 +640,14 @@
                                     <div class="input-group-addon grpaddon">
                                         <?php echo $this->session->userdata('objSystemUser')->qrcode; ?></div>
                                     <input placeholder="Enter QR Code" class="form-control barcss" name="item_barcode" id="qr_code" value="<?php
-                                    $barcode = explode($this->session->userdata('objSystemUser')->qrcode, $objItem->barcode);
-                                    echo $barcode[1];
+//                                    $barcode = explode($this->session->userdata('objSystemUser')->qrcode, $objItem->barcode);
+//                                    echo $barcode[1];
+                                    if (strpos($objItem->barcode, $this->session->userdata('objSystemUser')->qrcode) !== FALSE) {
+                                        $barcode = explode($this->session->userdata('objSystemUser')->qrcode, $objItem->barcode);
+                                        echo $barcode[1];
+                                    } else {
+                                        echo $objItem->barcode;
+                                    }
                                     ?>" disabled="">            
                                     <!--</div>-->
                                     <div id="qrcodeerror" class="qrcode_error hide">QR Code Already Exist.</div>
