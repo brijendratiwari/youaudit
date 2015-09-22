@@ -519,9 +519,8 @@ class Faults extends MY_Controller {
             $iteam_id = $iId[1];
             $id = $this->input->post("report_ticket_id");
             $data["order_no"] = $this->input->post('order_no');
-            $data["order_no"] = $this->input->post("order_no");
-        }
-
+//            $data["order_no"] = $this->input->post("order_no");
+            
         if ($id > 0) {
             // Update Ticket
             $this->tickets_model->updateTicket($id, $data);
@@ -532,6 +531,8 @@ class Faults extends MY_Controller {
             $data["date"] = date("Y-m-d");
             $this->tickets_model->insertTicket($data);
         }
+        }
+
     }
 
 //

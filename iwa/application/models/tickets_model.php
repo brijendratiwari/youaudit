@@ -135,7 +135,7 @@ class Tickets_model extends CI_Model {
                 }
             }
             $this->db->insert('tickets_history', $history);
-//                return TRUE;
+                return TRUE;
             } else {
                 return FALSE;
             }
