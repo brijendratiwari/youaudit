@@ -1204,16 +1204,24 @@ OR `categories`.`name` LIKE '%$strfreetext%')");
   
  public function fixedMultipleFault($tickets_Id,$ticketData){
    
+     foreach($tickets_Id as $val){
+         
+         $this->db->where('id',$val);
+         $this->db->update('tickets',$ticketData);
+         
+     } 
+     
     foreach($tickets_Id as $val){
      $open_history = $this->getTicketData($val);
             $history = array(
                 'item_id' => $open_history->item_id,
                 'user_id' => $open_history->user_id,
-                'date' => $open_history->date,
+                'date' => date('y_m-d h:i:s'),
                 'status' => $open_history->status,
                 'severity' => $open_history->severity,
                 'jobnote' => $open_history->jobnote,
                 'order_no' => $open_history->order_no,
+                'fix_code' => $open_history->fix_code,
                 'reason_code' => $open_history->reason_code,
                 'photoid' => $open_history->photoid,
                 'ticket_id' => $open_history->id
@@ -1225,12 +1233,7 @@ OR `categories`.`name` LIKE '%$strfreetext%')");
             }
             $this->db->insert('tickets_history', $history);
      }
-     foreach($tickets_Id as $val){
-         
-         $this->db->where('id',$val);
-         $this->db->update('tickets',$ticketData);
-         
-     }
+    
      return TRUE;
  } 
 }
