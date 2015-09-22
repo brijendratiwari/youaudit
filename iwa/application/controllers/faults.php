@@ -100,7 +100,6 @@ class Faults extends MY_Controller {
         
 //        $all_job_notes = $this->tickets_model->getAllJob($item_id,$intAccountType);      
         $all_job_notes = $this->tickets_model->getAllJobData($fullItemsData[0]->ticket_id);      
-//   var_dump($all_job_notes);
 //   $jobnote = '';
    $allJob = array();
    $actionData = '';
@@ -111,12 +110,19 @@ class Faults extends MY_Controller {
              $actionData .= '<div class="col-md-12">
                     <div class="col-md-6"><label>Action</label> </div>
                     <div class="col-md-6">'.$history['action'].'</div>
-                     </div>
-                     <div class="col-md-12">
+                     </div>';
+                    if($history['fix_code'] != ''){
+              $actionData .='<div class="col-md-12">
+                    <div class="col-md-6"><label>Fixed Code</label> </div>
+                    <div class="col-md-6">'.$history['fix_code'].'</div>
+                    </div>';
+                    }else{
+              $actionData .='<div class="col-md-12">
                     <div class="col-md-6"><label>Reason Code</label> </div>
                     <div class="col-md-6">'.$history['reason_code'].'</div>
-                    </div>
-                    <div class="col-md-12">
+                    </div>';
+                    }
+              $actionData .= '<div class="col-md-12">
                     <div class="col-md-6"><label>Update  Date</label> </div>
                     <div class="col-md-6">'.date('d/m/Y',  strtotime($history['date'])).'</div>
                     </div>

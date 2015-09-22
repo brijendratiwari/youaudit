@@ -109,15 +109,22 @@ class Tickets_model extends CI_Model {
     function fixStatus($data) {
         if ($data) {
 
+            $this->db->where('id', $data['fix_item_id']);
+            $result = $this->db->update('items', array("status_id" => $data['status']));
+            if ($result) {
+                $this->db->where('id', $data['ticket_id']);
+                $this->db->update('tickets', array("user_id" => $this->session->userdata('objSystemUser')->userid, "fix_code" => $data['fix_code'], "status" => $data['status'], "jobnote" => $data['job_notes'], "ticket_action" => "Fix", "fix_date" => $data['fix_date'], "photoid" => $data['photoid']));
+                
             $open_history = $this->getTicketData($data['ticket_id']);
             $history = array(
                 'item_id' => $open_history->item_id,
                 'user_id' => $open_history->user_id,
-                'date' => $open_history->date,
+                'date' => date('Y-m-d h:i:s'),
                 'status' => $open_history->status,
                 'severity' => $open_history->severity,
                 'jobnote' => $open_history->jobnote,
                 'order_no' => $open_history->order_no,
+                'fix_code' => $open_history->fix_code,
                 'reason_code' => $open_history->reason_code,
                 'photoid' => $open_history->photoid,
                 'ticket_id' => $open_history->id
@@ -128,12 +135,7 @@ class Tickets_model extends CI_Model {
                 }
             }
             $this->db->insert('tickets_history', $history);
-            $this->db->where('id', $data['fix_item_id']);
-            $result = $this->db->update('items', array("status_id" => $data['status']));
-            if ($result) {
-                $this->db->where('id', $data['ticket_id']);
-                $this->db->update('tickets', array("user_id" => $this->session->userdata('objSystemUser')->userid, "fix_code" => $data['fix_code'], "status" => $data['status'], "jobnote" => $data['job_notes'], "ticket_action" => "Fix", "fix_date" => $data['fix_date'], "photoid" => $data['photoid']));
-                return TRUE;
+//                return TRUE;
             } else {
                 return FALSE;
             }
@@ -1187,7 +1189,7 @@ OR `categories`.`name` LIKE '%$strfreetext%')");
   }  
   public function getAllJobData($ticket_id){
       
-      $this->db->select('users.firstname,users.lastname,tickets_history.jobnote,tickets_history.reason_code,tickets_history.action,tickets_history.date');
+      $this->db->select('users.firstname,users.lastname,tickets_history.jobnote,tickets_history.reason_code,tickets_history.fix_code,tickets_history.action,tickets_history.date');
       $this->db->from('tickets_history');
       $this->db->where('tickets_history.ticket_id',$ticket_id);
       $this->db->join('users','users.id=tickets_history.user_id');
