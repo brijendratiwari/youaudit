@@ -416,59 +416,59 @@
                 {"sClass": "eamil_conform aligncenter", "aTargets": [1]}
             ]}
         );
-        var open_job = $("#open_job").DataTable({
-            "ordering": true,
-            "aLengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
-            "iDisplayLength": 5,
-            "bDestroy": true, //!!!--- for remove data table warning.
-            "aoColumnDefs": [
-                {"sClass": "eamil_conform aligncenter", "aTargets": [0]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [1]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [2]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [3]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [4]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [5]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [6]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [7]}
-            ]}
-        );
-        var fault_history = $("#fault_history").DataTable({
-            "ordering": true,
-            "aLengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
-            "iDisplayLength": 5,
-            "bDestroy": true, //!!!--- for remove data table warning.
-            "aoColumnDefs": [
-                {"sClass": "eamil_conform aligncenter", "aTargets": [0]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [1]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [2]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [3]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [4]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [5]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [6]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [7]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [8]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [9]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [10]}
-            ]}
-        var fixed_history = $("#fixed_history").DataTable({
-            "ordering": true,
-            "aLengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
-            "iDisplayLength": 5,
-            "bDestroy": true, //!!!--- for remove data table warning.
-            "aoColumnDefs": [
-                {"sClass": "eamil_conform aligncenter", "aTargets": [0]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [1]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [2]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [3]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [4]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [5]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [6]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [7]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [8]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [9]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [10]}
-            ]}
-        );
+//        var open_job = $("#open_job").DataTable({
+//            "ordering": true,
+//            "aLengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
+//            "iDisplayLength": 5,
+//            "bDestroy": true, //!!!--- for remove data table warning.
+//            "aoColumnDefs": [
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [0]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [1]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [2]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [3]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [4]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [5]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [6]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [7]}
+//            ]}
+//        );
+//        var fault_history = $("#fault_history").DataTable({
+//            "ordering": true,
+//            "aLengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
+//            "iDisplayLength": 5,
+//            "bDestroy": true, //!!!--- for remove data table warning.
+//            "aoColumnDefs": [
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [0]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [1]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [2]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [3]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [4]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [5]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [6]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [7]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [8]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [9]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [10]}
+//            ]}
+//        var fixed_history = $("#fixed_history").DataTable({
+//            "ordering": true,
+//            "aLengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
+//            "iDisplayLength": 5,
+//            "bDestroy": true, //!!!--- for remove data table warning.
+//            "aoColumnDefs": [
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [0]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [1]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [2]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [3]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [4]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [5]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [6]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [7]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [8]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [9]},
+//                {"sClass": "eamil_conform aligncenter", "aTargets": [10]}
+//            ]}
+//        );
         var quantity = $("#quantity_change").DataTable({
         });
         $("#item_barcode_similar").on("keyup blur", function() {
