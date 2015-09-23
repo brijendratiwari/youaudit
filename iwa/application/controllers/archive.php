@@ -185,7 +185,7 @@ class Archive extends MY_Controller {
                 left join sites on items.site = sites.id
                 left join suppliers on items.supplier = suppliers.supplier_id
                 left join pat on items.pattest_status = pat.id
-                where (actions.action = 'Item Confirmed Deleted' OR actions.action = 'Item Marked Deleted') AND items.active =0 AND items.account_id=" . $this->session->userdata('objSystemUser')->accountid;
+                where (actions.action = 'Item Confirmed Deleted') AND items.active =0 AND items.account_id=" . $this->session->userdata('objSystemUser')->accountid;
 
         if (isset($_GET['sSearch']) && $_GET['sSearch'] != "") {
 
@@ -402,7 +402,7 @@ class Archive extends MY_Controller {
                 $logged_by = $val['userfirstname'] . '' . $val['userlastname'];
             }
 
-            $output['aaData'][] = array("DT_RowId" => $val['itemid'], '<input type="checkbox" class="multiComSelect" value="' . $val['itemid'] . '"><input type="hidden" id="category_id_' . $val['itemid'] . '" class="" value="' . $val['categoryid'] . '" >', '<a id="bcode" href="' . $view_users . '">' . $val['barcode'] . '</a>', $photo, $val['categoryname'], $val['item_manu_name'], $val['manufacturer'], $val['model'], $val['quantity'], $val['sitename'], $val['locationname'], $val['owner_name'], $val['supplier_name'], $val['statusname'], $val['condition_name'], $numberOfFaults, $val['serial_number'], $age_asset, $purchase_date, $warranty_date, $replace_date, $val['value'], $val['current_value'], $removal_date, $logged_by, $val['reason'], $val['status_name'], $val['payment'], $val['net_gain_loss'], '<span class="action-w"><a class="icon-with-text" href="' . $view_users . '" title="View"><i class="fa fa-eye franchises-i"></i></a>View</span>');
+            $output['aaData'][] = array("DT_RowId" => $val['itemid'], '<input type="checkbox" class="multiComSelect" value="' . $val['itemid'] . '"><input type="hidden" id="category_id_' . $val['itemid'] . '" class="" value="' . $val['categoryid'] . '" >', '<a id="bcode" href="' . $view_users . '">' . $val['barcode'] . '</a>', $photo, $val['categoryname'], $val['item_manu_name'], $val['manufacturer'], $val['model'], $val['quantity'], $val['sitename'], $val['locationname'], $val['owner_name'], $val['supplier_name'], $val['statusname'], $val['condition_name'], $numberOfFaults, $val['serial_number'], $age_asset, $purchase_date, $warranty_date, $replace_date, $val['value'], $val['current_value'], $removal_date, $logged_by, $val['reason'], $val['status_name'], '$'.$val['payment'],'$'.$val['net_gain_loss'], '<span><a class="icon-with-text" href="' . $view_users . '" title="View"><i class="fa fa-eye franchises-i"></i></a>View</span>');
             foreach (array_reverse($arrCustomfield) as $col) {
 
                 if (isset($val[$col->field_name])) {

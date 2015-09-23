@@ -2378,7 +2378,7 @@ if (!empty($arr1)) {
                             <label>Payment / Income for Removed Asset? Sold / Scrap / Recycled etc</label>
                         </div>
                         <div class="col-md-7"> 
-                            <input class="form-control" id="payment_asset" data-currentvalue="" value="">
+                            <input class="form-control" id="payment_asset" name="payment" data-currentvalue="" value="">
                         </div>
                     </div>  <!-- .form-group --> 
 
@@ -2387,7 +2387,7 @@ if (!empty($arr1)) {
                             <label>Net Income of Removed Asset</label>
                         </div>
                         <div class="col-md-7"> 
-                            <input class="form-control" id="remove_asset" value="" readonly='true'>
+                            <input class="form-control" id="remove_asset" name="net_gain_loss" value="" readonly='true'>
                         </div>
                     </div> <!-- .form-group -->
                     <input hidden='' name='safety' value='1'>
