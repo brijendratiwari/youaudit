@@ -2856,30 +2856,38 @@ class Items extends MY_Controller {
                 $arrPageData['itemPics'] = $res->path;
             }
         }
-        $strHtml .='<link rel="stylesheet" type="text/css" media="all" href="http://dev-iis.com/youaudit/iwa/brochure/css/bootstrap.min.css" />';
-        $strHtml .='<link rel="stylesheet" type="text/css" media="all" href="http://dev-iis.com/youaudit/iwa/includes/css/style.css" />';
-        $strHtml .='<link rel="stylesheet" type="text/css" media="all" href="http://dev-iis.com/youaudit/includes/css/sub_style.css" />';
-        $strHtml .='<link rel="stylesheet" type="text/css" media="all" href="http://dev-iis.com/youaudit/brochure/css/validation/core.css" />';
-
+//        $strHtml .='<link rel="stylesheet" type="text/css" media="all" href="http://192.168.10.139:8080/youaudit/iwa/brochure/css/bootstrap.min.css" />';
+//        $strHtml .='<link rel="stylesheet" type="text/css" media="all" href="http://192.168.10.139:8080/youaudit/iwa/includes/css/style.css" />';
+//        $strHtml .='<link rel="stylesheet" type="text/css" media="all" href="http://192.168.10.139:8080/youaudit/includes/css/sub_style.css" />';
+//        $strHtml .='<link rel="stylesheet" type="text/css" media="all" href="http://192.168.10.139:8080/youaudit/brochure/css/validation/core.css" />';
+     $strHtml .= "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"><html><head>
+         <link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\"http://192.168.10.139:8080/youaudit/brochure/css/pdf.css\" />
+         <link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\"http://192.168.10.139:8080/youaudit/iwa/includes/css/style.css\" />
+         <link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\"http://192.168.10.139:8080/youaudit/includes/css/sub_style.css\" />
+         <link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\"http://192.168.10.139:8080/youaudit/iwa/brochure/css/bootwstrap.min.css\" />
+         
+</head>";
         $strHtml .= $this->load->view('items/viewitem', $arrPageData, TRUE);
 
 //        echo $strHtml;
 //        die;
         $this->load->library('Mpdf');
-
-        $mpdf = new Pdf('en-GB', 'A4-L');
+ 
+        $mpdf = new mPDF('c', 'A4-L');
 
 //        $mpdf->SetDisplayMode(90);
-//        $mpdf->SetDisplayMode('fullpage','two');
-        $mpdf->AddPage('L', // L - landscape, P - portrait
-                '', '', '', '', 30, // margin_left
-                50, // margin right
-                23, // margin top
-                55, // margin bottom
-                18, // margin header
-                12); // margin footer
-        $mpdf->setFooter('{PAGENO} of {nb}');
-        $mpdf->WriteHTML($strHtml);
+        $mpdf->SetDisplayMode('fullwidth');
+//        $mpdf->AddPage('L', // L - landscape, P - portrait
+//                '', '', '', '', 30, // margin_left
+//                50, // margin right
+//                23, // margin top
+//                55, // margin bottom
+//                18, // margin header
+//                12); // margin footer
+//        $mpdf->setFooter('{PAGENO} of {nb}');
+//        $stylesheet = '<style>'.file_get_contents('bootstrap.min.css').'</style>';
+//        $mpdf->WriteHTML($stylesheet,1);
+        $mpdf->WriteHTML($strHtml,0);
         $mpdf->Output("YouAudit_" . date('Ymd_His') . ".pdf", "D");
     }
 

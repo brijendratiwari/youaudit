@@ -307,6 +307,7 @@
             if ($("#similar_data").val())
             {
                 $("body").find("#addsimilaritem").trigger("click");
+                $("#similar_data").val('');
             }
         });
 

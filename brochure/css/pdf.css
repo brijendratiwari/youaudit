@@ -1,0 +1,68 @@
+/* 
+    Document   : pdf
+    Created on : Sep 23, 2015, 5:08:51 PM
+    Author     : user
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+root { 
+    display: block;
+}
+
+#content {
+    display: inline-block !important;
+    width: 100% !important;
+    padding: 0 !important;
+}
+.pdf_details {
+    width: 100%;
+}
+.pdf_details .tb_header td, .pdf_details .tb_header td div {
+    color: #fff !important;
+    font-weight: bold
+}
+.pdf_details_headding h3 {
+    padding: 0 15px;
+}
+.pdf_details .row {
+    width: 100%;
+    clear: both;
+}
+.pdf_details .row .col-md-4 {
+    width: 30%;
+    float: left;
+    padding:0 10px;
+}
+.pdf_details .row .col-md-4 table {
+    float: left;
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+.pdf_details .row .col-md-4 table tr {
+    box-shadow: 0 -1px 0 0 #00aeef inset;
+    -moz-box-shadow: 0 -1px 0 0 #00aeef inset;
+    -webkit-box-shadow: 0 -1px 0 0 #00aeef inset;
+    -ms-box-shadow: 0 -1px 0 0 #00aeef inset;
+    -o-box-shadow: 0 -1px 0 0 #00aeef inset;
+    border-collapse: collapse;
+}
+.pdf_details .row .col-md-4 table tr td {
+    padding: 7px;
+    border-collapse: collapse;
+    border-spacing: 0;
+    box-shadow: 0 -1px 0 0 #00aeef inset;
+    -moz-box-shadow: 0 -1px 0 0 #00aeef inset;
+    -webkit-box-shadow: 0 -1px 0 0 #00aeef inset;
+    -ms-box-shadow: 0 -1px 0 0 #00aeef inset;
+    -o-box-shadow: 0 -1px 0 0 #00aeef inset;
+}
+
+.pdf_details .blue-border {
+    border: 1px solid #00aeef !important;
+    border-spacing: 0;
+    display: inline-table;
+    width: 100%;
+    border-collapse: collapse;
+}
