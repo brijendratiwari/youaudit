@@ -133,6 +133,7 @@
             x--;
             total--;
         });
+
         var url = $('#item-url').val();
         var base_url_str = $("#base_url").val();
         var num_of_th = $('#num_of_th').val();
@@ -220,7 +221,7 @@
             });
         }
         for (var m = 22; m < num_of_th.length; m++) {
-            $("body").on("change", "#"+m, function() {
+            $("body").on("change", "#" + m, function() {
                 var ind = this.id;
                 var val = this.value;
 
@@ -331,63 +332,68 @@
                 success: function(data) {
                     var assetdata = $.parseJSON(data);
 
-//                    $.getJSON(base_url_str + "categories/getCustomFields/" + assetdata[0].categoryid, function(data) {
-//
-//                        $('#custom_fielddiv').empty();
-//                        for (var i = 0; i < data.length; i++) {
-//                            if (data[i].field_value == 'text_type')
-//                            {
-//                                var str = '<div class="row catg col-md-12"><div class="col-md-5">' +
-//                                        '<label id="label_' + data[i].id + '" for="' + data[i].id + '">' + data[i].field_name + '</label></div><div class="col-md-7">' +
-//                                        '<input type="text" class="form-control" id="' + data[i].id + '" name="' + data[i].id + '">' +
-//                                        '</div></div>';
-//                            }
-//                            if (data[i].field_value == 'value_type')
-//                            {
-//                                var str = '<div class="row catg col-md-12"><div class="col-md-5">' +
-//                                        '<label id="label_' + data[i].id + '" for="' + data[i].id + '">' + data[i].field_name + '</label></div><div class="col-md-7">' +
-//                                        '<div class="input-group col-md-12"><div class="input-group-addon grpaddon">$</div><input type="number" min="0" class="form-control custom_val" id="' + data[i].id + '" name="' + data[i].id + '">' +
-//                                        '</div></div></div>';
-//                            }
-//                            if (data[i].field_value == 'num')
-//                            {
-//                                var str = '<div class="row catg col-md-12"><div class="col-md-5">' +
-//                                        '<label id="label_' + data[i].id + '" for="' + data[i].id + '">' + data[i].field_name + '</label></div><div class="col-md-7">' +
-//                                        '<input type="number" min="0" class="form-control" id="' + data[i].id + '" name="' + data[i].id + '">' +
-//                                        '</div></div>';
-//                            }
-//                            if (data[i].field_value == 'date_type')
-//                            {
-//                                var str = '<div class="row catg col-md-12"><div class="col-md-5">' +
-//                                        '<label id="label_' + data[i].id + '" for="' + data[i].id + '">' + data[i].field_name + '</label></div><div class="col-md-7">' +
-//                                        '<input type="text" class="form-control dateval" id="' + data[i].id + '" name="' + data[i].id + '">' +
-//                                        '</div></div>';
-//                            }
-//                            if (data[i].field_value == 'pick_list_type')
-//                            {
-//                                if (data[i].pick_values)
-//                                {
-//                                    var temp = new Array();
-//                                    var opt1 = new Array();
-//                                    var list = data[i].pick_values;
-//                                    var temp = list.split(',');
-//                                    for (var j = 0; j < temp.length; j++) {
-//                                        var opt = '<option value="' + temp[j] + '">' + temp[j] + '</option>';
-//                                        opt1.push(opt);
-//                                    }
-//                                    var option = opt1.join('');
-//                                }
-//                                var str = '<div class="row catg col-md-12"><div class="col-md-5">' +
-//                                        '<label id="label_' + data[i].id + '" for="' + data[i].id + '">' + data[i].field_name + '</label></div><div class="col-md-7">' +
-//                                        '<select class="form-control" id="' + data[i].id + '" name="' + data[i].id + '">' + option +
-//                                        '</select>' +
-//                                        '</div></div>';
-//                            }
-//                            $('#custom_fielddiv').append(str);
-//                        }
-//
-//                        $(".dateval").datepicker({dateFormat: "dd/mm/yy"});
-//                    });
+                    $.getJSON(base_url_str + "categories/getCustomFields/" + assetdata[0].categoryid, function(data) {
+
+                        $('#custom_fielddiv').empty();
+                        for (var i = 0; i < data.length; i++) {
+                            if (data[i].field_value == 'text_type')
+                            {
+                                var str = '<div class="row catg col-md-12"><div class="col-md-5">' +
+                                        '<label id="label_' + data[i].id + '" for="' + data[i].id + '">' + data[i].field_name + '</label></div><div class="col-md-7">' +
+                                        '<input type="text" class="form-control" id="custom_' + data[i].id + '" name="custom_' + data[i].id + '">' +
+                                        '</div></div>';
+                            }
+                            if (data[i].field_value == 'value_type')
+                            {
+                                var str = '<div class="row catg col-md-12"><div class="col-md-5">' +
+                                        '<label id="label_' + data[i].id + '" for="' + data[i].id + '">' + data[i].field_name + '</label></div><div class="col-md-7">' +
+                                        '<div class="input-group col-md-12"><div class="input-group-addon grpaddon">$</div><input type="number" min="0" class="form-control custom_val" id="custom_' + data[i].id + '" name="custom_' + data[i].id + '">' +
+                                        '</div></div></div>';
+                            }
+                            if (data[i].field_value == 'num')
+                            {
+                                var str = '<div class="row catg col-md-12"><div class="col-md-5">' +
+                                        '<label id="label_' + data[i].id + '" for="' + data[i].id + '">' + data[i].field_name + '</label></div><div class="col-md-7">' +
+                                        '<input type="number" min="0" class="form-control" id="custom_' + data[i].id + '" name="custom_' + data[i].id + '">' +
+                                        '</div></div>';
+                            }
+                            if (data[i].field_value == 'date_type')
+                            {
+                                var str = '<div class="row catg col-md-12"><div class="col-md-5">' +
+                                        '<label id="label_' + data[i].id + '" for="' + data[i].id + '">' + data[i].field_name + '</label></div><div class="col-md-7">' +
+                                        '<input type="text" class="form-control dateval" id="custom_' + data[i].id + '" name="custom_' + data[i].id + '">' +
+                                        '</div></div>';
+                            }
+                            if (data[i].field_value == 'pick_list_type')
+                            {
+                                if (data[i].pick_values)
+                                {
+                                    var temp = new Array();
+                                    var opt1 = new Array();
+                                    var list = data[i].pick_values;
+                                    var temp = list.split(',');
+                                    for (var j = 0; j < temp.length; j++) {
+                                        var opt = '<option value="' + temp[j] + '">' + temp[j] + '</option>';
+                                        opt1.push(opt);
+                                    }
+                                    var option = opt1.join('');
+                                }
+                                var str = '<div class="row catg col-md-12"><div class="col-md-5">' +
+                                        '<label id="label_' + data[i].id + '" for="' + data[i].id + '">' + data[i].field_name + '</label></div><div class="col-md-7">' +
+                                        '<select class="form-control" id="custom_' + data[i].id + '" name="custom_' + data[i].id + '">' + option +
+                                        '</select>' +
+                                        '</div></div>';
+                            }
+                            if (data[i].id) {
+                                $.getJSON(base_url_str + "categories/getCustomFieldContent/" + assetdata[0].categoryid + "/" + data[i].id + "/" + item_id, function(text) {
+                                    $("#custom_" + text.custom_field_id).val(text.content);
+                                });
+                            }
+                            $('#custom_fielddiv').append(str);
+                        }
+
+                        $(".dateval").datepicker({dateFormat: "dd/mm/yy"});
+                    });
 
 //                    var pre = $("#asset_qrcode").val();
 //                    var bar_code = pre + assetdata[0].barcode;
@@ -423,7 +429,7 @@
                         var newdate = assetdata[0].purchase_date.split("-").reverse().join("/");
                         $('#item_purchased_similar').val(newdate);
                     }
-                    
+
                 }
 
             });
@@ -663,7 +669,6 @@
                 owner_id_similar: "Please Select Owner",
                 site_id_similar: "Please Select Site",
                 location_id_similar: "Please Select Location",
-
             },
         });
 
@@ -876,7 +881,7 @@
                                 var temp = list.split(',');
                                 opt1.push('<option value="">--Please Select--</option>');
                                 for (var j = 0; j < temp.length; j++) {
-                                   var opt = '<option value="' + temp[j] + '">' + temp[j] + '</option>';
+                                    var opt = '<option value="' + temp[j] + '">' + temp[j] + '</option>';
                                     opt1.push(opt);
                                 }
                                 var option = opt1.join('');
@@ -947,7 +952,7 @@
                 $.each(pdfarr, function(i, v) {
                     rowArr.push(row[v]);
                 });
-                return '<td>' + rowArr.join('</td><td>') + '</td>';
+                return '<td style="height:50px;">' + rowArr.join('</td><td style="height:50px;">') + '</td>';
             })
                     .join('</tr><tr>');
             data = '<tbody><tr>' + data + '</tr></tbody>';
@@ -963,7 +968,7 @@
                 console.log($(this).html());
                 cloneFoot.push($(this).html());
             });
-            cloneHead = '<thead style="background-color: #00aeef;"><tr><th>' + cloneHead.join('</th><th>') + '</th></tr></thead>';
+            cloneHead = '<thead><tr><th style="background-color: #00aeef;color: #ffffff;">' + cloneHead.join('</th><th style="background-color: #00aeef;color: #ffffff;">') + '</th></tr></thead>';
             cloneFoot = '<tfoot><tr><th>Summary- TOTAL / COUNT' + cloneFoot.join('</th><th>') + '</th></tr></tfoot>';
             console.log(cloneHead);
 
@@ -1009,7 +1014,7 @@
             $.each(foots, function(j, v) {
                 if (heads[j] != 'Photo') {
                     if (j == '0') {
-                        foots[j] = 'Summary- TOTAL / COUNT = '+data1.length+'';
+                        foots[j] = 'Summary- TOTAL / COUNT = ' + data1.length + '';
                     }
                     resfoot.push(foots[j]);
                 }
@@ -1018,7 +1023,7 @@
             $('#export_csv_form').submit();
         });
 
-         // Establish Link to Owner,Location and Site
+        // Establish Link to Owner,Location and Site
         $('body').find('#owner_id').change(function() {
 //            $(".multi_location_class").empty();
 //            $(".multi_site_class").empty(); 
@@ -1030,7 +1035,7 @@
                         $('.multi_location_class option[value="' + data.results[0].location_id + '"]').attr('selected', 'selected');
 //                    $('#updated_location_id').attr('value', +data.results[0].location_id);
                         $.getJSON("<?php echo base_url('items/getsitebylocation'); ?>" + '/' + data.results[0].location_id, function(site_data) {
-                           if (site_data!= null)
+                            if (site_data != null)
                             {
                                 $('.multi_site_class option[value="' + site_data.results[0].site_id + '"]').attr('selected', 'selected');
 //                            $('#updated_site_id').attr('value', +site_data.results[0].site_id);
@@ -1124,7 +1129,7 @@
                 }
             });
         });
-        
+
         $(document).find("#item_table").find("tfoot").addClass("pp");
 
     });
@@ -1240,13 +1245,13 @@
             <tr> <th>Select</th>
                 <?php
                 foreach ($arrColumns as $column) {
-                    
+
                     $cnt = 22;
 //                    var_dump($column);
                     ?>
                     <th class="left" data-export="true"><?php echo $column->name; ?></th>
 
-<?php } ?>
+                <?php } ?>
                 <th class="" data-export="false" style="text-align: center;width: 160px;float: left;padding-left: 10px;height: 35px;">Actions</th>
 
             </tr>
@@ -1262,7 +1267,7 @@
                         <th><input type="text" name="filter_barcode" id="filter_barcode"></th>
                     <?php } elseif ($column->input_name == "photoid") { ?>
                         <th></th>
-    <?php } elseif ($column->input_name == "categoryname") { ?>
+                    <?php } elseif ($column->input_name == "categoryname") { ?>
                         <th><select id="filtercategoryname">
                                 <option value=""></option>
                                 <?php
@@ -1272,7 +1277,7 @@
                                 ?>
                             </select>
                         </th>
-    <?php } elseif ($column->input_name == "item_manu") { ?>
+                    <?php } elseif ($column->input_name == "item_manu") { ?>
                         <th><select id="filteritem_manu">
                                 <option value=""></option>
                                 <?php
@@ -1282,7 +1287,7 @@
                                 }
                                 ?>
                             </select></th>
-    <?php } elseif ($column->input_name == "manufacturer") { ?>
+                    <?php } elseif ($column->input_name == "manufacturer") { ?>
                         <th><select id="filtermanufacturer">
                                 <option value=""></option>
                                 <?php
@@ -1295,7 +1300,7 @@
                         <th></th>
                     <?php } elseif ($column->input_name == "quantity") { ?>
                         <th></th>
-    <?php } elseif ($column->input_name == "sitename") { ?>
+                    <?php } elseif ($column->input_name == "sitename") { ?>
                         <th><select id="filtersitename">
                                 <option value=""></option>
                                 <?php
@@ -1304,7 +1309,7 @@
                                 }
                                 ?>
                             </select></th>
-    <?php } elseif ($column->input_name == "locationname") { ?>
+                    <?php } elseif ($column->input_name == "locationname") { ?>
                         <th><select id="filterlocationid">
                                 <option value=""></option>
                                 <?php
@@ -1313,7 +1318,7 @@
                                 }
                                 ?>
                             </select></th>
-    <?php } elseif ($column->input_name == "owner") { ?>
+                    <?php } elseif ($column->input_name == "owner") { ?>
                         <th><select id="filteruserid">
                                 <option value=""></option>
                                 <?php
@@ -1322,7 +1327,7 @@
                                 }
                                 ?>
                             </select></th>
-    <?php } elseif ($column->input_name == "supplier") { ?>
+                    <?php } elseif ($column->input_name == "supplier") { ?>
                         <th>
                             <select id="filtersupplier">
                                 <option value=""></option>
@@ -1333,7 +1338,7 @@
                                 ?>
                             </select> 
                         </th>
-    <?php } elseif ($column->input_name == "statusname") { ?>
+                    <?php } elseif ($column->input_name == "statusname") { ?>
                         <th><select id="filteritemstatusid">
                                 <option value=""></option>
                                 <?php
@@ -1342,7 +1347,7 @@
                                 }
                                 ?>
                             </select></th>
-    <?php } elseif ($column->input_name == "condition_name") { ?>
+                    <?php } elseif ($column->input_name == "condition_name") { ?>
                         <th><select id="filterconstatus">
                                 <option value=""></option>
                                 <?php
@@ -1367,7 +1372,7 @@
                         <th></th>
                     <?php } elseif ($column->input_name == "current_value") { ?>
                         <th></th>
-    <?php } else { ?>
+                    <?php } else { ?>
 
                         <th>
                             <?php
@@ -1379,9 +1384,9 @@
                                         <option value=""></option>
                                         <?php for ($k = 0; $k < count($pick_values); $k++) { ?>
                                             <option value="<?php echo $pick_values[$k]; ?>"><?php echo $pick_values[$k]; ?></option>
-                                    <?php } ?>
+                                        <?php } ?>
                                     </select> 
-            <?php } else { ?>
+                                <?php } else { ?>
                                     <select id="<?php echo $cnt; ?>" name="filter_custom" class="filter_custom severity">
                                         <option value=""></option>
                                         <option value="<?php echo $column->pick_values; ?>"><?php echo $column->pick_values; ?></option>
@@ -1391,12 +1396,12 @@
                             } else {
                                 ?>
                                 <input type="text" id="<?php echo $cnt; ?>" name="filter_custom" class="filter_custom">   
-                        <?php } ?>  
+                            <?php } ?>  
                         </th> <?php
                         $cnt++;
                     }
                     ?>
-<?php } ?>
+                <?php } ?>
                 <th></th>
             </tr>
         </thead>
@@ -1517,7 +1522,7 @@ if (!empty($arr1)) {
                                     ?> /></div>
                                 <div class="col-md-10"><?= $arrColumns[$i]->name; ?></div>
                             </div>
-<?php } for ($i = $arr; $i < count($arrColumns); $i++) { ?>
+                        <?php } for ($i = $arr; $i < count($arrColumns); $i++) { ?>
 
                             <div class="col-md-6">
                                 <div class="col-md-2"><input type="checkbox" name="columns[]" value="<?= $arrColumns[$i]->id; ?>" <?php
@@ -1527,7 +1532,7 @@ if (!empty($arr1)) {
                                     ?> /></div>
                                 <div class="col-md-10"><?= $arrColumns[$i]->name; ?></div> 
                             </div>
-<?php } ?>
+                        <?php } ?>
                     </div>
 
 
@@ -1580,7 +1585,7 @@ if (!empty($arr1)) {
                                 <option value="0">Select</option>
                                 <?php foreach ($arrItemManu['list'] as $item) { ?>
                                     <option value="<?php echo $item['id']; ?>"><?php echo $item['item_manu_name']; ?></option>
-<?php } ?>
+                                <?php } ?>
                             </select></div>
 
                     </div> <!-- /.form-group -->
@@ -1599,7 +1604,7 @@ if (!empty($arr1)) {
                                 <option value="0">Select</option>
                                 <?php foreach ($arrManufaturer as $manufacturer) { ?>
                                     <option value="<?php echo $manufacturer['manufacturer_name']; ?>"><?php echo $manufacturer['manufacturer_name']; ?></option>
-<?php } ?>
+                                <?php } ?>
 
                             </select> </div>
                     </div> 
@@ -1630,7 +1635,7 @@ if (!empty($arr1)) {
                         <div class="col-md-6">  
                             <div class="input-group">
                                 <div class="input-group-addon grpaddon">
-<?php echo $this->session->userdata('objSystemUser')->qrcode; ?></div>
+                                    <?php echo $this->session->userdata('objSystemUser')->qrcode; ?></div>
                                 <input placeholder="Enter QR Code" class="form-control barcss" name="item_barcode" id="item_barcode">            
                             </div>
                             <div id="qrcode_error" class="qrcode_error hide">QR Code Already Exist.</div>
@@ -1699,7 +1704,7 @@ if (!empty($arr1)) {
 
 
                     <div class="form-group col-md-12">
-                        <?php // var_dump($arrLocations); ?>
+                        <?php // var_dump($arrLocations);   ?>
                         <div class="col-md-6"> <label>Location*</label>
                         </div>
                         <div class="col-md-6">       
@@ -1938,7 +1943,7 @@ if (!empty($arr1)) {
                         <div class="col-md-7">  
                             <div class="input-group">
                                 <div class="input-group-addon grpaddon">
-<?php echo $this->session->userdata('objSystemUser')->qrcode; ?></div>
+                                    <?php echo $this->session->userdata('objSystemUser')->qrcode; ?></div>
                                 <input placeholder="Enter QR Code" class="form-control barcss" name="item_barcode_similar" id="item_barcode_similar"></div>
                             <div id="qrcodeerror_similar" class="qrcodeerror hide">QR Code Already Exist.</div>
                         </div>
@@ -2124,13 +2129,13 @@ if (!empty($arr1)) {
     <form action="<?= site_url('items/filter/') ?>" method="post">
 
 <?php foreach ($arrColumns as $column) { ?>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="form_row">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <label for="item_make"><?= $column->name ?></label>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <input type="checkbox" name="columns[]" value="<?= $column->id ?>" />
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <div class="form_row">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <label for="item_make"><?= $column->name ?></label>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <input type="checkbox" name="columns[]" value="<?= $column->id ?>" />
 
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <hr style="margin: 0;"/>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <hr style="margin: 0;"/>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div>
 <?php } ?>
 
 
@@ -2157,7 +2162,7 @@ if (!empty($arr1)) {
                                 <option value="">-- Please Select --</option>
                                 <?php foreach ($arrCategories['results'] as $category) { ?>
                                     <option value="<?php print $category->categoryid; ?>" data-selector="<?php print $category->categoryname; ?>"><?php print $category->categoryname; ?></option>
-<?php } ?>
+                                <?php } ?>
                             </select></div>
                     </div> 
                     <div class="row col-md-12">
@@ -2168,7 +2173,7 @@ if (!empty($arr1)) {
                                 <?php foreach ($arrItemManu['list'] as $itemManu) {
                                     ?>
                                     <option value="<?php print $itemManu['id']; ?>" data-selector="<?php print $itemManu['item_manu_name']; ?>"><?php print $itemManu['item_manu_name']; ?></option>
-<?php } ?>
+                                <?php } ?>
                             </select></div>
                     </div> 
 
@@ -2179,7 +2184,7 @@ if (!empty($arr1)) {
                                 <option value="">-- Please Select --</option>
                                 <?php foreach ($arrManufaturer as $manufacturer) { ?>
                                     <option value="<?php echo $manufacturer['manufacturer_name']; ?>"><?php echo $manufacturer['manufacturer_name']; ?></option>
-<?php } ?>
+                                <?php } ?>
 
                             </select> </div>
                     </div> 
@@ -2212,7 +2217,7 @@ if (!empty($arr1)) {
                                 <option value="">-- Please Select --</option>
                                 <?php foreach ($arrSites['results'] as $site) { ?>
                                     <option value="<?php print $site->siteid; ?>" data-selector="<?php print $site->sitename; ?>"><?php print $site->sitename; ?></option>
-<?php } ?>
+                                <?php } ?>
                             </select></div>
                     </div> 
 
@@ -2223,7 +2228,7 @@ if (!empty($arr1)) {
                                 <option value="">-- Please Select --</option>
                                 <?php foreach ($arrLocations['results'] as $location) { ?>
                                     <option value="<?php print $location->locationid; ?>" data-selector="<?php print $location->locationname; ?>"><?php print $location->locationname; ?></option>
-<?php } ?>
+                                <?php } ?>
                             </select></div>
                     </div> 
                     <div class="row col-md-12">
@@ -2233,7 +2238,7 @@ if (!empty($arr1)) {
                                 <option value="">-- Please Select --</option>
                                 <?php foreach ($arrItemStatuses['results'] as $status) { ?>
                                     <option value="<?php print $status->statusid; ?>" data-selector="<?php print $status->statusname; ?>"><?php print $status->statusname; ?></option>
-<?php } ?>
+                                <?php } ?>
                             </select></div>
                     </div> 
                     <div class="row col-md-12">
@@ -2258,7 +2263,7 @@ if (!empty($arr1)) {
                                 <option value="">-- Please Select --</option>
                                 <?php foreach ($arrSuppliers as $supplier) { ?>
                                     <option value="<?php print $supplier['supplier_id']; ?>" data-selector="<?php print $supplier['supplier_name']; ?>"><?php print $supplier['supplier_name']; ?></option>
-<?php } ?>
+                                <?php } ?>
                             </select></div>
                     </div> 
 

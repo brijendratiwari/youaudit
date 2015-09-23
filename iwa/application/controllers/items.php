@@ -200,7 +200,7 @@ class Items extends MY_Controller {
         $sLimit = "";
         $lenght = 20;
         $str_point = 0;
-        $col_sort = array("","items.barcode", "items.serial_number", "categories.name", "items.item_manu", "items.manufacturer", "items.model", "items.quantity", "sites.name", "locations.name", "users.firstname",  "suppliers.supplier_name","itemstatus.name", "item_condition.condition","","items.serial_number","","items.purchase_date", "items.warranty_date", "items.replace_date", "items.value", "items.current_value");
+        $col_sort = array("", "items.barcode", "items.serial_number", "categories.name", "items.item_manu", "items.manufacturer", "items.model", "items.quantity", "sites.name", "locations.name", "users.firstname", "suppliers.supplier_name", "itemstatus.name", "item_condition.condition", "", "items.serial_number", "", "items.purchase_date", "items.warranty_date", "items.replace_date", "items.value", "items.current_value");
         $query = "select
                 items.id AS itemid, items.manufacturer,items.item_manu ,items.model, items.serial_number, items.barcode, items.owner_since AS currentownerdate, items.location_since AS currentlocationdate, items.site, items.value, items.current_value, items.purchase_date,items.status_id, items.compliance_start, items.quantity,items.warranty_date,items.replace_date,
 		categories.id AS categoryid, categories.name AS categoryname, categories.default AS categorydefault, categories.icon AS categoryicon,item_condition.condition AS condition_name,
@@ -347,9 +347,9 @@ class Items extends MY_Controller {
             for ($i = 0; $i < intval($_GET['iSortingCols']); $i++) {
 //                echo $_GET['bSortable_' . intval($_GET['iSortCol_' . $i])];
                 if ($_GET['bSortable_' . intval($_GET['iSortCol_' . $i])] == "true") {
-                    if(!empty($col_sort[intval($_GET['iSortCol_' . $i])])){
-                    $query .= " ORDER BY ";
-                    $query .= $col_sort[intval($_GET['iSortCol_' . $i])] . "
+                    if (!empty($col_sort[intval($_GET['iSortCol_' . $i])])) {
+                        $query .= " ORDER BY ";
+                        $query .= $col_sort[intval($_GET['iSortCol_' . $i])] . "
 				 	" . mysql_real_escape_string($_GET['sSortDir_' . $i]);
                     }
                 }
@@ -379,7 +379,7 @@ class Items extends MY_Controller {
         $result = $res->result_array();
         $count_result = $count_res->result_array();
         $total_record = count($count_result);
-    
+
 
         $output = array(
             "sEcho" => intval($_GET['sEcho']),
@@ -2063,7 +2063,7 @@ class Items extends MY_Controller {
 
                             $arrItemData = array(
                                 'serial_number' => $this->input->post('item_serial_number'),
-                                'barcode' => $this->session->userdata('objSystemUser')->qrcode.$this->input->post('item_barcode'),
+                                'barcode' => $this->session->userdata('objSystemUser')->qrcode . $this->input->post('item_barcode'),
                                 'manufacturer' => $this->input->post('item_make'),
                                 'model' => $this->input->post('item_model'),
                                 'supplier' => $this->input->post('supplier'),
@@ -2083,23 +2083,22 @@ class Items extends MY_Controller {
                                 'condition_now' => $condition,
                                 'condition_since' => date('Y-m-d H:i:s'),
                             );
-                            
-                            if($this->input->post('owner_id') > 0 && $this->input->post('owner_id') != $this->session->userdata('ownerName') ){
+
+                            if ($this->input->post('owner_id') > 0 && $this->input->post('owner_id') != $this->session->userdata('ownerName')) {
                                 $arrItemData['owner_now'] = $this->input->post('owner_id');
                             }
 
 //                            if ($this->input->post('item_patteststatus')) {
 //                                echo $this->input->post('item_patteststatus')."if";die;
-                                if($this->session->userdata('pattestStatus') != $this->input->post('item_patteststatus')){
+                            if ($this->session->userdata('pattestStatus') != $this->input->post('item_patteststatus')) {
                                 $arrItemData['pattest_status'] = $this->input->post('item_patteststatus');
-                                }
+                            }
 //                            } else {
 //                                echo $this->input->post('item_patteststatus')."else";die;
 //                                $arrItemData['pattest_status'] = 5;
 //                                $arrItemData['pattest_status'] = null;
 //                                $arrItemData['pattest_date'] = null;
 //                            }
-
 //                            if ($this->input->post('item_barcode') != $mixItemsData[0]->barcode) {
 //                                $arrItemData['barcode'] = $this->input->post('item_barcode');
 //                            }
@@ -2134,10 +2133,10 @@ class Items extends MY_Controller {
 // Add Pat History
 //                                if ($this->input->post('item_patteststatus')) {
 //                                    echo $this->session->userdata('pattestStatus')."post".$this->input->post('item_patteststatus');die;
-                                        if($this->session->userdata('pattestStatus') != $this->input->post('item_patteststatus')){
-                                            $this->session->unset_userdata('pattestStatus');
-                                             $this->items_model->linkThisToPat($intId, $this->input->post('item_patteststatus'), $this->input->post('owner_id'));
-                                        }
+                                if ($this->session->userdata('pattestStatus') != $this->input->post('item_patteststatus')) {
+                                    $this->session->unset_userdata('pattestStatus');
+                                    $this->items_model->linkThisToPat($intId, $this->input->post('item_patteststatus'), $this->input->post('owner_id'));
+                                }
 //                                     $this->session->unset_userdata('pattestStatus');
 //                                    }
 
@@ -2200,7 +2199,7 @@ class Items extends MY_Controller {
 
                                 $this->session->set_userdata('booCourier', true);
                                 $this->session->set_userdata('arrCourier', array('arrUserMessages' => array('The item was successfully updated')));
-                                redirect('/items/filter','refresh');
+                                redirect('/items/filter', 'refresh');
                             } else {
 
                                 $arrPageData['arrErrorMessages'][] = "Unable to update the item.";
@@ -2732,17 +2731,32 @@ class Items extends MY_Controller {
 
                 $mixNewItemId = $this->items_model->addOne($arrItemData, $item_details[0]->categoryid, $this->input->post('location_id_similar'), $this->session->userdata('objSystemUser')->userid, $this->input->post('site_id_similar'));
 
+                foreach ($this->input->post() as $key => $value) {
+
+                    if (strpos($key, 'custom_') !== FALSE) {
+                        $cus_field = explode('custom_', $key);
+                        $arr[$cus_field[1]] = $value;
+                    }
+                } 
+//                var_dump($arr);
+//                die;
+
+                
+                
                 $this->load->model('categories_model');
                 $this->load->model('customfields_model');
-                $arrPageData['arrCustomFields'] = $this->customfields_model->getsimilarCustomFields($previous_itemid, $item_details[0]->categoryid);
-
-                foreach ($arrPageData['arrCustomFields'] as $field) {
-                    $custom_data[$field->custom_field_id] = $field->content;
+                if ($arr) {
+                    $this->customfields_model->insertContentByItem($mixNewItemId, $arr);
                 }
-
-                if ($custom_data) {
-                    $this->customfields_model->insertContentByItem($mixNewItemId, $custom_data);
-                }
+//                $arrPageData['arrCustomFields'] = $this->customfields_model->getsimilarCustomFields($previous_itemid, $item_details[0]->categoryid);
+//
+//                foreach ($arrPageData['arrCustomFields'] as $field) {
+//                    $custom_data[$field->custom_field_id] = $field->content;
+//                }
+//
+//                if ($custom_data) {
+//                    $this->customfields_model->insertContentByItem($mixNewItemId, $custom_data);
+//                }
 
 
                 $this->load->model('tickets_model');
@@ -2794,7 +2808,7 @@ class Items extends MY_Controller {
         echo $res;
         die;
     }
-    
+
     // check uniqueness of item manu
     public function check_itemmanu() {
 
@@ -2879,7 +2893,7 @@ class Items extends MY_Controller {
             }
         }
     }
-    
+
     function getownerbysite($site_id) {
         if ($site_id) {
             $this->load->model('sites_model');
@@ -2889,6 +2903,7 @@ class Items extends MY_Controller {
             }
         }
     }
+
     function getownerbylocation($location_id) {
         if ($location_id) {
             $this->load->model('locations_model');

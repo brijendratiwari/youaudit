@@ -98,10 +98,10 @@ class Categories_model extends CI_Model {
     }
 
     public function deleteOne($intCategoryId = -1) {
-        
+
         if (($intCategoryId > 0) && ($this->doCheckCategoryHasNoActiveItems($intCategoryId))) {
             $this->db->where('id', $intCategoryId);
-            $arrInput = array('active' => 0,'archive'=>0);
+            $arrInput = array('active' => 0, 'archive' => 0);
             $this->db->update('categories', $arrInput);
             return TRUE;
         }
@@ -211,15 +211,14 @@ class Categories_model extends CI_Model {
             $resQuery = $this->db->get();
             // Let's check if there are any results
             if ($resQuery->num_rows != 0) {
-              
+                
             } else {
                 $arrCategoryData = array(
                     'name' => $category_name,
                     'account_id' => $account_id,
                     'default' => 0,
                 );
-            $this->db->insert('categories', $arrCategoryData);
-            
+                $this->db->insert('categories', $arrCategoryData);
             }
         }
     }
@@ -243,6 +242,17 @@ class Categories_model extends CI_Model {
         $query = $this->db->get('custom_fields');
         return $query->result();
     }
+
+    public function getCustomField_content($cat_id, $custom_id, $item_id) {
+        $this->db->select('custom_field_id,content');
+        $this->db->where('category_id', $cat_id);
+        $this->db->where('custom_field_id', $custom_id);
+        $this->db->where('item_id', $item_id);
+        $query = $this->db->get('custom_fields_content');
+        $result = $query->row();
+        return $result;
+    }
+
     public function getCustomFieldsForApp($cat_id) {
         $this->db->select('custom_fields');
         $this->db->where('id', $cat_id);
