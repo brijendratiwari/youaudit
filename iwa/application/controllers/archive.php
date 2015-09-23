@@ -143,7 +143,8 @@ class Archive extends MY_Controller {
         $str_point = 0;
         $col_sort = array("items.barcode", "items.serial_number", "categories.name", "items.item_manu", "items.manufacturer", "items.model", "items.quantity", "sites.name", "locations.name", "users.firstname", "users.lastname", "pat.pattest_name", "itemstatus.name", "items.purchase_date", "items.warranty_date", "items.replace_date", "items.value", "items.current_value", "suppliers.supplier_name", "item_condition.condition");
         $query = "select
-                items.id AS itemid, items.manufacturer,items.item_manu ,items.model, items.serial_number, items.barcode, items.owner_since AS currentownerdate, items.location_since AS currentlocationdate, items.site, items.value, items.current_value, items.purchase_date,items.status_id, items.compliance_start, items.quantity,items.warranty_date,items.replace_date,
+                items.id AS itemid, items.mark_deleted,
+                items.mark_deleted_2, items.manufacturer,items.item_manu ,items.model, items.serial_number, items.barcode, items.owner_since AS currentownerdate, items.location_since AS currentlocationdate, items.site, items.value, items.current_value, items.purchase_date,items.status_id, items.compliance_start, items.quantity,items.warranty_date,items.replace_date,
 		categories.id AS categoryid, categories.name AS categoryname, categories.default AS categorydefault, categories.icon AS categoryicon,item_condition.condition AS condition_name,
 		users.id AS userid, users.firstname AS userfirstname, users.lastname AS userlastname, users.nickname AS usernickname,
                 owner.id as owner_id, owner.owner_name,
@@ -166,6 +167,7 @@ class Archive extends MY_Controller {
                 actions.who_did_it AS logged_by,
                 custom_fields_content.content,
                 items.deleted_date
+               
                 from items left join items_categories_link on items.id = items_categories_link.item_id
                 left join categories on items_categories_link.category_id = categories.id
                 left join custom_fields_content on items.id = custom_fields_content.item_id
@@ -183,7 +185,7 @@ class Archive extends MY_Controller {
                 left join sites on items.site = sites.id
                 left join suppliers on items.supplier = suppliers.supplier_id
                 left join pat on items.pattest_status = pat.id
-                where items.active =0 AND items.account_id=" . $this->session->userdata('objSystemUser')->accountid;
+                where (actions.action = 'Item Confirmed Deleted' OR actions.action = 'Item Marked Deleted') AND items.active =0 AND items.account_id=" . $this->session->userdata('objSystemUser')->accountid;
 
         if (isset($_GET['sSearch']) && $_GET['sSearch'] != "") {
 
@@ -341,6 +343,9 @@ class Archive extends MY_Controller {
     });
 }); </script>";
 
+            // get name 
+            
+            
             $image_role .= "</div>";
             if ($val['purchase_date'] != "0000-00-00" && $val['purchase_date'] != NULL) {
                 $date2 = date('d-m-Y', strtotime($val['purchase_date']));
@@ -411,7 +416,7 @@ class Archive extends MY_Controller {
             $count++;
         }
 
-//        var_dump($output);
+//        var_dump($output);die;
 
         echo json_encode($output);
         die;
