@@ -2135,7 +2135,8 @@ class Items extends MY_Controller {
 //                                    echo $this->session->userdata('pattestStatus')."post".$this->input->post('item_patteststatus');die;
                                 if ($this->session->userdata('pattestStatus') != $this->input->post('item_patteststatus')) {
                                     $this->session->unset_userdata('pattestStatus');
-                                    $this->items_model->linkThisToPat($intId, $this->input->post('item_patteststatus'), $this->input->post('owner_id'));
+//                                    $this->items_model->linkThisToPat($intId, $this->input->post('item_patteststatus'), $this->input->post('owner_id'));
+                                    $this->items_model->linkThisToPat($intId, $this->input->post('item_patteststatus'), $this->session->userdata('objSystemUser')->userid);
                                 }
 //                                     $this->session->unset_userdata('pattestStatus');
 //                                    }
