@@ -201,24 +201,90 @@ class Faults extends MY_Controller {
        
 
         
-         $strHtml .= "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"><html><head>
-         <link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\"http://".$_SERVER['HTTP_HOST']."/youaudit/brochure/css/pdf.css\" />
-         <link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\"http://".$_SERVER['HTTP_HOST']."/youaudit/iwa/includes/css/style.css\" />
-         <link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\"http://".$_SERVER['HTTP_HOST']."/youaudit/includes/css/sub_style.css\" />
-         <link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\"http://".$_SERVER['HTTP_HOST']."/youaudit/iwa/brochure/css/bootstrap.min.css\" />
-         
-</head>";
+    
         
-     $strHtml .= $this->load->view('faults/incidentpdf', array("historyData"=>$fullItemsData[0],"allJobNotes"=>$all_job_notes), TRUE);
+//     $strHtml .= $this->load->view('faults/incidentpdf', array("historyData"=>$fullItemsData[0],"allJobNotes"=>$all_job_notes), TRUE);
 
-     $this->load->library('Mpdf');
- 
-        $mpdf = new mPDF('c', 'A4-L');
+        $strHtml = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"><html><head><link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\"includes/css/report.css\" /></head>";
+//        $strHtml = "<html><head><link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\"https://www.ischoolaudit.com/includes/css/report.css\" /></head>";
 
-        $mpdf->SetDisplayMode('fullwidth');
+        $strHtml .= "<body><div>";
+        $strHtml .= "<table><tr><td>";
+        $strHtml .= "<h1>YouAudit Report</h1>";
+        $strHtml .= "<h2>" . $strReportName . "</h2>";
+        $strHtml .= "</td><td class=\"right\">";
 
-        $mpdf->WriteHTML($strHtml,0);
-        $mpdf->Output("YouAudit_" . date('Ymd_His') . ".pdf", "D");
+        $logo = 'logo.png';
+        if (isset($this->session->userdata['theme_design']->logo)) {
+            $logo = $this->session->userdata['theme_design']->logo;
+        }
+//        $strHtml .= "<img alt=\"ischoolaudit\" src=\"https://www.ischoolaudit.com/includes/img/logo_ictracker.png\">";
+        $strHtml .= "<img alt=\"ictracker\" src='http://".$_SERVER['HTTP_HOST']."/youaudit/iwa/brochure/logo/logo.png'>";
+
+        $strHtml .= "</td></tr></table>";
+
+$strHtml .= "<div>&nbsp;</div>";
+
+        $strHtml .= "<table class=\"report\">";
+        $strHtml .= "<thead>";
+        $strHtml .= "<tr style='background-color:#00AEEF;color:white;'>";
+
+            $strHtml .= "<th style='padding:10px;'>QR Code</th><th>Manufacturer</th><th>Model</th><th>Category</th><th>Item</th><th>Location</th><th>Site</th><th>Owner</th><th>Severity</th><th>Order No</th><th>Fault Fixed By</th>";
+
+        $strHtml .= "</tr>";
+        $strHtml .= "</thead><tbody>";
+
+            $strHtml .= "<tr>";
+
+    $strHtml .= "<td style='padding:10px;'>".$fullItemsData[0]->barcode."</td><td>".$fullItemsData[0]->manufacturer."</td><td>".$fullItemsData[0]->model."</td><td>".$fullItemsData[0]->categoryname."</td><td>".$fullItemsData[0]->item_manu_name."</td><td>".$fullItemsData[0]->locationname."</td><td>".$fullItemsData[0]->sitename."</td><td>".$fullItemsData[0]->userfirstname." ".$fullItemsData[0]->userlastname."</td><td>".$fullItemsData[0]->severity."</td><td>".$fullItemsData[0]->order_no."</td><td>".$fullItemsData[0]->loggedBy."</td>";
+                   
+      
+            $strHtml .= "</tr>";
+      
+        $strHtml .= "</tbody><table>";
+        
+        $strHtml .= "<div>&nbsp;</div>";
+        $strHtml .= "<div>&nbsp;</div>";
+       
+        $strHtml .= "<div><h1 style='color:#00aeef;'>Incident Timeline</h1></div>";
+    
+        //##############################################
+        $strHtml .= "<table class=\"report\">";
+        $strHtml .= "<thead>";
+        $strHtml .= "<tr style='background-color:#00AEEF;color:white;'>";
+
+            $strHtml .= "<th style='padding:10px;'>Date</th><th>Time</th><th>Event</th><th>Logged By</th><th>Code</th><th>Notes</th>";
+
+        $strHtml .= "</tr>";
+        $strHtml .= "</thead><tbody>";
+               foreach($all_job_notes as $val){
+            $strHtml .= "<tr>";
+
+    $strHtml .= "<td style='padding:10px;'>". date('Y/m/d',strtotime($val['date']))."</td><td>". date('h:i:s',strtotime($val['date']))."</td><td>".$val['action']."</td><td>".$val['firstname']." ".$val['lastname']."</td>";
+    $strHtml .= "<td>";
+    if($val['fix_code'] != ""){
+        
+        $strHtml .= $val['fix_code']; 
+    }else{
+        $strHtml .= $val['reason_code'];
+    }
+     $strHtml .= "</td>";              
+     $strHtml .= "<td>".$val['jobnote']."</td>";              
+      
+            $strHtml .= "</tr>";
+        }
+        $strHtml .= "</tbody></table>";
+        //#############################################
+        
+        
+$strHtml .= "</div></body></html>";
+        
+//      echo $strHtml;die;  
+       $this->load->library('Mpdf');
+            $mpdf = new Pdf('en-GB', 'A4');
+           // $mpdf->setFooter('{PAGENO} of {nb}');
+            $mpdf->WriteHTML($strHtml);
+            $mpdf->Output("YouAudit_" . date('Ymd_His') . ".pdf", "D");
         
     }
  ##########################################################################
