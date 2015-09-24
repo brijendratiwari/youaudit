@@ -1326,8 +1326,10 @@ class Items_model extends CI_Model {
             $this->db->join('locations', 'items.location_now = locations.id', 'left');
             $this->db->join('owner', 'items.owner_now = owner.id', 'left');
             $this->db->join('item_manu', 'items.item_manu = item_manu.id', 'left');
+            $this->db->join('actions', 'items.id=actions.to_what', 'left');
             $this->db->where('items.account_id', $intAccountId);
             $this->db->where('items.active', 0);
+            $this->db->where('actions.action', 'Item Confirmed Deleted');
             $this->db->order_by('items.deleted_date', 'DESC');
             $this->db->limit(5, 0);
 
@@ -2686,13 +2688,20 @@ items.id AS itemid,
                 }
             }
 
-
             $this->customfields_model->insertContentByItemid($data['items_id'], $data);
 
 
             return TRUE;
         }
     }
+    
+//    public function cat_customfields($category_id) {
+//        $this->db->select('custom_fields');
+//        $this->db->where('id', $category_id);
+//        $this->db->where('account_id', $this->session->userdata('objSystemUser')->accountid);
+//        $query = $this->db->get('categories');
+//        return $query->result();
+//    }
 
     public function checkBarcodeForItem($strBarcode = "") {
         if (($strBarcode != "")) {

@@ -113,7 +113,7 @@ class Account extends CI_Controller {
                         'city' => $this->input->post('account_city'),
                         'state' => $this->input->post('account_state'),
                         'postcode' => $this->input->post('account_postcode'),
-                        'package_id' => $this->input->post('account_package'),
+//                        'package_id' => $this->input->post('account_package'),
                         'fleet' => $this->input->post('account_fleet'),
                         'compliance' => $this->input->post('account_compliance'),
                         'condition_module' => $this->input->post('account_condition'),
