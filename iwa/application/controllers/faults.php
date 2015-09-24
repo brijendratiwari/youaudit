@@ -205,13 +205,12 @@ class Faults extends MY_Controller {
         
 //     $strHtml .= $this->load->view('faults/incidentpdf', array("historyData"=>$fullItemsData[0],"allJobNotes"=>$all_job_notes), TRUE);
 
-        $strHtml = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"><html><head><link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\"includes/css/report.css\" /></head>";
+        $strHtml = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"><html><head></head>";
 //        $strHtml = "<html><head><link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\"https://www.ischoolaudit.com/includes/css/report.css\" /></head>";
 
-        $strHtml .= "<body><div>";
+        $strHtml .= "<body>";
         $strHtml .= "<table><tr><td>";
         $strHtml .= "<h1>YouAudit Report</h1>";
-        $strHtml .= "<h2>" . $strReportName . "</h2>";
         $strHtml .= "</td><td class=\"right\">";
 
         $logo = 'logo.png';
@@ -241,7 +240,7 @@ $strHtml .= "<div>&nbsp;</div>";
       
             $strHtml .= "</tr>";
       
-        $strHtml .= "</tbody><table>";
+        $strHtml .= "</tbody></table>";
         
         $strHtml .= "<div>&nbsp;</div>";
         $strHtml .= "<div>&nbsp;</div>";
@@ -277,7 +276,7 @@ $strHtml .= "<div>&nbsp;</div>";
         //#############################################
         
         
-$strHtml .= "</div></body></html>";
+$strHtml .= "</body></html>";
         
 //      echo $strHtml;die;  
        $this->load->library('Mpdf');
