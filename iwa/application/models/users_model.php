@@ -32,7 +32,7 @@ class Users_model extends CI_Model {
             return $arrResult;
         }
     }
-    
+
     public function log_usercheck($arrInput) {
 //        $this->db->where("level_id !=", 5);
         $resQuery = $this->db->get_where('users', $arrInput, 1);
@@ -146,6 +146,20 @@ class Users_model extends CI_Model {
             }
         }
         return $arrResult;
+    }
+
+    public function isUser_Supplier($userid) {
+        if ($userid > 0) {
+            $supplier = $this->db->select('supplier_id')->where('user_id', $userid)->get('supplier_user');
+            if ($supplier->num_rows() > 0) {
+                $supplier_id = $supplier->row();
+                return $supplier_id->supplier_id;
+            } else {
+                return FALSE;
+            }
+        } else {
+            return false;
+        }
     }
 
     public function setThisOne($intId = -1, $arrInput = array()) {
@@ -789,9 +803,8 @@ class Users_model extends CI_Model {
 
         return ($resQuery->num_rows());
     }
-    
-    public function get_itemlist($intAccountId)
-    {
+
+    public function get_itemlist($intAccountId) {
         if (($intAccountId > 0)) {
             $this->db->select('
                         items.id AS itemid,

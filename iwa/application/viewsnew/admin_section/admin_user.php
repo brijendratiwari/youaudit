@@ -756,6 +756,12 @@ if ($this->session->flashdata('error')) {
         <h3 class="page-header">Supplier Access Users</h3>
     </div>
 </div>
+
+    <div class="alert alert-danger alert-dismissable">
+        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">&times;</button>
+        You can allow a Supplier to access the system. Please note they will have APP ONLY access and only be able to scan and work on assets which they are down as the supplier of.
+    </div>
+
 <div class="row">
     <div class="col-lg-12">
 

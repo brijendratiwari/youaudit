@@ -37,11 +37,12 @@ class apiV4 extends MY_Controller {
 
         if ($arrLoginData['booSuccess']) {
             $arrUserData = $this->users_model->getBasicCredentialsFor($arrLoginData['result'][0]->id);
-
+            $is_supplier = $this->users_model->isUser_Supplier($arrUserData['result'][0]->userid);
             $objUser = $arrUserData['result'][0];
 
             $this->session->set_userdata('booAppUserLogin', TRUE);
             $this->session->set_userdata('objAppUser', $objUser);
+            $this->session->set_userdata('is_supplier', $is_supplier);
             return $objUser;
         } else {
             return false;
@@ -2637,9 +2638,9 @@ class apiV4 extends MY_Controller {
 //      **************************************************************************************          
 
 
-                $arr = array();                
-                $arr = json_decode($this->input->post('compliance_arr')); 
-                $arrData['result'] = $arr; 
+                $arr = array();
+                $arr = json_decode($this->input->post('compliance_arr'));
+                $arrData['result'] = $arr;
                 foreach ($arr->compliance as $data) {
                     $this->items_model->recordCheck($data, $itemID, $intPhotoId);
                     sleep(1);
