@@ -210,7 +210,7 @@ class Faults extends MY_Controller {
 
         $strHtml .= "<body>";
         $strHtml .= "<table><tr><td>";
-        $strHtml .= "<h1>YouAudit Report</h1>";
+        $strHtml .= "<h1>Incident Report</h1>";
         $strHtml .= "</td><td class=\"right\">";
 
         $logo = 'logo.png';
