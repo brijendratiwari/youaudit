@@ -957,7 +957,7 @@ if ($this->session->flashdata('error')) {
                         <div class="col-md-4">
                             <div class="col-md-2">Show</div>
                             <div class="col-md-2"><select id="profilelimit" disabled="">
-                                    <option value="1">30</option>
+                                    <option value="30">30</option>
                                     <option value="50">50</option>
                                     <option value="100">All</option>
                                 </select> 
