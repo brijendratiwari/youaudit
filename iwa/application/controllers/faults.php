@@ -149,7 +149,80 @@ class Faults extends MY_Controller {
         echo $array;
         die;
     }
+  
+    ##########################################################################
+    // get pdf for fault history with all incident 
+    function getPdfForFaultHistory($item_id=FALSE,$intAccountId=FALSE) {
+//        $intItemId = $this->input->post('id');
+//        $intAccountId = $this->input->post('account_id');
+     
+//        if(strpos($intItemId, '_')!=FALSE) {
+//        $explodeArr = explode("_", $intItemId);
+//        $item_id = $explodeArr[1];
+//        }
+//        else
+//        {
+//         $item_id = $this->input->post('id');   
+//        }
+        $this->load->model('items_model');
+        $this->load->model('users_model');
+        $this->load->model('tickets_model');
 
+        $arrPageData = array();
+        $arrPageData['arrPageParameters']['strSection'] = get_class();
+        $arrPageData['arrPageParameters']['strPage'] = "Change ownership";
+        $arrPageData['arrSessionData'] = $this->session->userdata;
+        $this->session->set_userdata('booCourier', false);
+        $this->session->set_userdata('arrCourier', array());
+        $arrPageData['arrErrorMessages'] = array();
+        $arrPageData['arrUserMessages'] = array();
+
+        //echo "<pre>"; print_R($explodeArr); die;
+        //echo $explodeArr[1]."===============".$intAccountId;
+        $fullItemsData = $this->items_model->basicGetOneWithTicket($item_id, $intAccountId,"Fix");
+        $user = $this->users_model->getOne($fullItemsData[0]->user_id,$intAccountId);
+                $loggedName = $user['result'][0]->firstname . " " . $user['result'][0]->lastname;
+        
+//        $all_job_notes = $this->tickets_model->getAllJob($item_id,$intAccountType);      
+        $all_job_notes = $this->tickets_model->getAllJobData($fullItemsData[0]->ticket_id);      
+//   $jobnote = '';
+   $allJob = array();
+   $actionData = '';
+        
+        $all_notes=  implode(',',$allJob);
+        $notesDate=  implode(',',$jobNoteDate);
+//        $all_photos=  implode(',', $photoid);
+        $fullItemsData[0]->allNotes=$all_notes;
+        $fullItemsData[0]->notesDate=$notesDate;
+        $fullItemsData[0]->actionData=  $actionData;
+//        $fullItemsData[0]->allPhoto=$all_photos;
+        $fullItemsData[0]->loggedBy=$loggedName;
+        $fullItemsData[0]->loggedByDate=date('d/m/Y',strtotime($fullItemsData[0]->dt));
+       
+
+        
+         $strHtml .= "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"><html><head>
+         <link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\"http://".$_SERVER['HTTP_HOST']."/youaudit/brochure/css/pdf.css\" />
+         <link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\"http://".$_SERVER['HTTP_HOST']."/youaudit/iwa/includes/css/style.css\" />
+         <link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\"http://".$_SERVER['HTTP_HOST']."/youaudit/includes/css/sub_style.css\" />
+         <link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\"http://".$_SERVER['HTTP_HOST']."/youaudit/iwa/brochure/css/bootstrap.min.css\" />
+         
+</head>";
+        
+     $strHtml .= $this->load->view('faults/incidentpdf', array("historyData"=>$fullItemsData[0],"allJobNotes"=>$all_job_notes), TRUE);
+     echo $strHtml;die;
+      $this->load->library('Mpdf');
+ 
+        $mpdf = new mPDF('c', 'A4-L');
+
+        $mpdf->SetDisplayMode('fullwidth');
+
+        $mpdf->WriteHTML($strHtml,0);
+        $mpdf->Output("YouAudit_" . date('Ymd_His') . ".pdf", "D");
+        
+    }
+ ##########################################################################
+    
     public function raiseTicket($intId = -1) {
 
 

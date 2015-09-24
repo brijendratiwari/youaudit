@@ -1029,7 +1029,7 @@
                                             <td><?php echo Faults::getUserData($value->fault_by);?></td>
                                             <td><?php echo Faults::getUserData($value->fixed_by);?></td>
                                             <td><?php echo $value->fix_code; ?></td>
-                                            <td><span class="action-w"><a data-toggle="modal" actionmode="reportfault"  ticket_id = "<?php echo $ticket_id ?>"  id="itm_<?php echo $value->itemid ?>" account_id="<?php echo $value->account_id ?>" href="#view_fault" title="View Fault" class="viewfault" data_customer_id=''><i class="fa fa-eye franchises-i"></i></a>View Incident</span></td>
+                                            <td><span class="action-w"><a data-toggle="modal" actionmode="reportfault"  ticket_id = "<?php echo $ticket_id ?>"  id="itm_<?php echo $value->itemid ?>" account_id="<?php echo $value->account_id ?>" href="#view_fault" title="View Fault" class="viewfault" data_customer_id=''><i class="fa fa-eye franchises-i"></i></a>View Incident</span><span><a  href="<?php echo base_url("faults/getPdfForFaultHistory/$value->itemid/$value->account_id"); ?>"><img src="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/img/pdf.png" title="Get pdf" alt="Get pdf" /></a></span></td>
                                         </tr>
                                         <?php
                                     } // End of foreach
