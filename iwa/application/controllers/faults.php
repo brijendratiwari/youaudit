@@ -210,8 +210,8 @@ class Faults extends MY_Controller {
 </head>";
         
      $strHtml .= $this->load->view('faults/incidentpdf', array("historyData"=>$fullItemsData[0],"allJobNotes"=>$all_job_notes), TRUE);
-     echo $strHtml;die;
-      $this->load->library('Mpdf');
+
+     $this->load->library('Mpdf');
  
         $mpdf = new mPDF('c', 'A4-L');
 
