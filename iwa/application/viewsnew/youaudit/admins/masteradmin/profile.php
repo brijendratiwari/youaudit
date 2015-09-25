@@ -616,14 +616,13 @@
                     'profile_name': profile_name,
                 },
                 success: function(msg) {
-                    alert(msg);
                     // we need to check if the value is the same
                     if (msg == '') {
                         //Receiving the result of search here
-                        $("#update_button").addClass('hide');
+                        $("#update_btn").attr("disabled", true);
                         $("#profilename_error").removeClass("hide");
                     } else {
-                        $("#update_button").removeClass("hide");
+                        $("#update_btn").removeAttr("disabled");
                         $("#profilename_error").addClass("hide");
                     }
                 }
@@ -818,6 +817,11 @@
         padding-right: 0px;
         border-right: 1px solid #ddd;
     }
+    .profilename_error
+    {
+        color: red;
+        font-weight: bold;  
+    }
 </style>
 <br>
 
@@ -962,7 +966,7 @@ if ($this->session->flashdata('error')) {
                             <input type="hidden" name="masterid" id="master_account_id" value="<?php echo $masterid; ?>"/>
                             <div class="col-md-4">  <label>Profile Name :</label> </div>
                             <div class="col-md-4">  <input placeholder="Enter Profile Name" disabled="" class="form-control" name="edit_profile_name" id="edit_profile_name"><input type="hidden" id="profileid" value="">
-                                <div id="profile_error" class="profile_error hide">Profile Is Already Exist.</div> 
+                                <div id="profilename_error" class="username_error hide">Profile Is Already Exist.</div>
                             </div>
                             <div class="col-md-3" ><input style="float:right" type="button" disabled="" id="add_custom" class="btn btn-info" value="Add Custom Field"></div>
                             <div class="col-md-1" ><input style="float:right" id="update_btn" type="submit" disabled="" class="btn btn-info" value="Save"></div>

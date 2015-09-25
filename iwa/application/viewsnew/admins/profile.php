@@ -70,8 +70,8 @@
         });
 
         $("body").on("change", "#profile_limit", function() {
-           
-            var limit = $('#profile_limit option:selected').val(); 
+
+            var limit = $('#profile_limit option:selected').val();
             var max_limit = 100;
             if (limit <= max_limit)
             {
@@ -91,7 +91,7 @@
             $('#profile_limit').attr('disabled', false);
             var base_url_str = $("#base_url").val();
 
-            var profile_id = $("#profileid").val(); 
+            var profile_id = $("#profileid").val();
             var profile_name = $(this).attr("profile_name");
 
             $("#edit_profile_name").attr("value", profile_name);
@@ -102,7 +102,7 @@
                 success: function(data) {
 
                     var profiledata = $.parseJSON(data);
-                    var ownerstr = (profiledata.owner); 
+                    var ownerstr = (profiledata.owner);
                     var category = (profiledata.category);
                     var manu = (profiledata.manu);
                     var manufacturer = profiledata.manufacturer;
@@ -602,7 +602,34 @@
                         $("#username_error").removeClass("hide");
                     } else {
                         $("#save_button").removeClass("hide");
-                        $("#username_error").addClass("hide");  
+                        $("#username_error").addClass("hide");
+                    }
+                }
+
+            });
+        });
+
+        $("#edit_profile_name").on("blur", function(e) {
+
+            var profile_name = $("#edit_profile_name").val();
+
+            var base_url_str = $("#base_url").val();
+            $.ajax({
+                type: "POST",
+                url: base_url_str + "admins/checkProfile",
+                data: {
+                    'profile_name': profile_name,
+                },
+                success: function(msg) {
+
+                    // we need to check if the value is the same
+                    if (msg == '') {
+                        //Receiving the result of search here
+                        $("#update_btn").attr("disabled", true);
+                        $("#profilename_error").removeClass("hide");
+                    } else {
+                        $("#update_btn").removeAttr("disabled");
+                        $("#profilename_error").addClass("hide");
                     }
                 }
 
@@ -798,6 +825,11 @@
         padding-right: 0px;
         border-right: 1px solid #ddd;
     }
+    .profilename_error
+    {
+        color: red;
+        font-weight: bold;  
+    }
 </style>
 <div class="row">
     <div class="col-lg-3">
@@ -921,9 +953,10 @@ if ($this->session->flashdata('error')) {
                             <div class="col-md-4">  <label>Profile Name :</label> </div>
                             <div class="col-md-4">  <input placeholder="Enter Profile Name" disabled="" class="form-control" name="edit_profile_name" id="edit_profile_name">
                                 <input type="hidden" id="profileid" value="">
+                                <div id="profilename_error" class="username_error hide">Profile Is Already Exist.</div>
                             </div>
                             <div class="col-md-3" ><input style="float:right" type="button" disabled="" id="add_custom" class="btn btn-info" value="Add Custom Field"></div>
-                            <div class="col-md-1" ><input style="float:right" type="submit" disabled="" class="btn btn-info" value="Save"></div>
+                            <div class="col-md-1" ><input style="float:right" id="update_btn" type="submit" disabled="" class="btn btn-info" value="Save"></div>
                         </div> <!-- /.form-group -->
                         <input type="hidden" name="adminuser_id" id="adminuser_id_1" style="visibility:hidden;" readonly/>
                         <div class="col-md-4">
@@ -1132,9 +1165,9 @@ if ($this->session->flashdata('error')) {
                     <tbody id="viewprofile_body">
 <?php foreach ($profilelist as $profile) {
     ?>
-                                                                                                                                                                    <tr>
+                                                                                                                                                                        <tr>
 
-                                                                                                                                                                    </tr>
+                                                                                                                                                                        </tr>
 <?php } ?>
                     </tbody>
                 </table>

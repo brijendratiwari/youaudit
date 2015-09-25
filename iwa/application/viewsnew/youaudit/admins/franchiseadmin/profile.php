@@ -74,7 +74,7 @@
 
         $("body").on("change", "#profilelimit", function() {
 
-            var limit = $('#profilelimit option:selected').val(); 
+            var limit = $('#profilelimit option:selected').val();
             var max_limit = 100;
             if (limit <= max_limit)
             {
@@ -94,7 +94,7 @@
             $('#profilelimit').attr('disabled', false);
             var base_url_str = $("#base_url").val();
 
-            var profile_id = '<?php echo $this->uri->segment('3'); ?>'; 
+            var profile_id = '<?php echo $this->uri->segment('3'); ?>';
             var profile_name = $(this).attr("profile_name");
 
             $("#edit_profile_name").attr("value", profile_name);
@@ -125,7 +125,7 @@
                         else
                         {
                             ownerArray.length = limit;
-                        } 
+                        }
                         $.each(ownerArray, function(index, value) {
                             if (value != 'N/A' && value != '0') {
                                 owner_obj.push(value);
@@ -204,21 +204,21 @@
                     // To Show Manufacturer List
                     if (manufacturer) {
                         var manufacturer_obj = new Array();
-                        var manufacturerArray = manufacturer.toString().split(","); 
+                        var manufacturerArray = manufacturer.toString().split(",");
                         if (manufacturerArray.length < limit)
                         {
                             manufacturerArray.length = manufacturerArray.length;
                         }
                         else
-                        { 
-                            manufacturerArray.length = limit; 
+                        {
+                            manufacturerArray.length = limit;
                         }
-                        $.each(manufacturerArray, function(index, value) { 
+                        $.each(manufacturerArray, function(index, value) {
                             if (value != 'N/A' && value != '0') {
                                 manufacturer_obj.push(value);
                             }
                         });
-                        var manufacturer_arr = manufacturer_obj.join('\n'); 
+                        var manufacturer_arr = manufacturer_obj.join('\n');
                         if (manufacturer_arr) {
                             manufacturer_str = '<textarea disabled name="manufacturer[]" class="form-control item">' + manufacturer_arr + '</textarea>';
                             $("#manufacturer_list").append(manufacturer_str);
@@ -585,7 +585,7 @@
             });
         });
 
-        $("#profile_name").on("blur", function() { 
+        $("#profile_name").on("blur", function() {
 
             var profile_name = $("#profile_name").val();
             var account_id = $("#accid").val();
@@ -605,7 +605,33 @@
                         $("#username_error").removeClass("hide");
                     } else {
                         $("#savebutton").removeClass("hide");
-                        $("#username_error").addClass("hide");  
+                        $("#username_error").addClass("hide");
+                    }
+                }
+
+            });
+        });
+        $("#edit_profile_name").on("blur", function(e) {
+
+            var profile_name = $("#edit_profile_name").val();
+            var account_id = $("#accid").val();
+            var base_url_str = $("#base_url").val();
+            $.ajax({
+                type: "POST",
+                url: base_url_str + "youaudit/franchise_admins/checkProfile/" + account_id,
+                data: {
+                    'profile_name': profile_name,
+                },
+                success: function(msg) {
+
+                    // we need to check if the value is the same
+                    if (msg == '') {
+                        //Receiving the result of search here
+                        $("#update_btn").attr("disabled", true);
+                        $("#profilename_error").removeClass("hide");
+                    } else {
+                        $("#update_btn").removeAttr("disabled");
+                        $("#profilename_error").addClass("hide");
                     }
                 }
 
@@ -803,6 +829,11 @@
         padding-right: 0px;
         border-right: 1px solid #ddd;
     }
+    .profilename_error
+    {
+        color: red;
+        font-weight: bold;  
+    }
 </style>
 <BR>
 <input type="hidden" id="accid" value="<?php echo $this->uri->segment('3'); ?>">
@@ -948,10 +979,10 @@ if ($this->session->flashdata('error')) {
                             <input type="hidden" name="masterid" id="master_account_id" value="<?php echo $masterid; ?>"/>
                             <div class="col-md-4">  <label>Profile Name :</label> </div>
                             <div class="col-md-4">  <input placeholder="Enter Profile Name" disabled="" class="form-control" name="edit_profile_name" id="edit_profile_name"><input type="hidden" id="profileid" value="">
-
+<div id="profilename_error" class="username_error hide">Profile Is Already Exist.</div>
                             </div>
                             <div class="col-md-3" ><input style="float:right" type="button" disabled="" id="add_custom" class="btn btn-info" value="Add Custom Field"></div>
-                            <div class="col-md-1" ><input style="float:right" type="submit" disabled="" class="btn btn-info" value="Save"></div>
+                            <div class="col-md-1" ><input style="float:right" id="update_btn" type="submit" disabled="" class="btn btn-info" value="Save"></div>
                         </div> <!-- /.form-group -->
                         <input type="hidden" name="adminuser_id" id="adminuser_id_1" style="visibility:hidden;" readonly/>
                         <div class="col-md-4">

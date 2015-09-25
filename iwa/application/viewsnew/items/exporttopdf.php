@@ -1,5 +1,5 @@
 <?php // echo '<pre>';var_dump($allData);echo '</pre>';
-$logo = 'logo.png';
+$logo = $this->session->userdata['theme_design']->logo;
 //if (isset($this->session->userdata['theme_design']->logo)) {
 //    $logo = $this->session->userdata['theme_design']->logo;
 //}

@@ -109,6 +109,23 @@
         $('body').on('click', '.remove_task', function() {
             $(this).parent('td').parent('tr').remove();
         });
+        
+        $("#add_new_task").validate({
+            rules: {
+                task_name: "required"
+            },
+            messages: {
+                task_name: "Please Enter Task Name"
+            }
+        });
+        $("#edit_task").validate({
+            rules: {
+                test_type_name: "required"
+            },
+            messages: {
+                test_type_name: "Please Enter Task Name"
+            }
+        });
 
     });
     function task_row(obj, flag)
