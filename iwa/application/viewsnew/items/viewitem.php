@@ -1,5 +1,5 @@
 <div class="row col-lg-12">
-    <?php $logo = 'logo.png'; ?>
+    <?php $logo = $this->session->userdata['theme_design']->logo; ?>
     <div class='logo_cls'><img alt='Youaudit' src="http://<?php echo $_SERVER['HTTP_HOST']; ?>/youaudit/iwa/brochure/logo/logo.png"></div>
 </div>
 <div id="wrapper">
