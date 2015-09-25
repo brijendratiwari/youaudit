@@ -52,6 +52,17 @@ $("body").on("change", "#field_type", function()
 
             }
         });
+        $("#uploadForm").validate({
+            rules: {
+                no_of_asset: "required",
+                file:"required"
+            },
+            messages: {
+                no_of_asset: "Please select nuMber of assets",
+                file: "Please select csv for upload"
+
+            }
+        });
         
         
           
@@ -339,6 +350,7 @@ if ($this->session->flashdata('error')) {
     <div class="col-lg-3">
         <h1 class="page-header">Data Import</h1>
     </div>
+  
 </div>
 <div class="row">
     <div class="col-lg-12">
@@ -360,7 +372,7 @@ if ($this->session->flashdata('error')) {
                                        <div class="form-group">
     <div class="input-group">
       <div class="input-group-addon">Number To Asset Importing</div>
-      <input type="number" style="width:50%" name="no_of_asset" class="form-control" id="no_of_asset">
+      <input type="number" style="width:50%" name="no_of_asset" value="001" class="form-control" id="no_of_asset">
      
     </div>
   </div>
@@ -379,7 +391,7 @@ if ($this->session->flashdata('error')) {
                                     <button type="button" id="import_save_button" onclick="saveTemplate(this)" class="button icon-with-text round"><i class="fa fa-arrow-circle-down"></i><b>Save</b></button>
                 </div>
                 <div class="col-lg-2">
-                    <a  href="<?= base_url('admin_section/exportPDFForOwner/CSV') ?>" class="button icon-with-text round">
+                    <a  href="<?= base_url('admin_section/getCsvForUpload/'.$this->session->userdata('objSystemUser')->accountid.'') ?>" class="button icon-with-text round">
                         <i class="fa  fa-file-pdf-o"></i>
                         <b>Download Import CSV File</b>
                     </a>
@@ -407,34 +419,19 @@ if ($this->session->flashdata('error')) {
     <div class="col-lg-12">
 
         <div class="panel-body">
-
             <div class="table-responsive">
                 <div role="grid" class="dataTables_wrapper form-inline" id="dataTables-example_wrapper">
                     <table id="User_owners" class="table table-bordered"  cellspacing="0">
                         <thead id="table_head">
                             <tr>
-                                <th>Select</th>
-                                <th>QR Code</th>
-                                <th>Category*</th>
-                                <th>Item</th>
-                                <th>Manufacturer</th>
-                                <th>Model</th>
-                                <th>Quantity</th>
-                                <th>Site</th>
-                                <th>Location</th>
-                                <th>Owner</th>
-                                <th>Serial No</th>
-                                <th>Supplier</th>
-                                <th>Status</th>
-                                <th>Condition</th>
-                                <th>Purchase Date</th>
-                                <th>Purchase Price</th>
-                                <th>Warranty Date</th>
-                                <th>Replacement Date</th>
-                               
+                                 <th>QR Code</th>
+                                <?php foreach($head as $headKey => $headVal){ ?>
+                                <th><?php echo $headKey; ?></th>
+                                <?php } ?>
                             </tr>
                         </thead>
                         <tbody id="Master_Customer_body">
+                           
                            <?php echo $import_data;?> 
                                
                                 

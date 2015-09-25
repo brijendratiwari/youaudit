@@ -1455,7 +1455,7 @@ class Admin_Section extends MY_Controller {
             redirect("admin_section/admin_archive/", "refresh");
         }
     }
-    
+
     // Action to restore users
     public function restoreSupplier($supplierID) {
 
@@ -1851,10 +1851,10 @@ class Admin_Section extends MY_Controller {
         $arrCondition = $this->items_model->get_condition();
         $account_id = $this->session->userdata('objSystemUser')->accountid;
         if ($this->input->post()) {
+
             $start_qrcode = $this->input->post('start_qrcode');
             $no_of_asset = $this->input->post('no_of_asset');
             $qr_code = $this->input->post('qr_code');
-            $key = array('category', 'item', 'manufacturer', 'model', 'quantity', 'site', 'location', 'owner', 'serial_no', 'supplier', 'status', 'condition', 'purchase_date', 'purchase_price', 'warranty_date', 'replacement_date');
 
 
             $html = '';
@@ -1862,22 +1862,39 @@ class Admin_Section extends MY_Controller {
             $f = fopen($_FILES['file']['tmp_name'], "r");
             $count = 0;
             while (($line = fgetcsv($f)) !== false) {
-                $full_data = array_combine($key, $line);
-                $my_array[] = $full_data;
+                $full_data[] = $line;
             }
+
+            $key = array();
+            foreach ($full_data as $data) {
+                if ($count == 0) {
+
+                    $key = $data;
+                }
+                $count++;
+            }
+            unset($full_data[0]);
+
+            foreach ($full_data as $val) {
+
+                $my_array[] = array_combine($key, $val);
+            }
+
+
+//            var_dump($my_array);die;
             $html = '';
             for ($i = 0; $i < count($my_array); $i++) {
+                echo $i;
                 $total_qr = $start_qrcode + $i;
 
                 if ($i < $no_of_asset) {
-                    $html .= "<tr><td></td><td><input type='text' required disabled value='$qr_code$total_qr'  class='form-control'><input type='hidden' readonly value='$qr_code$total_qr' name='qrcode[]'></td>";
+                    $html .= "<tr><td><input type='text' required disabled value='$qr_code$total_qr'  class='form-control'><input type='hidden' readonly value='$qr_code$total_qr' name='qrcode[]'></td>";
                     foreach ($my_array[$i] as $key => $value) {
 
-                        if ($key == 'category') {
+                        if ($key == 'Category') {
 
-                            if ($this->admin_section_model->checkcategory($my_array[$i]['category'], $account_id) == 0) {
-
-                                $html.="<td><input required readonly type='text'  class='form-control category' id='category' name='category[]' value=" . $my_array[$i]['category'] . ">";
+                            if ($this->admin_section_model->checkcategory($my_array[$i]['Category'], $account_id) == 0) {
+                                $html.="<td><input required readonly type='text'  class='form-control category' id='category' name='category[]' value=" . $my_array[$i]['Category'] . ">";
                                 $html.="<div class='import_error'></div></td>";
                             } else {
 
@@ -1893,12 +1910,12 @@ class Admin_Section extends MY_Controller {
                                 $html.="</select><div class='import_error'></div></td>";
                             }
                         }
-                        if ($key == 'item') {
+                        if ($key == 'Item') {
 
 
-                            if ($this->admin_section_model->checkitem($my_array[$i]['item'], $account_id) == 0) {
+                            if ($this->admin_section_model->checkitem($my_array[$i]['Item'], $account_id) == 0) {
 
-                                $html.="<td><input readonly type='text' class='form-control' name='item[]' value=" . $my_array[$i]['item'] . ">";
+                                $html.="<td><input readonly type='text' class='form-control' name='item[]' value=" . $my_array[$i]['Item'] . ">";
                                 $html.="</td>";
                             } else {
                                 $html.="<td><select readonly class='form-control' name='item[]'>";
@@ -1914,10 +1931,10 @@ class Admin_Section extends MY_Controller {
                             }
                         }
 
-                        if ($key == 'manufacturer') {
-                            if ($this->admin_section_model->checkmanufacturer($my_array[$i]['manufacturer'], $account_id) == 0) {
+                        if ($key == 'Manufacturer') {
+                            if ($this->admin_section_model->checkmanufacturer($my_array[$i]['Manufacturer'], $account_id) == 0) {
 
-                                $html.="<td><input readonly type='text' class='form-control' name='manufacturer[]' value=" . $my_array[$i]['manufacturer'] . ">";
+                                $html.="<td><input readonly type='text' class='form-control' name='manufacturer[]' value=" . $my_array[$i]['Manufacturer'] . ">";
                                 $html.="</td>";
                             } else {
                                 $html.="<td><select readonly class='form-control' name='manufacturer[]'>";
@@ -1932,16 +1949,16 @@ class Admin_Section extends MY_Controller {
                                 $html.="</select></td>";
                             }
                         }
-                        if ($key == 'model') {
-                            $html.="<td><input readonly type='text' class='form-control' name='model[]' value=" . $my_array[$i]['model'] . ">";
+                        if ($key == 'Model') {
+                            $html.="<td><input readonly type='text' class='form-control' name='model[]' value=" . $my_array[$i]['Model'] . ">";
 
                             $html.="</td>";
                         }
-                        if ($key == 'quantity') {
-                            if ($my_array[$i]['quantity'] == '') {
+                        if ($key == 'Quantity') {
+                            if ($my_array[$i]['Quantity'] == '') {
                                 $quantity = 1;
                             } else {
-                                $quantity = $my_array[$i]['quantity'];
+                                $quantity = $my_array[$i]['Quantity'];
                             }
                             $html.="<td><input readonly class='form-control' name='quantity[]' type='text' value=" . $quantity . ">";
 
@@ -1949,17 +1966,17 @@ class Admin_Section extends MY_Controller {
                         }
 
 
-                        if ($key == 'site') {
+                        if ($key == 'Site') {
 
 
-                            if ($this->admin_section_model->checksite($my_array[$i]['site'], $account_id) == 0) {
+                            if ($this->admin_section_model->checksite($my_array[$i]['Site'], $account_id) == 0) {
 
-                                $html.="<td><input type='text' required readonly class='form-control site' name='site[]'  value=" . $my_array[$i]['site'] . ">";
+                                $html.="<td><input type='text' required readonly class='form-control site' name='site[]'  value=" . $my_array[$i]['Site'] . ">";
                                 $html.="<div class='import_error'></div></td>";
                             } else {
                                 $html.="<td><select readonly required class='form-control site' id='site_$i' data_id='$i' name='site[]'><option value='0'>----SELECT----</option>";
                                 foreach ($arrSites['results'] as $arrSite) {
-                                    if ($arrSite->sitename == $my_array[$i]['site']) {
+                                    if ($arrSite->sitename == $my_array[$i]['Site']) {
                                         $str = "selected='selected'";
                                     } else {
                                         $str = '';
@@ -1970,15 +1987,15 @@ class Admin_Section extends MY_Controller {
                             }
                         }
 
-                        if ($key == 'location') {
-                            if ($this->admin_section_model->checklocation($my_array[$i]['location'], $account_id) == 0) {
+                        if ($key == 'Location') {
+                            if ($this->admin_section_model->checklocation($my_array[$i]['Location'], $account_id) == 0) {
 
-                                $html.="<td><input required readonly type='text' class='form-control location' name='location[]' value=" . $my_array[$i]['location'] . ">";
+                                $html.="<td><input required readonly type='text' class='form-control location' name='location[]' value=" . $my_array[$i]['Location'] . ">";
                                 $html.="<div class='import_error'></div></td>";
                             } else {
                                 $html.="<td><select required readonly class='form-control location' id='location_$i' data_id='$i' name='location[]'> <option value='0'>----SELECT----</option>";
                                 foreach ($arrLocations['results'] as $arrLocation) {
-                                    if ($arrLocation->locationname == $my_array[$i]['location']) {
+                                    if ($arrLocation->locationname == $my_array[$i]['Location']) {
                                         $str = "selected='selected'";
                                     } else {
                                         $str = '';
@@ -1989,15 +2006,15 @@ class Admin_Section extends MY_Controller {
                             }
                         }
 
-                        if ($key == 'owner') {
-                            if ($this->admin_section_model->checkowner($my_array[$i]['owner'], $account_id) == 0) {
+                        if ($key == 'Owner') {
+                            if ($this->admin_section_model->checkowner($my_array[$i]['Owner'], $account_id) == 0) {
 
-                                $html.="<td><input required readonly type='text' class='form-control owner' name='owner[]' value=" . $my_array[$i]['owner'] . ">";
+                                $html.="<td><input required readonly type='text' class='form-control owner' name='owner[]' value=" . $my_array[$i]['Owner'] . ">";
                                 $html.="<div class='import_error'></div></td>";
                             } else {
                                 $html.="<td><select required readonly class='form-control owner' name='owner[]'>";
                                 foreach ($arrOwners['results'] as $arrOwner) {
-                                    if ($arrOwner->owner_name == $my_array[$i]['owner']) {
+                                    if ($arrOwner->owner_name == $my_array[$i]['Owner']) {
                                         $str = "selected='selected'";
                                     } else {
                                         $str = '';
@@ -2007,21 +2024,16 @@ class Admin_Section extends MY_Controller {
                                 $html.="</select><div class='import_error'></div></td>";
                             }
                         }
-                        if ($key == 'serial_no') {
-                            $html.="<td><input readonly type='text' class='form-control' name='serial_no[]' value=" . $my_array[$i]['serial_no'] . ">";
+                        
+                              if ($key == 'Supplier') {
+                            if ($this->admin_section_model->checksupplier($my_array[$i]['Supplier'], $account_id) == 0) {
 
-                            $html.="</td>";
-                        }
-
-                        if ($key == 'supplier') {
-                            if ($this->admin_section_model->checksupplier($my_array[$i]['supplier'], $account_id) == 0) {
-
-                                $html.="<td><input readonly type='text' class='form-control' name='supplier[]'  value=" . $my_array[$i]['supplier'] . ">";
+                                $html.="<td><input readonly type='text' class='form-control' name='supplier[]'  value=" . $my_array[$i]['Supplier'] . ">";
                                 $html.="</td>";
                             } else {
                                 $html.="<td><select readonly class='form-control' name='supplier[]'>";
                                 foreach ($arrSuppliers as $supplier) {
-                                    if ($supplier['supplier_name'] == $my_array[$i]['supplier']) {
+                                    if ($supplier['supplier_name'] == $my_array[$i]['Supplier']) {
                                         $str = "selected='selected'";
                                     } else {
                                         $str = '';
@@ -2031,11 +2043,12 @@ class Admin_Section extends MY_Controller {
                                 $html.="</select></td>";
                             }
                         }
-
-                        if ($key == 'status') {
+                        
+                        
+                        if ($key == 'Status') {
                             $html.="<td><select readonly class='form-control' name='status[]'>";
                             foreach ($arrItemStatuses['results'] as $arrStatus) {
-                                if ($arrStatus->statusname == $my_array[$i]['status']) {
+                                if ($arrStatus->statusname == $my_array[$i]['Status']) {
                                     $str = "selected='selected'";
                                 } else {
                                     $str = '';
@@ -2044,11 +2057,13 @@ class Admin_Section extends MY_Controller {
                             }
                             $html.="</select></td>";
                         }
-
-                        if ($key == 'condition') {
+                        
+                        
+                        
+                        if ($key == 'Condition') {
                             $html.="<td><select readonly class='form-control' name='condition[]' >";
                             foreach ($arrCondition as $con) {
-                                if ($con['condition'] == $my_array[$i]['condition']) {
+                                if ($con['condition'] == $my_array[$i]['Condition']) {
                                     $str = "selected='selected'";
                                 } else {
                                     $str = '';
@@ -2057,46 +2072,107 @@ class Admin_Section extends MY_Controller {
                             }
                             $html.="</select></td>";
                         }
+                        
+                        if ($key == 'Total Faults') {
+                            $html.="<td><input readonly type='text' class='form-control' name='total_fault[]' value=" . $my_array[$i]['Total Fault'] . ">";
 
-                        if ($key == 'purchase_date') {
-                            $html.="<td><input readonly type='text' class='form-control item_date'  name='purchase_date[]' value=" . $my_array[$i]['purchase_date'] . ">";
+                            $html.="</td>";
+                        }
+                        if ($key == 'Serial No') {
+                            $html.="<td><input readonly type='text' class='form-control' name='serial_no[]' value=" . $my_array[$i]['Serial No'] . ">";
+
+                            $html.="</td>";
+                        }
+                        if ($key == 'Age Of Asset') {
+                            $html.="<td><input readonly type='text' class='form-control' name='age_of_assets[]' value=" . $my_array[$i]['Age Of assets'] . ">";
+
+                            $html.="</td>";
+                        }
+
+                  
+
+
+
+                        if ($key == 'Purchase Date') {
+                            $html.="<td><input readonly type='text' class='form-control item_date'  name='purchase_date[]' value=" . $my_array[$i]['Purchase Date'] . ">";
 
                             $html.="</td>";
                         }
 
 
 
-                        if ($key == 'purchase_price') {
-                            $html.="<td><input type='text' readonly class='form-control' name='purchase_price[]'  value=" . $my_array[$i]['purchase_price'] . ">";
+
+                        if ($key == 'Warranty Expiry') {
+                            $html.="<td><input type='text' readonly class='form-control item_date' name='warranty_date[]' value=" . $my_array[$i]['Warranty Expiry'] . ">";
 
                             $html.="</td>";
                         }
 
-                        if ($key == 'warranty_date') {
-                            $html.="<td><input type='text' readonly class='form-control item_date' name='warranty_date[]' value=" . $my_array[$i]['warranty_date'] . ">";
+                        if ($key == 'Replacement Due') {
+                            $html.="<td><input type='text' readonly class='form-control item_date' name='replacement_date[]' value=" . $my_array[$i]['Replacement Due'] . ">";
 
                             $html.="</td>";
                         }
-
-                        if ($key == 'replacement_date') {
-                            $html.="<td><input type='text' readonly class='form-control item_date' name='replacement_date[]' value=" . $my_array[$i]['replacement_date'] . ">";
+                        
+                        
+                        if ($key == 'Purchase Price') {
+                            $html.="<td><input type='text' readonly class='form-control' name='purchase_price[]'  value=" . $my_array[$i]['Purchase Price'] . ">";
 
                             $html.="</td>";
                         }
+                        if ($key == 'Current Value') {
+                            $html.="<td><input type='text' readonly class='form-control' name='current_value[]'  value=" . $my_array[$i]['Current Value'] . ">";
+
+                            $html.="</td>";
+                        }
+                        
+                        // for custom fields..
+//                       echo  $key;
+//                              if($i > 19){
+                        $fixColumn = array('Category', 'Item', 'Manufacturer', 'Model', 'Quantity', 'Site', 'Location', 'Owner', 'Supplier', 'Status', 'Condition', 'Total Faults', 'Serial No', 'Age Of Asset', 'Purchase Date', 'Warranty Expiry', 'Replacement Due', 'Purchase Price', 'Current Value');
+                       if(!in_array($key,$fixColumn)){
+                         $html.="<td><input type='text' readonly class='form-control' name='customField--".trim($key)."[]' value=" .$value. ">";
+                          $html.="</td>";
+                    } 
+                       
                     }
-                    $html.= "</tr>\n";
+                  $html.= "</tr>\n";
                 }
             }
             fclose($f);
             $arrPageData['import_data'] = $html;
+            $arrPageData['head'] = $my_array[0];
         }
 
-
-
+//echo '<pre>';
+//print_r($arrPageData);die;
 
         $this->load->view('common/header', $arrPageData);
         $this->load->view('admin_section/data_import', $arrPageData);
         $this->load->view('common/footer', $arrPageData);
+    }
+
+    public function getCsvForUpload($account_id = FALSE) {
+
+        $data = array('Category', 'Item', 'Manufacturer', 'Model', 'Quantity', 'Site', 'Location', 'Owner', 'Supplier', 'Status', 'Condition', 'Total Faults', 'Serial No', 'Age Of Asset', 'Purchase Date', 'Warranty Expiry', 'Replacement Due', 'Purchase Price', 'Current Value');
+        $customFileds = $this->db->where('account_id', $account_id)->select('field_name')->from('custom_fields')->get()->result_array();
+
+        if (count($customFileds) > 0) {
+            foreach ($customFileds as $fields) {
+                array_push($data, $fields['field_name']);
+            }
+        }
+
+        header('Content-Type: application/csv');
+        header('Content-Disposition: attachement; filename="data-import.csv"');
+
+        $file = fopen("php://output", 'w');
+
+
+        fputcsv($file, $data);
+        fclose($file);
+
+//            force_download($filename, $data)
     }
 
     public function import_custom_field() {
@@ -2129,7 +2205,7 @@ class Admin_Section extends MY_Controller {
     }
 
     public function add_import_data() {
-
+//var_dump($this->input->post());die;
         if ($this->input->post()) {
             $account_id = $this->session->userdata('objSystemUser')->accountid;
             $this->load->model('items_model');
@@ -2155,9 +2231,27 @@ class Admin_Section extends MY_Controller {
             $warranty_date = $this->input->post('warranty_date');
             $warranty_date = $this->input->post('warranty_date');
             $replacement_date = $this->input->post('replacement_date');
-            if ($this->input->post('custom_field_name')) {
-                $custom_field_name = $this->input->post('custom_field_name');
+            
+            
+            $allInput = $this->input->post();
+            $allInputName = array_keys($allInput);
+//            var_dump($allInputName);die;
+            
+            foreach($allInputName as $allInputNameData){
+               if (strpos($allInputNameData,'customField--') !== false) {
+//                   echo 'test';
+//                   var_dump($this->input->post());
+                                 $fields = explode('customField--',$allInputNameData);
+                    $custom_field_name[] = $fields[1];
+                }
             }
+            
+//            die;
+            
+//            var_dump($custFieldVal);die;
+//            if ($this->input->post('custom_field_name')) {
+//                $custom_field_name = $this->input->post('custom_field_name');
+//            }
 
 
 
@@ -2186,8 +2280,8 @@ class Admin_Section extends MY_Controller {
 
                 for ($j = 0; $j < count($custom_field_name); $j++) {
 
-                    $result = $this->customfields_model->getField($custom_field_name[$j]);
-                    $content[] = $this->input->post($result->field_name);
+//                    $result = $this->customfields_model->getField($custom_field_name[$j]);
+                    $content[] = $this->input->post('customField--'.$custom_field_name[$j]);
                     $content_field[] = $item_details[$custom_field_name[$j]];
                     $item_details['custom_field'][$custom_field_name[$j]] = $content[$j][$i];
                 }
@@ -2195,11 +2289,6 @@ class Admin_Section extends MY_Controller {
 
                 $my_new[] = $item_details;
             }
-
-
-
-
-
 
             for ($i = 0; $i < count($my_new); $i++) {
                 foreach ($my_new as $item_value) {
