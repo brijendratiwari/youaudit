@@ -1,6 +1,12 @@
 <div class="row col-lg-12">
-    <?php $logo = $this->session->userdata['theme_design']->logo; ?>
-    <div class='logo_cls'><img alt='Youaudit' src="http://<?php echo $_SERVER['HTTP_HOST']; ?>/youaudit/iwa/brochure/logo/logo.png"></div>
+    <?php
+    if ($this->session->userdata['theme_design']->logo) {
+        $logo = $this->session->userdata['theme_design']->logo;
+    } else {
+        $logo = 'logo.png';
+    }
+    ?>
+    <div class='logo_cls'><img alt='Youaudit' src="http://<?php echo $_SERVER['HTTP_HOST']; ?>/youaudit/iwa/brochure/logo/<?php echo $logo; ?>"></div>
 </div>
 <div id="wrapper">
     <div id="content">
@@ -29,12 +35,12 @@
                                         <td>
 
                                             <label><?php
-                                                if ($objItem->categoryname) {
-                                                    echo $objItem->categoryname;
-                                                } else {
-                                                    echo '-';
-                                                }
-                                                ?></label>
+    if ($objItem->categoryname) {
+        echo $objItem->categoryname;
+    } else {
+        echo '-';
+    }
+    ?></label>
                                         </td>
                                     </tr>
 
@@ -47,7 +53,7 @@
                                                 } else {
                                                     echo '-';
                                                 }
-                                                ?></label>
+    ?></label>
 
                                         </td>
                                     </tr>
@@ -60,7 +66,7 @@
                                                 } else {
                                                     echo "-";
                                                 }
-                                                ?></label>
+    ?></label>
 
 
                                         </td>
@@ -73,7 +79,7 @@
                                                 } else {
                                                     echo '-';
                                                 }
-                                                ?></label>
+    ?></label>
 
                                         </td>
                                     </tr>
@@ -85,7 +91,7 @@
                                                 } else {
                                                     echo $objItem->quantity;
                                                 }
-                                                ?></label> 
+    ?></label> 
 
                                         </td>
                                     </tr>
@@ -119,7 +125,7 @@
                                                 } else {
                                                     echo "-";
                                                 }
-                                                ?></label>
+    ?></label>
 
                                         </td>
                                     </tr>
@@ -132,7 +138,7 @@
                                                 } else {
                                                     echo '-';
                                                 }
-                                                ?></label>
+    ?></label>
                                         </td>
                                     </tr>
                                     <tr  style="border:1px solid #00aeef;"  class="tb_header">
@@ -158,7 +164,7 @@
                                                 } else {
                                                     echo "-";
                                                 }
-                                                ?></label>
+    ?></label>
 
                                         </td>
                                     </tr>
@@ -171,7 +177,7 @@
                                                 } else {
                                                     echo "-";
                                                 }
-                                                ?></label>
+    ?></label>
 
 
                                             <?php echo form_error('location_id'); ?>  
@@ -181,12 +187,12 @@
                                         <td>Supplier*</td>
                                         <td>
                                             <label><?php
-                                                if ($objItem->suppliers_title) {
-                                                    echo $objItem->suppliers_title;
-                                                } else {
-                                                    echo "-";
-                                                }
-                                                ?></label>
+                                            if ($objItem->suppliers_title) {
+                                                echo $objItem->suppliers_title;
+                                            } else {
+                                                echo "-";
+                                            }
+                                            ?></label>
 
                                         </td>
                                     </tr>
@@ -211,7 +217,7 @@
                                                 } else {
                                                     echo "-";
                                                 }
-                                                ?></label></td>
+                                            ?></label></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -238,7 +244,7 @@
                                                 } else {
                                                     
                                                 }
-                                                ?></label></td>
+                                            ?></label></td>
 
                                     </tr>
                                     <tr  style="border:1px solid #00aeef;" >
@@ -249,7 +255,7 @@
                                                 } else {
                                                     
                                                 }
-                                                ?></label></td>
+                                            ?></label></td>
                                     </tr>
                                     <tr  style="border:1px solid #00aeef;" >
                                         <td>Replacement Due</td>
@@ -259,7 +265,7 @@
                                                 } else {
                                                     
                                                 }
-                                                ?></label></td>
+                                            ?></label></td>
                                     </tr>
                                     <tr  style="border:1px solid #00aeef;" >
                                         <td>Age Of Asset</td>
@@ -275,7 +281,7 @@
 
                                                     echo $years . ' year ' . $months . ' month ';
                                                 }
-                                                ?></label></td>
+                                            ?></label></td>
                                     </tr>
                                     <tr  style="border:1px solid #00aeef;"  class="tb_header">
                                         <td>Item Valuation</td>
@@ -289,7 +295,7 @@
                                                 } else {
                                                     echo "-";
                                                 }
-                                                ?></label></td>
+                                            ?></label></td>
                                     </tr>
                                     <tr  style="border:1px solid #00aeef;" >
                                         <td>Current Value</td>
@@ -299,7 +305,7 @@
                                                 } else {
                                                     echo "-";
                                                 }
-                                                ?></label>
+                                            ?></label>
                                         </td>
                                     </tr>
 
@@ -326,7 +332,7 @@
                                                 } else {
                                                     echo "-";
                                                 }
-                                                ?></label></td>
+                                            ?></label></td>
                                     </tr>
                                     <tr  style="border:1px solid #00aeef;"  class="tb_font_warning">
                                         <td>Last Fault Date</td>
@@ -336,7 +342,7 @@
                                                 } else {
                                                     echo "-";
                                                 }
-                                                ?></label></td>
+                                            ?></label></td>
                                     </tr>
                                     <tr  style="border:1px solid #00aeef;"  class="tb_font_warning">
                                         <td>Last Compliance Check</td>
@@ -368,7 +374,7 @@
                                                 } else {
                                                     echo '';
                                                 }
-                                                ?> </label></td>
+                                            ?> </label></td>
                                     </tr>
                                     <tr  style="border:1px solid #00aeef;"  class="tb_font_success">
                                         <td>PAT Result</td>
@@ -401,10 +407,10 @@
 
 
                                         <td>  <label><?php
-                                                if (isset($custom_name->content)) {
-                                                    echo $custom_name->content;
-                                                }
-                                                ?></label></td></tr>
+                                if (isset($custom_name->content)) {
+                                    echo $custom_name->content;
+                                }
+                                    ?></label></td></tr>
 
 
 
@@ -436,12 +442,12 @@
                                                 <?php for ($i = 0; $i < count($arr_image); $i++) { ?>
 
                                                     <img style="height: 150px; width: 155px;padding: 15px;float: left;" class="thumbnail" src="<?php echo base_url() . $arr_image[$i]; ?>"/>
-                                                <?php
+                                                    <?php
                                                 }
                                             } else {
                                                 ?>
                                                 <img style="height: 150px; width: 155px;padding: 15px;float: left;" class="thumbnail" src="<?php echo base_url() . $itemPics; ?> "/>    
-                                            <?php
+                                                <?php
                                             }
                                         }
                                         ?>
