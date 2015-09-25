@@ -2131,7 +2131,7 @@ class Admin_Section extends MY_Controller {
 //                              if($i > 19){
                         $fixColumn = array('Category', 'Item', 'Manufacturer', 'Model', 'Quantity', 'Site', 'Location', 'Owner', 'Supplier', 'Status', 'Condition', 'Total Faults', 'Serial No', 'Age Of Asset', 'Purchase Date', 'Warranty Expiry', 'Replacement Due', 'Purchase Price', 'Current Value');
                        if(!in_array($key,$fixColumn)){
-                         $html.="<td><input type='text' readonly class='form-control' name='customField--".trim($key)."[]' value=" .$value. ">";
+                         $html.="<td><input type='text' readonly class='form-control' name='customField--".  str_replace("?","",trim($key))."[]' value=" .$value. ">";
                           $html.="</td>";
                     } 
                        
