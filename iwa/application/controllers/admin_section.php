@@ -2208,11 +2208,29 @@ class Admin_Section extends MY_Controller {
 //var_dump($this->input->post());die;
         if ($this->input->post()) {
             $account_id = $this->session->userdata('objSystemUser')->accountid;
+            
+            
+            
+            
+            
             $this->load->model('items_model');
             $this->load->model('categories_model');
             $this->load->model('admin_section_model');
             $this->load->model('tickets_model');
             $this->load->model('customfields_model');
+            
+            
+            // check account limit for assets...
+            
+            $intNoItems = $this->items_model->countNumberForAccount($this->session->userdata('objSystemUser')->accountid, true);
+            $booAccountLimit = false;
+
+            if ($intNoItems >= $this->session->userdata('objSystemUser')->package_item_limit) {
+                $booAccountLimit = true;
+                $booPermission = false;
+            }
+            
+             if (!$booAccountLimit) {
             $qr_code = $this->input->post('qrcode');
             $category = $this->input->post('category');
             $item = $this->input->post('item');
@@ -2553,6 +2571,11 @@ class Admin_Section extends MY_Controller {
             }
             $this->session->set_flashdata('success', 'Data Import Successfully');
             redirect("admin_section/data_import", "refresh");
+             }else{
+                 
+                 $this->session->set_flashdata('error', 'You have reached your account limit, please upgrade your account to add more.');
+            redirect("admin_section/data_import", "refresh");
+             }
         } else {
             $this->session->set_flashdata('error', 'There Is Some Error In Import Data');
             redirect("admin_section/data_import", "refresh");
