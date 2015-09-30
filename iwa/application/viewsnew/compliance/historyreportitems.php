@@ -221,16 +221,16 @@ if (isset($this->session->userdata['theme_design']->logo)) {
                             <td style="padding:10px;"><?php echo $task->task_name; ?></td>
                             <td><?php
                                 if ($task_result > 0) {
-                                    echo '<img src="' . base_url('brochure/images/check.png') . '">';
+                                    echo '<img src="' . base_url('brochure/images/right.png') . '">';
                                 } else {
                                     echo '<img src="' . base_url('brochure/images/uncheck.png') . '">';
                                 }
                                 ?></td>
                             <td><?php
                                 if ($task_result == 0) {
-                                    echo '<img src="' . base_url('brochure/images/uncheck.png') . '">';
+                                    echo '<img src="' . base_url('brochure/images/right.png') . '">';
                                 } else {
-                                    echo '<img src="' . base_url('brochure/images/check.png') . '">';
+                                    echo '<img src="' . base_url('brochure/images/uncheck.png') . '">';
                                 }
                                 ?></td>
                             <td><?php echo $task->test_notes; ?></td>
