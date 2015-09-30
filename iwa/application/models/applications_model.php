@@ -42,6 +42,7 @@ class Applications_model extends CI_Model {
                         items.quantity,
                         items.current_value,
                         items.compliance_start,
+                        item_manu.item_manu_name,
                         item_manu.doc as pdf_name,
                         items.account_id AS accountid ,
 		categories.id AS categoryid,
@@ -62,7 +63,7 @@ class Applications_model extends CI_Model {
                 sites.name AS sitename,
                 item_condition.condition AS itemconditionname,
                 itemstatus.id AS itemstatusid,
-                itemstatus.name AS itemstatusname');
+                itemstatus.name AS itemstatusname,audititems.item_id as audititem,audititems.audit_id');
 
                 //suppliers.supplier_id as supplier,
                 //suppliers.supplier_title as suppliers_title,
@@ -82,6 +83,7 @@ class Applications_model extends CI_Model {
                 $this->db->join('sites', 'items.site = sites.id', 'left');
                 $this->db->join('itemstatus', 'items.status_id = itemstatus.id', 'left');
                 $this->db->join('suppliers', 'suppliers.supplier_id = items.supplier', 'left');
+                $this->db->join('audititems', 'audititems.item_id = items.id', 'left');
 
                 $this->db->where('items.account_id', $intAccountId);
                 $this->db->where('items.active', 1);
@@ -112,6 +114,9 @@ class Applications_model extends CI_Model {
                 if ($intCategory != -1) {
                     $this->db->where('categories.id', $intCategory);
                 }
+                if ($this->session->userdata('is_supplier')) {
+                    $this->db->where('items.supplier', $this->session->userdata('is_supplier'));
+                }
 
                 $this->db->or_like('sites.name', $strfreetext);
 //                $this->db->or_like('users.username', $strfreetext);
@@ -121,7 +126,7 @@ class Applications_model extends CI_Model {
                 $this->db->or_like('items.manufacturer', $strfreetext);
                 $this->db->or_like('items.item_manu', $strfreetext);
 
-
+                $this->db->group_by('items.id');
                 $resQuery = $this->db->get();
 //                  echo $this->db->last_query();DIE;
 //            die ($this->db->last_query());
@@ -163,6 +168,7 @@ class Applications_model extends CI_Model {
                         items.pattest_status,
                         items.quantity,
                         items.current_value,
+                        item_manu.item_manu_name,
                         item_manu.doc as pdf_name,
 		categories.id AS categoryid,
                 categories.name AS categoryname,
@@ -182,7 +188,7 @@ class Applications_model extends CI_Model {
                 sites.id AS siteid, 
                 sites.name AS sitename,
                 itemstatus.id AS itemstatusid,
-                itemstatus.name AS itemstatusname');
+                itemstatus.name AS itemstatusname,audititems.item_id as audititem,audititems.audit_id');
 
                 //suppliers.supplier_id as supplier,
                 //   suppliers.supplier_title as suppliers_title,
@@ -204,6 +210,7 @@ class Applications_model extends CI_Model {
                 $this->db->join('sites', 'items.site = sites.id', 'left');
                 $this->db->join('itemstatus', 'items.status_id = itemstatus.id', 'left');
                 $this->db->join('suppliers', 'suppliers.supplier_id = items.supplier', 'left');
+                $this->db->join('audititems', 'audititems.item_id = items.id', 'left');
 
                 $this->db->where('items.account_id', $intAccountId);
                 $this->db->where('items.active', 1);
@@ -212,7 +219,9 @@ class Applications_model extends CI_Model {
                 if ($strbarcode != -1) {
                     $this->db->where('items.barcode', $strbarcode);
                 }
-
+                if ($this->session->userdata('is_supplier')) {
+                    $this->db->where('items.supplier', $this->session->userdata('is_supplier'));
+                }
 
                 if ($intSite != -1) {
                     $this->db->where('sites.id', $intSite);
@@ -234,7 +243,7 @@ class Applications_model extends CI_Model {
                 if ($intCategory != -1) {
                     $this->db->where('categories.id', $intCategory);
                 }
-
+                $this->db->group_by('items.id');
                 $resQuery = $this->db->get();
 
 
@@ -244,6 +253,7 @@ class Applications_model extends CI_Model {
                     foreach ($resQuery->result() as $objRow) {
                         $arrItemsData[] = $objRow;
                     }
+
                     return $arrItemsData;
                 } else {
                     return array();

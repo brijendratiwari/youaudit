@@ -19,7 +19,7 @@
  */
 switch($_SERVER['HTTP_HOST']){
     case "":
-        $config['base_url']	= "localhost/youaudit/iwa/";
+        $config['base_url']	= "http://devapp.iworkaudit.com.au/iwa/";
         define('ENVIRONMENT','development');
         break;
     default:

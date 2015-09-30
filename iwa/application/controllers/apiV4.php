@@ -34,10 +34,20 @@ class apiV4 extends MY_Controller {
 
         //does the record exist?
         $arrLoginData = $this->users_model->logInForApp($arrInput);
-
+        $mydata = array();
         if ($arrLoginData['booSuccess']) {
             $arrUserData = $this->users_model->getBasicCredentialsFor($arrLoginData['result'][0]->id);
+            $this->load->model('theme_model');
+            $mydata = $this->theme_model->fetchTheme($arrUserData['result'][0]->accountid);
+            $this->session->set_userdata('theme_design', $mydata[0]);
+            $arrUserData['result'][0]->accountlogo = 'brochure/logo/' . $mydata[0]->logo;
             $is_supplier = $this->users_model->isUser_Supplier($arrUserData['result'][0]->userid);
+            if ($is_supplier) {
+                $arrUserData['result'][0]->levelname = 'Supplier User';
+                $arrUserData['result'][0]->supplier_exist = 1;
+            } else {
+                $arrUserData['result'][0]->supplier_exist = 0;
+            }
             $objUser = $arrUserData['result'][0];
 
             $this->session->set_userdata('booAppUserLogin', TRUE);
@@ -111,6 +121,7 @@ class apiV4 extends MY_Controller {
 
         if ($this->session->userdata('booAppUserLogin')) {
 //                ($this->input->post('manufacturer') != '') || ($this->input->post('user_id') > -1) || ($this->input->post('location_id') > -1) || ($this->input->post('site_id') > -1)
+
             $this->load->model('applications_model');
             $arrOutput = $this->applications_model->searchItems(
                     $this->session->userdata('objAppUser')->accountid
@@ -589,12 +600,14 @@ class apiV4 extends MY_Controller {
     public function itemLookup() {
 
         $arrData = array();
+        $arrPageData = array();
         $this->load->model('items_model');
         $this->load->model('categories_model');
         $this->load->model('tickets_model');
+        $this->load->model('tests_model');
         $this->load->model('audits_model');
         $this->load->model('customfields_model');
-
+        $this->load->model('photos_model');
 
 
         $arrOutput = $this->checkSession($this->input->post('username'), $this->input->post('password'));
@@ -604,7 +617,8 @@ class apiV4 extends MY_Controller {
 //            if (TRUE) {
 
                 $arrData['arrResults'] = $this->getSearchResults();
-//                var_dump(   $arrData['arrResults'] );die; 
+//                var_dump($arrData['arrResults']);
+//                die; 
                 // change Format Of date 
                 foreach ($arrData['arrResults'] as $key => $value) {
                     if (strtotime($arrData['arrResults'][$key]->purchase_date) > 0) {
@@ -681,9 +695,10 @@ class apiV4 extends MY_Controller {
 //***********************************************************************************
 //                    Add New Fields according to New system(YouAudit)
 //                    Fetch Last location Audit Date
+
                     $location_audit_details = $this->audits_model->getLastAuditForLocation($arrData['arrResults'][$key]->locationid);
 
-//            CAlculation of item condition Histry
+//            CAlculation of item condition History
 
                     $historylatest = $this->items_model->get_maxcondition($arrData['arrResults'][$key]->itemid);
                     $date2 = date('d-m-Y', time());
@@ -702,9 +717,34 @@ class apiV4 extends MY_Controller {
                     } else {
                         $arrData['arrResults'][$key]->lastfault = 'N/A';
                     }
-                    $arrData['arrResults'][$key]->lastcompliancecheck = "";
 
-                    $arrData['arrResults'][$key]->complianceresult = "";
+                    // compliance 
+                    $arrPageData['dueTests'] = $this->tests_model->getComplianceHistoryFiltered(NULL, NULL, $arrData['arrResults'][$key]->itemid);
+
+                    foreach ($arrPageData['dueTests'] as $compliance_history) {
+                        if (strtotime($compliance_history['test_date']) > 0) {
+                            $current_audit = date('d/m/Y', strtotime($compliance_history['test_date']));
+                        } else {
+                            $current_audit = "";
+                        }
+
+                        if ($compliance_history['result']) {
+                            $compliance_result = 'Pass';
+                        } else {
+
+                            $compliance_result = 'Fail';
+                        }
+                    }
+//                    var_dump($current_audit);
+//                    var_dump($compliance_result);
+                    $arrData['arrResults'][$key]->lastcompliancecheck = $current_audit;
+                    $arrData['arrResults'][$key]->complianceresult = $compliance_result;
+
+//                    var_dump($current_audit);
+//                    var_dump($compliance_result);
+//                    $arrData['arrResults'][$key]->lastcompliancecheck = "";
+//
+//                    $arrData['arrResults'][$key]->complianceresult = "";
                     if (strtotime($location_audit_details['date']) > 0) {
                         $arrData['arrResults'][$key]->lastlocationauditdate = date('d/m/Y', strtotime($location_audit_details['date']));
                     } else {
@@ -720,6 +760,33 @@ class apiV4 extends MY_Controller {
                 }
 //                var_dump($arrData);
 //                die;
+//                var_dump($arrData['arrResults']);
+                foreach ($arrData['arrResults'] as $key => $val) {
+                    if ($val->audititem) {
+                        $audit = $this->db->select('audititems.audit_id')->from('audititems')->where('audititems.item_id', $val->audititem)->join('audits', 'audititems.audit_id=audits.id')->get();
+                        if ($audit->num_rows() > 0) {
+
+                            $Presentcount = $this->audits_model->getCount_PresentDetailsOfLastAudit($val->audit_id, $val->audititem);
+
+                            $missingcount = $this->audits_model->getCount_MissingDetailsOfLastAudit($val->audit_id, $val->audititem);
+//                            var_dump($missingcount);
+                            if ($Presentcount['Total_present'] > 0) {
+                                $Present[] = $Presentcount['Total_present'];
+                            }
+                            if ($missingcount['Total_missing']) {
+                                $Missing[] = $missingcount['Total_missing'];
+                            }
+                        }
+                        $arrData['arrAuditResults'][] = $val;
+                    } else {
+                        $arrData['arrAuditResults'] = array();
+                    }
+                }
+
+                if (!empty($arrData['arrAuditResults'])) {
+                    $arrData['arrAuditResults'][0]->lastauditpresentitemcount = count($Present);
+                    $arrData['arrAuditResults'][0]->lastauditmissingitemcount = count($Missing);
+                }
 
                 $arrOutput['strHeader'] = $this->load->view('appV2/headers/itemresults', $arrData, true);
                 $arrOutput['strHtml'] = $this->load->view('appV2/itemresults', $arrData, true);
@@ -1192,7 +1259,7 @@ class apiV4 extends MY_Controller {
                         'warranty_date' => $this->doFormatDate($this->input->post('warranty_date')),
                         'replace_date' => $this->doFormatDate($this->input->post('item_replace')),
                         'current_value' => ($this->input->post('item_current_value')),
-                        'value' => ($this->input->post('item_value')),
+//                        'value' => ($this->input->post('item_value')),
                         'quantity' => $qnt_item,
                         'condition_now' => trim($this->input->post('item_condition')),
                         'condition_since' => date('Y-m-d H:i:s'),
@@ -1227,6 +1294,7 @@ class apiV4 extends MY_Controller {
                             $arrData['arrItem']['itemphototitle'] = $arrData['photo_details']->title;
                         }
                     }
+                    $arrData['add_another'] = $this->input->post('add_another');
 
                     //$mixNewItemId = false;
                     if ($mixNewItemId) {
@@ -1542,7 +1610,7 @@ class apiV4 extends MY_Controller {
 
                         if ($category_support) {
 
-                            $this->email->to('deepika@ignisitsolutions.com');
+                            $this->email->to($category_support);
 //                        $this->email->to($category_support);
                         } else {
 //                        $this->email->to($this->accounts_model->getSupportEmailAddress($this->session->userdata('objAppUser')->accountid));
@@ -1673,23 +1741,74 @@ class apiV4 extends MY_Controller {
                         }
                         $this->tickets_model->fixStatus($data);
                     } else {
+
                         $data = array(
                             'reason_code' => $this->input->post('reason_code'),
-                            'jobnote' => $this->input->post('job_notes'),
+//                            'jobnote' => $this->input->post('job_notes'),
                             'fix_date' => date("Y-m-d H:i:s")
                         );
 
                         if ($all_photo != '') {
                             $data['photoid'] = $all_photo;
                         }
-                        $this->tickets_model->updateTicket($this->input->post('fix_ticket_id'), $data);
+
+                        if ($arrData['itemFaultsTicket'][0]['jobnote']) {
+                            if (strpos($arrData['itemFaultsTicket'][0]['jobnote'], ',') !== false) {
+                                $jobarr[] = explode(',', $arrData['itemFaultsTicket'][0]['jobnote']);
+                                if ($this->input->post('job_notes')) {
+                                    $jobarr[0][] = $this->input->post('job_notes');
+                                }
+                                foreach ($jobarr[0] as $jobval) {
+                                    $notes_array[] = $jobval;
+                                }
+                            } else {
+                                if ($this->input->post('job_notes')) {
+                                    $notes_array[] = $arrData['itemFaultsTicket'][0]['jobnote'];
+                                    $notes_array[] = $this->input->post('job_notes');
+                                }
+                            }
+                        } else {
+                            $notes_array[] = $this->input->post('job_notes');
+                        }
+
+                        $jobnotes = implode(',', $notes_array);
+
+                        $data['jobnote'] = $jobnotes;
+
+                        $update = $this->tickets_model->updateTicket($this->input->post('fix_ticket_id'), $data);
+                        if ($update) {
+                            $historyData = array(
+                                'reason_code' => $this->input->post('reason_code'),
+                                'jobnote' => $this->input->post('job_notes'),
+                                'status' => $this->input->post('status'),
+                                'ticket_action' => 'Open Job',
+                                'item_id' => $intItemId,
+                                'date' => date("Y-m-d H:i:s"),
+                            );
+                            $allphoto = '';
+                            $response = $this->db->select('photoid')->where('item_id', $intItemId)->get('tickets');
+                            if ($response->num_rows() > 0) {
+
+                                $all = $response->row();
+                                $allphoto = $all->photoid;
+                            }
+
+                            if ($allphoto != '') {
+                                $historyData['photoid'] = $allphoto;
+                            }
+//                        var_dump($historyData);
+                            $historyData['ticket_id'] = $arrData['itemFaultsTicket'][0]['ticket_id'];
+                            $historyData['action'] = "Update Incident";
+                            $historyData["user_id"] = $this->session->userdata('objAppUser')->userid;
+                            $this->tickets_model->addUpdateHistory($historyData);
+                        }
                     }
                     //okay try to build the email
                     $this->load->library('email');
                     $this->email->from("nathan@accessarea.co.uk", "iWork Audit Ticket");
 
                     if ($category_support) {
-                        $this->email->to('anjali@ignisitsolutions.com');
+                        $this->email->to($category_support);
 
 //                        $this->email->to('dharmendra@ignisitsolutions.com');
 //                        $this->email->to($category_support);
@@ -1784,17 +1903,18 @@ class apiV4 extends MY_Controller {
 
                 $notes_array = '';
                 $notesarray = '';
-                $jobnotes = $this->db->select('jobnote')->where('item_id', $item_id)->order_by('id')->get('tickets')->result();
+//                $jobnotes = $this->db->select('jobnote')->where('item_id', $item_id)->order_by('id')->get('tickets_history')->result();
+                $jobnotes = $this->tickets_model->getAllJobData($value->ticket_id);
                 if ($jobnotes) {
                     for ($s = 0; $s < count($jobnotes); $s++) {
-                        if ($jobnotes[$s]->jobnote != '') {
-                            if (strpos($jobnotes[$s]->jobnote, ',') !== false) {
-                                $jobarr = explode(',', $jobnotes[$s]->jobnote);
+                        if ($jobnotes[$s]['jobnote'] != '') {
+                            if (strpos($jobnotes[$s]['jobnote'], ',') !== false) {
+                                $jobarr = explode(',', $jobnotes[$s]['jobnote']);
                                 foreach ($jobarr as $jobval) {
                                     $notes_array[] = $jobval;
                                 }
                             } else {
-                                $notes_array[] = $jobnotes[$s]->jobnote;
+                                $notes_array[] = $jobnotes[$s]['jobnote'];
                             }
 
 //                            $notes_array[] = $jobnotes[$s]->jobnote;
@@ -1809,20 +1929,20 @@ class apiV4 extends MY_Controller {
                 $photoarray = '';
                 $photo_array = '';
 
-                $res = $this->db->select('photoid')->where('item_id', $item_id)->order_by('id')->get('tickets')->result();
+                $res = $this->db->select('photoid')->where('item_id', $item_id)->order_by('id', 'desc')->get('tickets_history')->result();
                 if ($res) {
-                    for ($j = 0; $j < count($res); $j++) {
-                        if ($res[$j]->photoid != '') {
-                            if (strpos($res[$j]->photoid, ',') !== false) {
-                                $idsarr = explode(',', $res[$j]->photoid);
-                                foreach ($idsarr as $idval) {
-                                    $photo_array[] = $idval;
-                                }
-                            } else {
-                                $photo_array[] = $res[$j]->photoid;
+//                    for ($j = 0; $j < count($res); $j++) {
+                    if ($res[0]->photoid != '') {
+                        if (strpos($res[0]->photoid, ',') !== false) {
+                            $idsarr = explode(',', $res[0]->photoid);
+                            foreach ($idsarr as $idval) {
+                                $photo_array[] = $idval;
                             }
+                        } else {
+                            $photo_array[] = $res[0]->photoid;
                         }
                     }
+//                    }
                 }
 
                 $photoarray = implode(',', $photo_array);
@@ -2190,7 +2310,7 @@ class apiV4 extends MY_Controller {
                                 $qnt_item = 1;
                             }
                             $arrItemData = array(
-                                'barcode' => $this->session->userdata('objAppUser')->qrcode . $this->input->post('item_barcode'),
+                                'barcode' => $this->input->post('item_barcode'),
                                 'serial_number' => $this->input->post('item_serial_number'),
                                 'item_manu' => $objItemToCopy->item_manu,
                                 'manufacturer' => $objItemToCopy->manufacturer,
@@ -2210,20 +2330,25 @@ class apiV4 extends MY_Controller {
                             if ($objItemToCopy->pattest_status == 5) {
                                 $arrItemData['pattest_status'] = $objItemToCopy->pattest_status;
                             }
+
                             $mixNewItemId = $this->items_model->addOne($arrItemData, (int) $objItemToCopy->categoryid, (int) $this->input->post('location_id'), (int) $this->input->post('user_id'), (int) $this->input->post('site_id'));
+
                             $mixNewItemsData = $this->items_model->basicGetOneByBarcode($this->input->post('item_barcode'), $this->session->userdata('objAppUser')->accountid);
                             if ($mixNewItemId) {
                                 foreach ($mixNewItemsData[0] as $strKey => $strValue) {
                                     $arrData['arrItem'][$strKey] = $strValue;
                                     if ($strKey == 'purchase_date') {
-                                        $arrData['arrItem'][$strKey] = date("d/m/Y", strtotime($strValue));
-                                        ;
+                                        if ($strValue != '0000-00-00') {
+                                            $arrData['arrItem'][$strKey] = date("d/m/Y", strtotime($strValue));
+                                        } else {
+                                            $arrData['arrItem'][$strKey] = "";
+                                        }
                                     }
                                     $arrData['arrItem']['itemphotoid'] = $arrData['photo_details']->id;
                                     $arrData['arrItem']['itemphotopath'] = $arrData['photo_details']->path;
                                     $arrData['arrItem']['itemphototitle'] = $arrData['photo_details']->title;
                                 }
-
+                                $arrData['add_another'] = $this->input->post('add_another');
 
                                 $arrOutput['booSuccess'] = true;
                                 $arrData['strError'] = "Item Add Successfully";
@@ -2641,6 +2766,7 @@ class apiV4 extends MY_Controller {
                 $arr = array();
                 $arr = json_decode($this->input->post('compliance_arr'));
                 $arrData['result'] = $arr;
+//                var_dump($this->session->userdata('objAppUser')->compliance_email);
                 foreach ($arr->compliance as $data) {
                     $this->items_model->recordCheck($data, $itemID, $intPhotoId);
                     sleep(1);
@@ -2726,6 +2852,9 @@ class apiV4 extends MY_Controller {
                
                     ');
                     $this->email->send();
+//                    if(!$this->email->send()) {
+//                      $arrData['safety_err'] = "Safety Check Failed";  
+//                    } 
                 }
             }
         } else {
@@ -2938,6 +3067,7 @@ class apiV4 extends MY_Controller {
             }
 
             $data_array['arrItemManu'] = $this->admin_section_model->getItem_Manu($this->session->userdata('objAppUser')->accountid);
+
             $data_array['arrManufaturer'] = $this->admin_section_model->getManufacturer($this->session->userdata('objAppUser')->accountid);
             $data_array['arrCondition'] = $this->items_model->get_condition();
             $current_Faults = $this->tickets_model->getCurrentFaults($this->session->userdata('objAppUser')->accountid);
@@ -2973,6 +3103,7 @@ class apiV4 extends MY_Controller {
             }
             $data_array['compliance_status'] = array('PASS', 'FAIL', 'MISSED');
             $data_array['item_qrcode'] = $this->session->userdata('objAppUser')->qrcode;
+            $data_array['supplier_exist'] = $this->session->userdata('is_supplier');
         }
 
         $this->output
@@ -3152,6 +3283,7 @@ class apiV4 extends MY_Controller {
     public function itemHistory($intItemId) {
         $this->load->model('tickets_model');
         $this->load->model('users_model');
+        $this->load->model('tests_model');
         $arrData = array();
 
         $arrOutput = $this->checkSession($this->input->post('username'), $this->input->post('password'));
@@ -3175,6 +3307,8 @@ class apiV4 extends MY_Controller {
                 $mixItemsTicketHistory = $this->tickets_model->ticketHistory($intItemId);
                 foreach ($mixItemsTicketHistory as $key => $value) {
                     $mixItemsTicketHistory[$key]['dt'] = date('d/m/Y', strtotime($mixItemsTicketHistory[$key]['date']));
+                    $mixItemsTicketHistory[$key]['fix_date'] = str_replace('-', '/', date('d/m/Y', strtotime($mixItemsTicketHistory[$key]['date'])));
+
                     $photo_ids = $mixItemsTicketHistory[$key]['photoid'];
                     if (strpos($photo_ids, ',') !== false) {
                         $ids_arr = explode(',', $photo_ids);
@@ -3240,6 +3374,7 @@ class apiV4 extends MY_Controller {
 
                 $arrData['arrItemComplianceHistory'] = array_reverse($arrPageData['dueTests']);
                 $arrData['arrItemComplianceHistory'] = array_slice($arrData['arrItemComplianceHistory'], 0, 5);
+//                var_dump($arrData['arrItemComplianceHistory']);
             } else {
                 $arrOutput['booError'] = true;
             }

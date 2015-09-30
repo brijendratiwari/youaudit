@@ -65,10 +65,30 @@ class Theme_model extends CI_Model {
     }
 
     function fetch_Theme() {
+        
         $this->db->select('*');
 
         $this->db->from('theme');
         $this->db->where('status', 0);
+        $resQuery = $this->db->get();
+        $arrThemeData = array();
+        if ($resQuery->num_rows() > 0) {
+            foreach ($resQuery->result() as $objRow) {
+                $arrThemeData[] = $objRow;
+            }
+            return $arrThemeData;
+        } else {
+            return array('results' => array());
+        }
+    }
+    
+    function fetchTheme($accId) {
+        
+        $this->db->select('*');
+
+        $this->db->from('theme');
+        $this->db->where('status', 1);
+        $this->db->where('account_id', $accId);
         $resQuery = $this->db->get();
         $arrThemeData = array();
         if ($resQuery->num_rows() > 0) {

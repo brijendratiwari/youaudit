@@ -818,6 +818,7 @@ class Items extends MY_Controller {
 
 
                 foreach ($arrPageData['dueTests'] as $key => $value) {
+                    
                     $arrPageData['dueTests'][$key]['location_name'] = $this->tests_model->getLocation($value['test_item_id']);
                     $arrPageData['dueTests'][$key]['owner_name'] = $this->tests_model->getOwnerName($value['test_item_id']);
                     $arrPageData['dueTests'][$key]['site_name'] = $this->tests_model->getSiteName($value['test_item_id']);
@@ -828,7 +829,7 @@ class Items extends MY_Controller {
                     $arrPageData['dueTests'][$key]['test_type_signature'] = $this->tests_model->getComplianceSignatureforHistory($value['test_item_id'], $value['test_date']);
                     $arrPageData['dueTests'][$key]['signature_details'] = $this->photos_model->getOne($arrPageData['dueTests'][$key]['test_type_signature']);
                 }
-                
+
                 $booSuccess = true;
             } else {
                 $arrPageData['arrErrorMessages'][] = "Unable to find the item.";
@@ -2914,10 +2915,10 @@ class Items extends MY_Controller {
         }
     }
 
-    function getownerbylocation($location_id) { 
+    function getownerbylocation($location_id) {
         if ($location_id) {
             $this->load->model('sites_model');
-            $location = $this->sites_model->getownerbylocation($location_id); 
+            $location = $this->sites_model->getownerbylocation($location_id);
             if (!empty($location)) {
                 echo json_encode($location);
             }

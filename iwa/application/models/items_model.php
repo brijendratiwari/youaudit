@@ -305,9 +305,10 @@ class Items_model extends CI_Model {
     public function getLocationHistory($intItemId) {
         $arrResults = array();
         $this->db->select('items_locations_link.date,
-                            locations.id AS locationid, locations.name AS locationname');
+                            locations.id AS locationid, locations.name AS locationname,users.firstname,users.lastname');
         $this->db->from('items_locations_link');
         $this->db->join('locations', 'items_locations_link.location_id = locations.id', 'left');
+        $this->db->join('users', 'items_locations_link.logged_by = users.id', 'left');
         $this->db->where('items_locations_link.item_id', $intItemId);
         $this->db->order_by('items_locations_link.date ASC');
         $resQuery = $this->db->get();
@@ -600,7 +601,7 @@ class Items_model extends CI_Model {
         if ($intAccountId > 0) {
 
             $this->db->select('
-                items.id AS itemid, items.manufacturer,items.item_manu ,items.model, items.serial_number, items.barcode, items.owner_since AS currentownerdate, items.location_since AS currentlocationdate, items.site, items.value, items.current_value, items.purchase_date,items.status_id, items.compliance_start, items.quantity,
+                items.id AS itemid, items.manufacturer,items.item_manu ,item_manu.item_manu_name,items.model, items.serial_number, items.barcode, items.owner_since AS currentownerdate, items.location_since AS currentlocationdate, items.site, items.value, items.current_value, items.purchase_date,items.status_id, items.compliance_start, items.quantity,
 		categories.id AS categoryid, categories.name AS categoryname, categories.default AS categorydefault, categories.icon AS categoryicon,item_condition.condition AS condition_name,
 		users.id AS userid, users.firstname AS userfirstname, users.lastname AS userlastname, users.nickname AS usernickname,owner.owner_name,
                 photos.id AS userphotoid, photos.title AS userphototitle,
@@ -618,6 +619,7 @@ class Items_model extends CI_Model {
             $this->db->join('categories', 'items_categories_link.category_id = categories.id', 'left');
             $this->db->join('users', 'items.owner_now = users.id', 'left');
             $this->db->join('owner', 'items.owner_now = owner.id', 'left');
+            $this->db->join('item_manu', 'items.item_manu = item_manu.id', 'left');
             $this->db->join('photos', 'users.photo_id = photos.id', 'left');
             $this->db->join('item_condition', 'items.condition_now = item_condition.id', 'left');
 
@@ -630,6 +632,9 @@ class Items_model extends CI_Model {
             $this->db->join('pat', 'items.pattest_status = pat.id', 'left');
 
             $this->db->where('items.account_id', $intAccountId);
+            if ($this->session->userdata('is_supplier')) {
+                $this->db->where('items.supplier', $this->session->userdata('is_supplier'));
+            }
             $this->db->where('items.active', 1);
 
             $resQuery = $this->db->get();
@@ -935,20 +940,46 @@ class Items_model extends CI_Model {
 
 //    Add Condition With assets
     public function linkToOwner($intItemId = -1, $owner_id = -1) {
-        $this->db->insert('item_owner_history_link', array('item_id' => $intItemId, 'owner_id' => $owner_id, 'date' => date('Y-m-d H:i:s'), 'logged_by' => $this->session->userdata('objSystemUser')->userid));
+        if ($this->session->userdata('objSystemUser')->userid) {
+            $userid = $this->session->userdata('objSystemUser')->userid;
+        } else {
+            $userid = $this->session->userdata('objAppUser')->userid;
+        }
+        $this->db->insert('item_owner_history_link', array('item_id' => $intItemId, 'owner_id' => $owner_id, 'date' => date('Y-m-d H:i:s'), 'logged_by' => $userid));
     }
 
 //    Add Condition With assets
     public function linkThisToCondition($intItemId = -1, $condition_id = -1) {
-        $this->db->insert('item_condition_history_link', array('item_id' => $intItemId, 'condition_id' => $condition_id, 'date' => date('Y-m-d H:i:s'), 'logged_by' => $this->session->userdata('objSystemUser')->userid));
+        if ($this->session->userdata('objSystemUser')->userid) {
+            $userid = $this->session->userdata('objSystemUser')->userid;
+        } else {
+            $userid = $this->session->userdata('objAppUser')->userid;
+        }
+        $this->db->insert('item_condition_history_link', array('item_id' => $intItemId, 'condition_id' => $condition_id, 'date' => date('Y-m-d H:i:s'), 'logged_by' => $userid));
     }
 
     public function linkThisToLocation($intItemId = -1, $intLocationId = -1) {
+        if ($this->session->userdata('objSystemUser')->userid) {
+            $userid = $this->session->userdata('objSystemUser')->userid;
+        } else {
+            $userid = $this->session->userdata('objAppUser')->userid;
+        }
+
+        if ($this->session->userdata('objSystemUser')->accountid) {
+            $acc = $this->session->userdata('objSystemUser')->accountid;
+        } else {
+            $acc = $this->session->userdata('objAppUser')->accountid;
+        }
 
         if (($intItemId > 0) && ($intLocationId > 0)) {
-            $this->db->insert('items_locations_link', array('item_id' => $intItemId, 'location_id' => $intLocationId, 'date' => date('Y-m-d H:i:s'), 'logged_by' => $this->session->userdata('objSystemUser')->userid));
+            $this->db->insert('items_locations_link', array('item_id' => $intItemId, 'location_id' => $intLocationId, 'date' => date('Y-m-d H:i:s'), 'logged_by' => $userid));
             $this->db->where('id', $intItemId);
-            $this->db->update('items', array('location_now' => $intLocationId, 'location_since' => date('Y-m-d H:i:s')));
+            $this->db->update('items', array('location_now' => $intLocationId, 'location_since' => date('Y-m-d H:i:s'), 'status_id' => 1));
+
+            $this->db->insert('items_users_link', array('item_id' => $intItemId, 'user_id' => $userid, 'date' => date('Y-m-d H:i:s')));
+            $this->db->insert('audits', array('location_id' => $intLocationId, 'user_id' => $userid, 'account_id' => $acc, 'completed' => date('Y-m-d H:i:s')));
+            $audit_id = $this->db->insert_id();
+            $this->db->insert('audititems', array('audit_id' => $audit_id, 'item_id' => $intItemId, 'present' => 1));
         }
     }
 
@@ -991,10 +1022,17 @@ class Items_model extends CI_Model {
     }
 
     public function linkThisToSite($intItemId = -1, $intFacultyId = -1) {
+        if ($this->session->userdata('objSystemUser')->userid) {
+            $userid = $this->session->userdata('objSystemUser')->userid;
+        } else {
+            $userid = $this->session->userdata('objAppUser')->userid;
+        }
         if (($intItemId > 0) && ($intFacultyId > 0)) {
             $this->db->insert('items_sites_link', array('item_id' => $intItemId, 'site_id' => $intFacultyId, 'date' => date('Y-m-d H:i:s')));
             $this->db->where('id', $intItemId);
-            $this->db->update('items', array('site' => $intFacultyId, 'site_since' => date('Y-m-d H:i:s')));
+            $this->db->update('items', array('site' => $intFacultyId, 'site_since' => date('Y-m-d H:i:s'), 'status_id' => 1));
+
+            $this->db->insert('items_users_link', array('item_id' => $intItemId, 'user_id' => $userid, 'date' => date('Y-m-d H:i:s')));
         }
     }
 
@@ -1076,7 +1114,7 @@ class Items_model extends CI_Model {
             $this->db->where('items_locations_link.item_id', $intItemId);
             $this->db->where('items_locations_link.date', $arr['most_recent_date']);
             $resQuery = $this->db->get();
-             //var_dump($resQuery->row()->locationid);die;
+            //var_dump($resQuery->row()->locationid);die;
             if ($resQuery->num_rows() > 0) {
                 return $resQuery->row()->locationid;
             }
@@ -1260,7 +1298,6 @@ class Items_model extends CI_Model {
 
             //isn't already deleted
 //            $this->db->where('items.active', 1);
-
             //check which user deleted them
             if ($intLevelId == 4) {
                 // superadmin enquiry, therefore items where a standard admin has marked
@@ -1869,6 +1906,7 @@ class Items_model extends CI_Model {
 //            var_dump($com_id,$ret);
             return $ret;
         } else {
+
             return array(0 => array('id' => $com_id, 'task_name' => $fil[0]['test_type_name'], 'type_of_task' => '0', 'measurement' => '0', 'measurement_name' => null));
         }
     }
@@ -2689,13 +2727,25 @@ items.id AS itemid,
                 }
             }
 
+            if ($data['user']) {
+                for ($k = 0; $k < count($ids); $k++) {
+                    $update_owner = array(
+                        'item_id' => $ids[$k],
+                        'owner_id' => $data['user'],
+                        'date' => date('Y-m-d H:i:s'),
+                        'logged_by' => $this->session->userdata('objSystemUser')->userid
+                    );
+                    $this->db->insert('item_owner_history_link', $update_owner);
+                }
+            }
+
             $this->customfields_model->insertContentByItemid($data['items_id'], $data);
 
 
             return TRUE;
         }
     }
-    
+
 //    public function cat_customfields($category_id) {
 //        $this->db->select('custom_fields');
 //        $this->db->where('id', $category_id);
@@ -2806,7 +2856,7 @@ items.id AS itemid,
 
 // End of function
 
-    public function basicGetOneWithTicket($intItemId = -1, $intAccountId = -1, $inttype = '',$ticket_id=False) {
+    public function basicGetOneWithTicket($intItemId = -1, $intAccountId = -1, $inttype = '', $ticket_id = False) {
         if (($intItemId > 0) && ($intAccountId > 0)) {
             $this->db->select('
                         items.id AS itemid,
@@ -2891,7 +2941,7 @@ items.id AS itemid,
             } else {
                 $this->db->where('tickets.ticket_action', "Fix");
             }
-            if($ticket_id){
+            if ($ticket_id) {
                 $this->db->where('tickets.id', $ticket_id);
             }
             $this->db->order_by('tickets.id', 'DESC');
@@ -2905,6 +2955,7 @@ items.id AS itemid,
             return false;
         }
     }
+
     public function openGetOneWithTicket($intItemId = -1, $intAccountId = -1, $ticket_id = '') {
         if (($intItemId > 0) && ($intAccountId > 0)) {
             $this->db->select('
@@ -2974,9 +3025,9 @@ items.id AS itemid,
             $this->db->join('tests_history', 'tests_history.test_item_id = items.id', 'left');
             $this->db->where('items.id', $intItemId);
             $this->db->where('items.account_id', $intAccountId);
-                $this->db->where('tickets.ticket_action', "Open Job");
-                $this->db->where('tickets.id', $ticket_id);
-       
+            $this->db->where('tickets.ticket_action', "Open Job");
+            $this->db->where('tickets.id', $ticket_id);
+
             $this->db->order_by('tickets.id', 'DESC');
 
             $resQuery = $this->db->get();
@@ -3266,6 +3317,7 @@ items.id AS itemid,
         if (($intItem) && ($intOwner)) {
             $this->db->where('id', $intItem);
             $this->db->update('items', array('owner_now' => $intOwner, 'owner_since' => date('Y-m-d H:i:s')));
+            $this->linkToOwner($intItem, $intOwner);
         }
     }
 
@@ -3300,9 +3352,10 @@ items.id AS itemid,
     }
 
     public function ownerHistory($itemid, $account_id) {
-        $this->db->select('item_owner_history_link.date,owner.owner_name');
+        $this->db->select('item_owner_history_link.date,owner.owner_name,users.firstname,users.lastname');
         $this->db->from('item_owner_history_link');
         $this->db->join('owner', 'item_owner_history_link.owner_id=owner.id', 'left');
+        $this->db->join('users', 'item_owner_history_link.logged_by=users.id', 'left');
         $this->db->where('item_owner_history_link.item_id', $itemid);
         $this->db->where('owner.account_id', $account_id);
         $this->db->order_by('item_owner_history_link.id desc');

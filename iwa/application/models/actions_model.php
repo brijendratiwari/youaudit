@@ -42,21 +42,21 @@ class Actions_model extends CI_Model {
     }
 
     public function getObjectName($strTableName, $intObjectId) {
- 
+
         if ($strTableName == 'fleet') {
             $this->db->from($strTableName);
             $this->db->where('fleet_id', $intObjectId);
+            $resQuery = $this->db->get();
+        } elseif ($strTableName == 'suppliers') {
+            $this->db->from($strTableName);
+            $this->db->where('supplier_id', $intObjectId);
             $resQuery = $this->db->get();
         } else {
             if ($strTableName == 'theme_log') {
                 $this->db->from($strTableName);
                 $this->db->where('id', $intObjectId);
                 $resQuery = $this->db->get();
-            } elseif($strTableName == 'suppliers') {
-                $this->db->from($strTableName);
-                $this->db->where('supplier_id', $intObjectId);
-                $resQuery = $this->db->get();
-            }else{
+            } else {
                 $this->db->from($strTableName);
                 $this->db->where('id', $intObjectId);
                 $resQuery = $this->db->get();
@@ -76,7 +76,7 @@ class Actions_model extends CI_Model {
                     $strReturn = $arrRow[0]->firstname . " " . $arrRow[0]->lastname . " (" . $arrRow[0]->username . ")";
                     break;
                 case 'theme_log':
-                    $strReturn = "Logo->" . $arrRow[0]->logo ." Favicon-> ".$arrRow[0]->favicon. "  Color-> " . $arrRow[0]->color;
+                    $strReturn = "Logo->" . $arrRow[0]->logo . " Favicon-> " . $arrRow[0]->favicon . "  Color-> " . $arrRow[0]->color;
                     break;
 
                 default:

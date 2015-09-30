@@ -50,9 +50,9 @@ if (isset($this->session->userdata['theme_design']->logo)) {
                                     Overall Result 
                                     <span>
         <?php if ($allData[5] == 'Pass') { ?>
-                                                                                                                                                                        <img class="icons" src="/youaudit/includes/report_files/images/right.png"/>
+                                                                                                                                                                            <img class="icons" src="/youaudit/includes/report_files/images/right.png"/>
         <?php } if ($allData[5] == 'Fail') { ?>
-                                                                                                                                                                        <img class="icons" src="/youaudit/includes/report_files/images/cross.png"/>
+                                                                                                                                                                            <img class="icons" src="/youaudit/includes/report_files/images/cross.png"/>
         <?php } ?>
                                     </span>
                                 </div>
@@ -72,14 +72,14 @@ if (isset($this->session->userdata['theme_design']->logo)) {
             foreach ($temp as $key => $value) {
                 if (strlen($value['result']) == 1) {
                     ?>
-                                                                                                                                                                                                                                                                                                                                            <tr>
-                                                                                                                                                                                                                                                                                                                                            <td valign="top" width="43%" >
-                                                                                                                                                                                                                                                                                                                                            <p align="center">
+                                                                                                                                                                                                                                                                                                                                                        <tr>
+                                                                                                                                                                                                                                                                                                                                                        <td valign="top" width="43%" >
+                                                                                                                                                                                                                                                                                                                                                        <p align="center">
                     <?php echo $value['task_name']; ?>
-                                                                                                                                                                                                                                                                                                                                            </p>
-                                                                                                                                                                                                                                                                                                                                            </td>
-                                                                                                                                                                                                                                                                                                                                            <td valign="top" width="18%" >
-                                                                                                                                                                                                                                                                                                                                            <p align="center">
+                                                                                                                                                                                                                                                                                                                                                        </p>
+                                                                                                                                                                                                                                                                                                                                                        </td>
+                                                                                                                                                                                                                                                                                                                                                        <td valign="top" width="18%" >
+                                                                                                                                                                                                                                                                                                                                                        <p align="center">
                     <?php
                     if ($value['result'] == 1)
                         $result = 'Pass';
@@ -87,14 +87,14 @@ if (isset($this->session->userdata['theme_design']->logo)) {
                         $result = 'Fail';
                     echo $result;
                     ?>
-                                                                                                                                                                                                                                                                                                                                            </p>
-                                                                                                                                                                                                                                                                                                                                            </td>
-                                                                                                                                                                                                                                                                                                                                            <td valign="top" width="38%" >
-                                                                                                                                                                                                                                                                                                                                            <p align="center">
+                                                                                                                                                                                                                                                                                                                                                        </p>
+                                                                                                                                                                                                                                                                                                                                                        </td>
+                                                                                                                                                                                                                                                                                                                                                        <td valign="top" width="38%" >
+                                                                                                                                                                                                                                                                                                                                                        <p align="center">
                     <?php echo $value['test_notes']; ?>
-                                                                                                                                                                                                                                                                                                                                            </p>
-                                                                                                                                                                                                                                                                                                                                            </td>
-                                                                                                                                                                                                                                                                                                                                            </tr>
+                                                                                                                                                                                                                                                                                                                                                        </p>
+                                                                                                                                                                                                                                                                                                                                                        </td>
+                                                                                                                                                                                                                                                                                                                                                        </tr>
                     <?php
                 }
             }
@@ -118,18 +118,18 @@ if (isset($this->session->userdata['theme_design']->logo)) {
 //                        var_dump(strlen(($value['result']),$value['result']));
                 if (strlen($value['result']) > 1) {
                     ?>
-                                                                                                                                                                                                                                                                                                                                            <tr>
-                                                                                                                                                                                                                                                                                                                                            <td class="width1"><?php echo $value['task_name']; ?></td>
-                                                                                                                                                                                                                                                                                                                                            <td class="width2"><?php
+                                                                                                                                                                                                                                                                                                                                                        <tr>
+                                                                                                                                                                                                                                                                                                                                                        <td class="width1"><?php echo $value['task_name']; ?></td>
+                                                                                                                                                                                                                                                                                                                                                        <td class="width2"><?php
                     $temp = explode(' ', $value['result']);
                     echo $temp[0];
                     ?></td>		
-                                                                                                                                                                                                                                                                                                                                            <td  class="width3"><?php
+                                                                                                                                                                                                                                                                                                                                                        <td  class="width3"><?php
                     $temp = explode(' ', $value['result']);
                     echo $temp[1];
                     ?></td>
-                                                                                                                                                                                                                                                                                                                                            <td><?php echo $value['test_notes']; ?></td>
-                                                                                                                                                                                                                                                                                                                                            </tr>
+                                                                                                                                                                                                                                                                                                                                                        <td><?php echo $value['test_notes']; ?></td>
+                                                                                                                                                                                                                                                                                                                                                        </tr>
                     <?php
                 }
             }
@@ -149,7 +149,7 @@ if (isset($this->session->userdata['theme_design']->logo)) {
                 <td><h1>Safety Check Report</h1></td>
             </tr>
             <tr>
-                <td>
+                <td style="width: 600px!important;">
                     <div><?php echo $accountDetails['result'][0]->accountname; ?></div>
                     <div><?php echo $accountDetails['result'][0]->accountaddress . ',' . $accountDetails['result'][0]->accountcity . ',' . $accountDetails['result'][0]->accountcounty . ',' . $accountDetails['result'][0]->accountpostcode; ?></div>
                     <div><b>Phone:</b><?php echo $accountDetails['result'][0]->accountcontactnumber . ',' . $accountDetails['result'][0]->accountcontactemail; ?></div>

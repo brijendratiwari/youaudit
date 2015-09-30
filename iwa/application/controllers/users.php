@@ -61,6 +61,7 @@ class Users extends MY_Controller {
                 );
 //does the record exist?
                 $arrLoginData = $this->users_model->logIn($arrInput);
+                
                 $usercheck = $this->users_model->log_usercheck($arrInput);
                 if ($arrLoginData['booSuccess']) {
                     $this->load->model('accounts_model');

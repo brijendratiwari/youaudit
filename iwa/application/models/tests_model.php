@@ -469,13 +469,17 @@ class Tests_model extends CI_Model {
     }
 
     public function getComplianceHistoryFiltered($start_date = NULL, $end_date = NULL, $item_id = NULL) {
-        $acid = $this->session->userdata('objSystemUser')->accountid;
+        if ($this->session->userdata('objSystemUser')->accountid) {
+            $acid = $this->session->userdata('objSystemUser')->accountid;
+        } else {
+            $acid = $this->session->userdata('objAppUser')->accountid;
+        }
 
         if ($item_id == NULL) {
-            $query = $this->db->query("(SELECT `tests`.`test_id`, `tests`.`test_type`, `tests`.`test_date`, `tests`.`due_on` as due_date, `tests`.`test_item_id`, `tests`.`test_notes`, `tests`.`test_person`, `tests`.`result`, `items`.`barcode`, `items`.`manufacturer`, `items`.`model`, `items`.`serial_number` FROM (`tests`) INNER JOIN `test_type` ON `tests`.`test_type` = `test_type`.`test_type_id` JOIN `items` ON `tests`.`test_item_id` = `items`.`id` WHERE  `items`.`account_id`='$acid' AND `tests`.`test_date` >= '$end_date' AND `tests`.`test_date` <= '$start_date' GROUP BY `tests`.`test_date` ORDER BY `tests`.`test_date` desc) UNION (SELECT `tests`.`test_id`, `tests`.`test_type`, `tests`.`test_date`, `tests`.`due_on` as due_date, `tests`.`test_item_id`, `tests`.`test_notes`, `tests`.`test_person`, `tests`.`result`, `items`.`barcode`, `items`.`manufacturer`, `items`.`model`, `items`.`serial_number` FROM (`tests`) LEFT JOIN `test_compliances` as tc ON `tests`.`test_id` = `tc`.`tests_id` LEFT JOIN `test_type` ON `tc`.`compliance_id` = `test_type`.`test_type_id` JOIN `items` ON `tests`.`test_item_id` = `items`.`id` WHERE `test_type`.`test_type_account_id` = '$acid' AND `items`.`account_id` = '$acid' AND `tests`.`test_date` <= '$start_date' AND tests.test_date >= '$end_date' GROUP BY `tests`.`test_date` ORDER BY `tests`.`test_date` desc )");
+            $query = $this->db->query("(SELECT `tests`.`test_id`,`tests`.`test_type`, `tests`.`test_date`, `tests`.`due_on` as due_date, `tests`.`test_item_id`, `tests`.`test_notes`, `tests`.`test_person`, `tests`.`result`, `items`.`barcode`, `items`.`manufacturer`, `items`.`model`, `items`.`serial_number` FROM (`tests`) INNER JOIN `test_type` ON `tests`.`test_type` = `test_type`.`test_type_id` JOIN `items` ON `tests`.`test_item_id` = `items`.`id` WHERE  `items`.`account_id`='$acid' AND `tests`.`test_date` >= '$end_date' AND `tests`.`test_date` <= '$start_date' GROUP BY `tests`.`test_date` ORDER BY `tests`.`test_date` desc) UNION (SELECT `tests`.`test_id`, `tests`.`test_type`, `tests`.`test_date`, `tests`.`due_on` as due_date, `tests`.`test_item_id`, `tests`.`test_notes`, `tests`.`test_person`, `tests`.`result`, `items`.`barcode`, `items`.`manufacturer`, `items`.`model`, `items`.`serial_number` FROM (`tests`) LEFT JOIN `test_compliances` as tc ON `tests`.`test_id` = `tc`.`tests_id` LEFT JOIN `test_type` ON `tc`.`compliance_id` = `test_type`.`test_type_id` JOIN `items` ON `tests`.`test_item_id` = `items`.`id` WHERE `test_type`.`test_type_account_id` = '$acid' AND `items`.`account_id` = '$acid' AND `tests`.`test_date` <= '$start_date' AND tests.test_date >= '$end_date' GROUP BY `tests`.`test_date` ORDER BY `tests`.`test_date` desc )");
 //            echo $this->db->last_query().';<br>';
         } else {
-            $query = $this->db->query("(SELECT `tests`.`test_id`, `tests`.`test_type`, `tests`.`test_date`, `tests`.`due_on` as due_date, `tests`.`test_item_id`, `tests`.`test_notes`, `tests`.`test_person`, `tests`.`result`, `items`.`barcode`, `items`.`manufacturer`, `items`.`model`, `items`.`serial_number` FROM (`tests`) INNER JOIN `test_type` ON `tests`.`test_type` = `test_type`.`test_type_id` JOIN `items` ON `tests`.`test_item_id` = `items`.`id` WHERE  `items`.`account_id`='$acid' AND `tests`.`test_item_id`='$item_id' AND `test_type`.`test_type_account_id` = '$acid' GROUP BY `tests`.`test_date` ORDER BY `tests`.`test_date` desc) UNION (SELECT `tests`.`test_id`, `tests`.`test_type`, `tests`.`test_date`, `tests`.`due_on` as due_date, `tests`.`test_item_id`, `tests`.`test_notes`, `tests`.`test_person`, `tests`.`result`, `items`.`barcode`, `items`.`manufacturer`, `items`.`model`, `items`.`serial_number` FROM (`tests`) LEFT JOIN `test_compliances` as tc ON `tests`.`test_id` = `tc`.`tests_id` LEFT JOIN `test_type` ON `tc`.`compliance_id` = `test_type`.`test_type_id` JOIN `items` ON `tests`.`test_item_id` = `items`.`id` WHERE  `tests`.`test_item_id`='$item_id' AND `test_type`.`test_type_account_id` = '$acid' AND `items`.`account_id` = '$acid' GROUP BY `tests`.`test_date` ORDER BY `tests`.`test_date` desc )");
+            $query = $this->db->query("(SELECT `tests`.`test_id`, `tests`.`test_type`,`tests`.`test_date`, `tests`.`due_on` as due_date, `tests`.`test_item_id`, `tests`.`test_notes`, `tests`.`test_person`, `tests`.`result`, `items`.`barcode`, `items`.`manufacturer`, `items`.`model`, `items`.`serial_number` FROM (`tests`) INNER JOIN `test_type` ON `tests`.`test_type` = `test_type`.`test_type_id` JOIN `items` ON `tests`.`test_item_id` = `items`.`id` WHERE  `items`.`account_id`='$acid' AND `tests`.`test_item_id`='$item_id' AND `test_type`.`test_type_account_id` = '$acid' GROUP BY `tests`.`test_date` ORDER BY `tests`.`test_date` desc) UNION (SELECT `tests`.`test_id`, `tests`.`test_type`, `tests`.`test_date`, `tests`.`due_on` as due_date, `tests`.`test_item_id`, `tests`.`test_notes`, `tests`.`test_person`, `tests`.`result`, `items`.`barcode`, `items`.`manufacturer`, `items`.`model`, `items`.`serial_number` FROM (`tests`) LEFT JOIN `test_compliances` as tc ON `tests`.`test_id` = `tc`.`tests_id` LEFT JOIN `test_type` ON `tc`.`compliance_id` = `test_type`.`test_type_id` JOIN `items` ON `tests`.`test_item_id` = `items`.`id` WHERE  `tests`.`test_item_id`='$item_id' AND `test_type`.`test_type_account_id` = '$acid' AND `items`.`account_id` = '$acid' GROUP BY `tests`.`test_date` ORDER BY `tests`.`test_date` desc )");
 //            echo $this->db->last_query().';<br>';
         }
         $data = $query->result_array();
@@ -488,8 +492,12 @@ class Tests_model extends CI_Model {
     }
 
     public function getComplianceHistoryFilteredForApp($start_date = NULL, $end_date = NULL, $item_id = NULL) {
-//        $acid = $this->session->userdata('objAppUser')->accountid;
-        $acid = 1;
+        if ($this->session->userdata('objAppUser')->accountid) {
+            $acid = $this->session->userdata('objAppUser')->accountid;
+        } else {
+            $acid = $this->session->userdata('objSystemUser')->accountid;
+        }
+//        $acid = 1;
         if ($item_id == NULL) {
             $query = $this->db->query("(SELECT `tests`.`test_id`, `tests`.`test_type`, `tests`.`test_date`, `tests`.`due_on` as due_date, `tests`.`test_item_id`, `tests`.`test_notes`, `tests`.`test_person`, `tests`.`result`, `items`.`barcode`, `items`.`manufacturer`, `items`.`model`, `items`.`serial_number` FROM (`tests`) INNER JOIN `test_type` ON `tests`.`test_type` = `test_type`.`test_type_id` JOIN `items` ON `tests`.`test_item_id` = `items`.`id` WHERE `tests`.`test_id` < 3574 AND `items`.`account_id`='$acid' AND `tests`.`test_date` >= '$end_date' AND `tests`.`test_date` <= '$start_date' ORDER BY `tests`.`test_date` desc) UNION (SELECT `tests`.`test_id`, `tests`.`test_type`, `tests`.`test_date`, `tests`.`due_on` as due_date, `tests`.`test_item_id`, `tests`.`test_notes`, `tests`.`test_person`, `tests`.`result`, `items`.`barcode`, `items`.`manufacturer`, `items`.`model`, `items`.`serial_number` FROM (`tests`) LEFT JOIN `test_compliances` as tc ON `tests`.`test_id` = `tc`.`tests_id` LEFT JOIN `test_type` ON `tc`.`compliance_id` = `test_type`.`test_type_id` JOIN `items` ON `tests`.`test_item_id` = `items`.`id` WHERE `tests`.`test_id` >= 3574 AND `test_type`.`test_type_account_id` = '$acid' AND `items`.`account_id` = '$acid' AND `tests`.`test_date` <= '$start_date' AND tests.test_date >= '$end_date' GROUP BY `tests`.`test_date` ORDER BY `tests`.`test_date` desc )");
 //            echo $this->db->last_query().';<br>';
@@ -796,17 +804,25 @@ class Tests_model extends CI_Model {
 
     public function getTaskCount($td = NULL, $filter = NULL) {
         $res = $this->db->where('test_date', $td)->join('tasks', 'tests.test_type = tasks.id')->get('tests');
-        $res = $res->result_array();
+        $result = $res->result_array();
+        for ($j = 0; $j < count($result); $j++) {
+            if ($result[$j]['measurement'] != 0) {
+                $res = $this->db->select('measurement_name')->where('id', $result[$j]['measurement'])->get('measurements')->row();
+                $result[$j]['measurement_name'] = $res->measurement_name;
+            } else {
+                $result[$j]['measurement_name'] = 0;
+            }
+        }
 
 //        Add this commented where condition in above line it changed in YouAudit Work        
 //      where('test_id >=', '3574')->
         if ($filter == NULL) {
-            if (empty($res))
+            if (empty($result))
                 return 1;
             else
-                return count($res);
+                return count($result);
         }else {
-            return $res;
+            return $result;
         }
     }
 
@@ -829,7 +845,7 @@ class Tests_model extends CI_Model {
         $this->load->model('accounts_model');
         $booOutputHtml = false;
         $data['tasks'] = $tasks;
-        $data['allData'] = explode(',', $allData);
+        $data['allData'] = explode(',', $allData);  
         $data['accountDetails'] = $this->accounts_model->getOne($this->session->userdata('objSystemUser')->accountid);
 //        var_dump($data['allData'][0]);
 //            $data['allData'] = $allData;
@@ -893,13 +909,13 @@ class Tests_model extends CI_Model {
         for ($i = 0; $i < count($data['tasks']); $i++) {
             $data['tasklist'][$i] = $data['tasks'][$i];
             if ($data['tasks'][$i]->measurement > 0) {
-                $ms = $this->db->select('measurement_name')->where('id', $data['tasks'][$i]->measurement)->get('measurement');
+                $ms = $this->db->select('measurement_name')->where('id', $data['tasks'][$i]->measurement)->get('measurements');
                 if ($ms->num_rows() > 0) {
                     $measure = $ms->row();
                     $measurement = $measure->measurement_name;
                     $data['tasklist'][$i]->measurement_name = $measurement;
                 }
-            }  
+            }
         }
 //        var_dump($data);
 //        die;

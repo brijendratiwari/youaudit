@@ -66,7 +66,7 @@ class Tickets_model extends CI_Model {
         $itemHistory = $query->result_array();
 
         foreach ($itemHistory as $key => $value) {
-            $user = $this->users_model->getOne($value['user_id'], $this->session->userdata('objSystemUser')->accountid);
+            $user = $this->users_model->getOne($value['user_id'], $this->session->userdata('objAppUser')->accountid);
 
             $itemHistory[$key]['username'] = $user['result'][0]->firstname . " " . $user['result'][0]->lastname;
             $itemHistory[$key]['firstname'] = $user['result'][0]->firstname;
@@ -113,7 +113,7 @@ class Tickets_model extends CI_Model {
             $result = $this->db->update('items', array("status_id" => $data['status']));
             if ($result) {
                 $this->db->where('id', $data['ticket_id']);
-                $this->db->update('tickets', array("user_id" => $this->session->userdata('objSystemUser')->userid, "fix_code" => $data['fix_code'], "status" => $data['status'], "jobnote" => $data['job_notes'], "ticket_action" => "Fix", "fix_date" => $data['fix_date'], "photoid" => $data['photoid']));
+                $this->db->update('tickets', array("user_id" => $this->session->userdata('objAppUser')->userid, "fix_code" => $data['fix_code'], "status" => $data['status'], "jobnote" => $data['job_notes'], "ticket_action" => "Fix", "fix_date" => $data['fix_date'], "photoid" => $data['photoid']));
 
                 $open_history = $this->getTicketData($data['ticket_id']);
                 $history = array(
@@ -305,6 +305,10 @@ class Tickets_model extends CI_Model {
             $this->db->where('items.active', 1);
             $this->db->where('tickets.ticket_action', 'Open Job');
             $this->db->where('items.account_id', $intAccountId);
+//            var_dump($this->session->userdata('is_supplier'));
+            if ($this->session->userdata('is_supplier')) {
+                $this->db->where('items.supplier', $this->session->userdata('is_supplier'));
+            }
             $resQuery = $this->db->get();
             if ($resQuery->num_rows() > 0) {
 
@@ -420,7 +424,7 @@ class Tickets_model extends CI_Model {
 
             $notes_array = '';
             $notesarray = '';
-            $jobnotes = $this->db->select('jobnote')->where('item_id', $item_id)->order_by('id')->get('tickets')->result();
+            $jobnotes = $this->db->select('jobnote')->where('item_id', $item_id)->order_by('id')->get('tickets_history')->result();
             if ($jobnotes) {
                 for ($s = 0; $s < count($jobnotes); $s++) {
                     if ($jobnotes[$s]->jobnote != '') {
@@ -842,7 +846,7 @@ OR `categories`.`name` LIKE '%$strfreetext%')");
 
         $strHtml .= "<p>Produced by " . $arrPageData['arrSessionData']["objSystemUser"]->firstname . " " . $arrPageData['arrSessionData']["objSystemUser"]->lastname . " (" . $arrPageData['arrSessionData']["objSystemUser"]->username . ") on " . date('d/m/Y') . "</p>";
         $strHtml .= "</div></body></html>";
-        
+
         if (!$booOutputHtml) {
             $this->load->library('Mpdf');
             $mpdf = new Pdf('en-GB', 'A4');
@@ -966,11 +970,10 @@ OR `categories`.`name` LIKE '%$strfreetext%')");
         $itemFaultHistory = array();
         foreach ($itemHistory as $key => $value) {
             $itemFaultHistory = $this->ticketFaulltHistory($value['id']);
-            foreach($itemFaultHistory as $val){
-            
+            foreach ($itemFaultHistory as $val) {
+
                 $itemHistory[$key]['fault_date'] = $val['date'];
                 $itemHistory[$key]['fault_by'] = $val['username'];
-                
             }
             $user = $this->users_model->getOne($value['user_id'], $this->session->userdata('objSystemUser')->accountid);
 
@@ -978,7 +981,6 @@ OR `categories`.`name` LIKE '%$strfreetext%')");
         }
 //        echo '<pre>';
 //        print_r($itemHistory);die;
-        
 //        echo '<pre>';
 //                        print_r(array("itemFixedHistory"=>$itemHistory,"itemFaultHistory"=>$itemFaultHistory));die;
 //        return array("itemFixedHistory" => $itemHistory, "itemFaultHistory" => $itemFaultHistory);
@@ -991,7 +993,7 @@ OR `categories`.`name` LIKE '%$strfreetext%')");
         $this->db->select('*');
 
         $this->db->where('ticket_id', $ticket_id);
-        $this->db->where('action','Fixed');
+        $this->db->where('action', 'Fixed');
         $query = $this->db->get('tickets_history');
         $itemFaultHistory = $query->result_array();
 
@@ -1209,11 +1211,12 @@ OR `categories`.`name` LIKE '%$strfreetext%')");
             return FALSE;
         }
     }
+
     public function getOpenJobData($ticket_id) {
 
         $this->db->select('users.firstname,users.lastname,tickets.jobnote,tickets.reason_code,tickets.ticket_action,tickets.date');
         $this->db->from('tickets');
-        $this->db->where('tickets.id',$ticket_id);
+        $this->db->where('tickets.id', $ticket_id);
         $this->db->join('users', 'users.id=tickets.user_id');
         $result = $this->db->get();
         if ($result->num_rows() > 0) {
@@ -1258,23 +1261,22 @@ OR `categories`.`name` LIKE '%$strfreetext%')");
     }
 
     public function getFaultHistoryByItem($item_id = FALSE) {
-        
+
         $this->db->select('tickets.date,tickets.fix_date,tickets.fix_code,itemstatus.name as fault_type,users.firstname,users.lastname,tickets_history.severity');
         $this->db->from('tickets');
-        $this->db->where('tickets.item_id',$item_id);
-        $this->db->where('tickets_history.status !=',1);
-     
-        $this->db->join('users','users.id=tickets.user_id');
-        $this->db->join('tickets_history','tickets_history.ticket_id=tickets.id');
-           $this->db->join('itemstatus','itemstatus.id=tickets_history.status');
+        $this->db->where('tickets.item_id', $item_id);
+        $this->db->where('tickets_history.status !=', 1);
+
+        $this->db->join('users', 'users.id=tickets.user_id');
+        $this->db->join('tickets_history', 'tickets_history.ticket_id=tickets.id');
+        $this->db->join('itemstatus', 'itemstatus.id=tickets_history.status');
         $result = $this->db->get();
-        if($result->num_rows() > 0){
-            
+        if ($result->num_rows() > 0) {
+
             return $result->result_array();
-        }else{
+        } else {
             return FALSE;
         }
-        
     }
 
 }

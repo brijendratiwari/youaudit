@@ -426,7 +426,8 @@
             "bDestroy": true, //!!!--- for remove data table warning.
             "aoColumnDefs": [
                 {"sClass": "eamil_conform aligncenter", "aTargets": [0]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [1]}
+                {"sClass": "eamil_conform aligncenter", "aTargets": [1]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [2]}
             ]}
         );
 //        var open_job = $("#open_job").DataTable({
@@ -1207,9 +1208,8 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                             <thead>
                                 <tr>
                                     <th class="left">Date</th>
+                                    <th class="left">Logged By</th>
                                     <th class="left">Owner</th>
-
-
                                 </tr>
                             </thead>
                             <tbody>
@@ -1257,7 +1257,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                                     <tr>
                                         <td><?php echo date('d/m/Y H:i:s', strtotime($arrRecord->date)); ?></td>
 
-
+                                        <td><?php echo $arrRecord->firstname . '' . $arrRecord->lastname; ?></td>
                                         <td><?php
                                             if (isset($arrRecord->owner_name)) {
                                                 echo $arrRecord->owner_name;
@@ -1422,60 +1422,60 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
 
         </style>
         <script>
-    $(document).ready(function()
-    {
-        $(".pickdate").datepicker({dateFormat: "dd/mm/yy"});
-        //            var fix_history = $("#fault_history").DataTable({
-        //                "ordering": true,
-        //                "aLengthMenu": [[10, 20, 40, -1], [10, 20, 40, "All"]],
-        //                "iDisplayLength": 10,
-        //                "bDestroy": true, //!!!--- for remove data table warning.
-        //                "aoColumnDefs": [
-        //                    {"sClass": "eamil_conform aligncenter", "aTargets": [0]},
-        //                    {"sClass": "eamil_conform aligncenter", "aTargets": [1]},
-        //                    {"sClass": "eamil_conform aligncenter", "aTargets": [2]},
-        //                    {"sClass": "eamil_conform aligncenter", "aTargets": [3]},
-        //                    {"sClass": "eamil_conform aligncenter", "aTargets": [4]},
-        //                    {"sClass": "eamil_conform aligncenter", "aTargets": [5]},
-        //                    {"sClass": "eamil_conform aligncenter", "aTargets": [6]},
-        //                    {"sClass": "eamil_conform aligncenter", "aTargets": [7]},
-        //                ]
-        //            });
-        var fix_history1 = $("#fixed_history").DataTable({
-            "ordering": true,
-            "aLengthMenu": [[10, 20, 40, -1], [10, 20, 40, "All"]],
-            "iDisplayLength": 10,
-            "bDestroy": true, //!!!--- for remove data table warning.
-            "aoColumnDefs": [
-                {"sClass": "eamil_conform aligncenter", "aTargets": [0]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [1]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [2]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [3]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [4]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [5]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [6]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [7]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [8]},
-            ]
-        });
-        var open_history = $("#open_job").DataTable({
-            "ordering": true,
-            "aLengthMenu": [[10, 20, 40, -1], [10, 20, 40, "All"]],
-            "iDisplayLength": 10,
-            "bDestroy": true, //!!!--- for remove data table warning.
-            "aoColumnDefs": [
-                {"sClass": "eamil_conform aligncenter", "aTargets": [0]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [1]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [2]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [3]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [4]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [5]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [6]},
-                {"sClass": "eamil_conform aligncenter", "aTargets": [7]}
-            ]}
+        $(document).ready(function()
+        {
+            $(".pickdate").datepicker({dateFormat: "dd/mm/yy"});
+            //            var fix_history = $("#fault_history").DataTable({
+            //                "ordering": true,
+            //                "aLengthMenu": [[10, 20, 40, -1], [10, 20, 40, "All"]],
+            //                "iDisplayLength": 10,
+            //                "bDestroy": true, //!!!--- for remove data table warning.
+            //                "aoColumnDefs": [
+            //                    {"sClass": "eamil_conform aligncenter", "aTargets": [0]},
+            //                    {"sClass": "eamil_conform aligncenter", "aTargets": [1]},
+            //                    {"sClass": "eamil_conform aligncenter", "aTargets": [2]},
+            //                    {"sClass": "eamil_conform aligncenter", "aTargets": [3]},
+            //                    {"sClass": "eamil_conform aligncenter", "aTargets": [4]},
+            //                    {"sClass": "eamil_conform aligncenter", "aTargets": [5]},
+            //                    {"sClass": "eamil_conform aligncenter", "aTargets": [6]},
+            //                    {"sClass": "eamil_conform aligncenter", "aTargets": [7]},
+            //                ]
+            //            });
+            var fix_history1 = $("#fixed_history").DataTable({
+                "ordering": true,
+                "aLengthMenu": [[10, 20, 40, -1], [10, 20, 40, "All"]],
+                "iDisplayLength": 10,
+                "bDestroy": true, //!!!--- for remove data table warning.
+                "aoColumnDefs": [
+                    {"sClass": "eamil_conform aligncenter", "aTargets": [0]},
+                    {"sClass": "eamil_conform aligncenter", "aTargets": [1]},
+                    {"sClass": "eamil_conform aligncenter", "aTargets": [2]},
+                    {"sClass": "eamil_conform aligncenter", "aTargets": [3]},
+                    {"sClass": "eamil_conform aligncenter", "aTargets": [4]},
+                    {"sClass": "eamil_conform aligncenter", "aTargets": [5]},
+                    {"sClass": "eamil_conform aligncenter", "aTargets": [6]},
+                    {"sClass": "eamil_conform aligncenter", "aTargets": [7]},
+                    {"sClass": "eamil_conform aligncenter", "aTargets": [8]},
+                ]
+            });
+            var open_history = $("#open_job").DataTable({
+                "ordering": true,
+                "aLengthMenu": [[10, 20, 40, -1], [10, 20, 40, "All"]],
+                "iDisplayLength": 10,
+                "bDestroy": true, //!!!--- for remove data table warning.
+                "aoColumnDefs": [
+                    {"sClass": "eamil_conform aligncenter", "aTargets": [0]},
+                    {"sClass": "eamil_conform aligncenter", "aTargets": [1]},
+                    {"sClass": "eamil_conform aligncenter", "aTargets": [2]},
+                    {"sClass": "eamil_conform aligncenter", "aTargets": [3]},
+                    {"sClass": "eamil_conform aligncenter", "aTargets": [4]},
+                    {"sClass": "eamil_conform aligncenter", "aTargets": [5]},
+                    {"sClass": "eamil_conform aligncenter", "aTargets": [6]},
+                    {"sClass": "eamil_conform aligncenter", "aTargets": [7]}
+                ]}
 
-        );
-    });</script>
+            );
+        });</script>
         <div class="row">
             <h1>Open Incident</h1>
         </div>
@@ -1836,18 +1836,18 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
         foreach ($arrItemFixTicketHistory['itemFaultHistory'] as $ticketData) {
             foreach ($ticketData as $ticket) {
                 ?>
-                        
-                                                                    <tr>
-                                                                        <td><?php echo $ticket['severity']; ?></td>
+                                                
+                                                                                            <tr>
+                                                                                                <td><?php echo $ticket['severity']; ?></td>
                 <?php
                 if ($ticket['date']) {
                     $arr_date = explode(' ', $ticket['date']);
 //                                                    echo $arr_date[0]; 
                 }
                 ?>
-                                                                        <td><?php echo date('d/m/Y', strtotime($arr_date[0])); ?></td>
-                                                                        <td><?php echo $arr_date[1]; ?></td>
-                                                                        <td><?php
+                                                                                                <td><?php echo date('d/m/Y', strtotime($arr_date[0])); ?></td>
+                                                                                                <td><?php echo $arr_date[1]; ?></td>
+                                                                                                <td><?php
                 $datetime1 = new DateTime($ticket['date']);
                 $datetime2 = new DateTime('now');
                 $interval = $datetime1->diff($datetime2);
@@ -1855,12 +1855,12 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                 $week = $daysCal / 7;
                 echo $interval->format('%m month, ' . intval($week) . ' week and %d days');
                 ?></td>
-                        
-                        
-                                                                        <td><?php echo $ticket['username']; ?></td>
-                        
-                                                                        <td><?php echo $ticket['order_no']; ?></td>
-                                                                        <td>
+                                                
+                                                
+                                                                                                <td><?php echo $ticket['username']; ?></td>
+                                                
+                                                                                                <td><?php echo $ticket['order_no']; ?></td>
+                                                                                                <td>
                 <?php
                 $image_role = '';
                 $url_contain = base_url();
@@ -1907,11 +1907,11 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                     }
                 } echo $image_role;
                 ?>
-                        
-                                                                        </td>
-                                                                        <td><a  href="<?php echo base_url("faults/getPdf/$ticket[id]"); ?>"><img src="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/img/pdf.png" title="Get pdf" alt="Get pdf" /></a></td>
-                        
-                                                                    </tr>
+                                                
+                                                                                                </td>
+                                                                                                <td><a  href="<?php echo base_url("faults/getPdf/$ticket[id]"); ?>"><img src="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/img/pdf.png" title="Get pdf" alt="Get pdf" /></a></td>
+                                                
+                                                                                            </tr>
                 <?php
             }
         }
@@ -2336,8 +2336,11 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
 
                     <?php
                     foreach ($dueTests as $key => $value) {
-
-                        $due_date = date('d/m/Y', strtotime($value['test_date'] . " +" . $value['test_days'] . " days")); // due date calculation
+                        if ($value['due_date'])
+                            $due_date = date('d/m/Y', strtotime($value['due_date'])); // due date calculation
+                        else
+                            $due_date = '';
+//                        $due_date = date('d/m/Y', strtotime($value['test_date'] . " +" . $value['test_days'] . " days")); // due date calculation
                         $missed = '';
                         if ($value['test_days'] > 0) {    //Missed Check Logic
                             switch ($value['test_days']) {
@@ -4182,7 +4185,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
         $('body').on("click", '.getPdf_link', function() {
             var row = $(this).parent('td').parent('tr');
             var rowData = table.row(row).data();
-            rowData.shift(); 
+            rowData.shift();
             $('#genPdf_form input#pdfTasks').val(rowData[9]);
             rowData[9] = '';
             console.log(rowData);
@@ -4232,7 +4235,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                     }
                     else
                     {
-                        $('#owner_id option[value="0"]').attr('selected', 'selected');
+//                        $('#owner_id option[value="0"]').attr('selected', 'selected');
                     }
                 });
                 $.getJSON("<?php echo base_url('items/getlocationbysite'); ?>" + '/' + site_id, function(data) {
@@ -4277,7 +4280,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                 }
                 else
                 {
-                    $('#owner_id option[value="0"]').attr('selected', 'selected');
+//                    $('#owner_id option[value="0"]').attr('selected', 'selected');
                 }
             });
             $.getJSON("<?php echo base_url('items/getsitebylocation'); ?>" + '/' + site_id, function(data) {
