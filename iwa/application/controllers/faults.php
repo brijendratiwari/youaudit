@@ -336,7 +336,6 @@ class Faults extends MY_Controller {
         $strHtml .= "</tbody></table>";
         //#############################################################
 
-
         $strHtml .= "<div>&nbsp;</div>";
         $strHtml .= "<div>&nbsp;</div>";
 
@@ -402,6 +401,7 @@ class Faults extends MY_Controller {
 
             $date2 = date('d-m-Y', strtotime($val1['fix_date']));
             $date1 = date('d-m-Y H:i:s', strtotime($val1['date']));
+
 
             $diff = abs(strtotime($date2) - strtotime($date1));
 
@@ -1114,7 +1114,6 @@ class Faults extends MY_Controller {
 
         $strHtml .= "</tbody></table>";
         //#############################################################
-
 
 
 

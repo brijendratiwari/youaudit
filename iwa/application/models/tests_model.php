@@ -159,7 +159,7 @@ class Tests_model extends CI_Model {
         }
         $result = $this->items_model->getAll($account_id, array('limit' => 0));
         $items = $result['results'];
-       
+
         foreach ($items as $key => $item) {
             /* Skip if compliance is not due to start yet */
             if (date('Y-m-d') < $item->compliance_start) {
@@ -633,6 +633,7 @@ class Tests_model extends CI_Model {
                 return '';
         }
     }
+
     public function getComplianceSignatureforHistory($item_id = NULL, $test_date = NULL) {
         $sql = "SELECT signature
                 FROM tests_history
@@ -853,14 +854,60 @@ class Tests_model extends CI_Model {
 
     public function outputHistoryPdfFileItems($allData, $tasks) {
         $this->load->model('accounts_model');
-        $booOutputHtml = false;
-        $data['tasks'] = $tasks;
-        $data['allData'] = explode(',', $allData);
 
+        $booOutputHtml = false;
+        $data['tasks'] = json_decode($tasks);
+        $data['allData'] = explode(',', $allData);
+        $item_id = $data['tasks'][0]->test_item_id;
+
+        $data['dueTests'] = $this->getComplianceHistoryFiltered(NULL, NULL, $item_id);
+
+        $data['manufacturer'] = $data['dueTests'][0]['manufacturer'];
+        $data['model'] = $data['dueTests'][0]['model'];
+        $data['location_name'] = $this->getLocation($item_id);
+        $data['owner_name'] = $this->getOwnerName($item_id);
+        $data['site_name'] = $this->getSiteName($item_id);
+        $this->db->select('item_manu.item_manu_name,categories.name');
+        $this->db->from('items');
+        $this->db->join('items_categories_link', 'items.id=items_categories_link.item_id', 'left');
+        $this->db->join('categories', 'items_categories_link.category_id=categories.id', 'left');
+        $this->db->join('item_manu', 'items.item_manu=item_manu.id', 'left');
+        $detail = $this->db->get();
+        if ($detail->num_rows() > 0) {
+            $safety_data = $detail->row();
+            $data['item_manu_name'] = $safety_data->item_manu_name;
+            $data['category_name'] = $safety_data->name;
+        }
+        if ($data['allData'][6]) {
+            $this->db->select('users.firstname,users.lastname');
+            $this->db->from('test_type');
+            $this->db->where('test_type_id', $data['allData'][6]);
+            $this->db->join('users', 'test_type.manager_of_check=users.id', 'left');
+            $manager_check = $this->db->get();
+            if ($manager_check->num_rows() > 0) {
+                $check = $manager_check->row();
+                $data['manager'] = $check->firstname . '' . $check->lastname;
+            }
+        }
+
+        for ($i = 0; $i < count($data['tasks']); $i++) {
+            $data['tasklist'][$i] = $data['tasks'][$i];
+            if ($data['tasks'][$i]->measurement > 0) {
+                $ms = $this->db->select('measurement_name')->where('id', $data['tasks'][$i]->measurement)->get('measurement');
+                if ($ms->num_rows() > 0) {
+                    $measure = $ms->row();
+                    $measurement = $measure->measurement_name;
+                    $data['tasklist'][$i]->measurement_name = $measurement;
+                }
+            }  
+        }
+//        var_dump($data);
+//        die;
         $data['accountDetails'] = $this->accounts_model->getOne($this->session->userdata('objSystemUser')->accountid);
+
 //            $data['allData'] = $allData;
         $temp = preg_replace('/<\/?pre[^>]*>/', '', preg_replace('/<\/?a[^>]*>/', '', $data['allData'][9]));
- 
+
         $strHtml = $this->load->view('compliance/historyreportitems', $data, true);
 //            echo $strHtml;die; 
         if (!$booOutputHtml) {
@@ -887,7 +934,7 @@ class Tests_model extends CI_Model {
 //            echo $strHtml;die;
         if (!$booOutputHtml) {
             $this->load->library('Mpdf');
-            $mpdf = ini_set('memory_limit','1280M');
+            $mpdf = ini_set('memory_limit', '1280M');
             $mpdf = new Pdf('en-GB', 'A4');
             $mpdf->setHeader($filename);
             $mpdf->setFooter('{PAGENO} of {nb}');
@@ -1075,7 +1122,8 @@ class Tests_model extends CI_Model {
         if ($query->num_rows == 1) {
             if ($ret) {
                 
-            } else
+            }
+            else
                 return $query->row_array();
         } else {
             return false;

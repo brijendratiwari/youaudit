@@ -828,6 +828,7 @@ class Items extends MY_Controller {
                     $arrPageData['dueTests'][$key]['test_type_signature'] = $this->tests_model->getComplianceSignatureforHistory($value['test_item_id'], $value['test_date']);
                     $arrPageData['dueTests'][$key]['signature_details'] = $this->photos_model->getOne($arrPageData['dueTests'][$key]['test_type_signature']);
                 }
+                
                 $booSuccess = true;
             } else {
                 $arrPageData['arrErrorMessages'][] = "Unable to find the item.";

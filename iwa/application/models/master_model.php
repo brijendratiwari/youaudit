@@ -563,8 +563,8 @@ class Master_Model extends CI_Model {
     public function addComplianceTestForMaster($data) {
 
         $idArr = array();
-        $arr = $data['task_details'];        
-        $arr = explode(',', $arr); 
+        $arr = $data['task_details'];
+        $arr = explode(',', $arr);
         foreach ($arr as $key => $value) {
             $newArr = explode('|', $value);
             if (!empty($newArr)) {

@@ -1422,60 +1422,60 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
 
         </style>
         <script>
-        $(document).ready(function()
-        {
-            $(".pickdate").datepicker({dateFormat: "dd/mm/yy"});
-    //            var fix_history = $("#fault_history").DataTable({
-    //                "ordering": true,
-    //                "aLengthMenu": [[10, 20, 40, -1], [10, 20, 40, "All"]],
-    //                "iDisplayLength": 10,
-    //                "bDestroy": true, //!!!--- for remove data table warning.
-    //                "aoColumnDefs": [
-    //                    {"sClass": "eamil_conform aligncenter", "aTargets": [0]},
-    //                    {"sClass": "eamil_conform aligncenter", "aTargets": [1]},
-    //                    {"sClass": "eamil_conform aligncenter", "aTargets": [2]},
-    //                    {"sClass": "eamil_conform aligncenter", "aTargets": [3]},
-    //                    {"sClass": "eamil_conform aligncenter", "aTargets": [4]},
-    //                    {"sClass": "eamil_conform aligncenter", "aTargets": [5]},
-    //                    {"sClass": "eamil_conform aligncenter", "aTargets": [6]},
-    //                    {"sClass": "eamil_conform aligncenter", "aTargets": [7]},
-    //                ]
-    //            });
-            var fix_history1 = $("#fixed_history").DataTable({
-                "ordering": true,
-                "aLengthMenu": [[10, 20, 40, -1], [10, 20, 40, "All"]],
-                "iDisplayLength": 10,
-                "bDestroy": true, //!!!--- for remove data table warning.
-                "aoColumnDefs": [
-                    {"sClass": "eamil_conform aligncenter", "aTargets": [0]},
-                    {"sClass": "eamil_conform aligncenter", "aTargets": [1]},
-                    {"sClass": "eamil_conform aligncenter", "aTargets": [2]},
-                    {"sClass": "eamil_conform aligncenter", "aTargets": [3]},
-                    {"sClass": "eamil_conform aligncenter", "aTargets": [4]},
-                    {"sClass": "eamil_conform aligncenter", "aTargets": [5]},
-                    {"sClass": "eamil_conform aligncenter", "aTargets": [6]},
-                    {"sClass": "eamil_conform aligncenter", "aTargets": [7]},
-                    {"sClass": "eamil_conform aligncenter", "aTargets": [8]},
-                ]
-            });
-            var open_history = $("#open_job").DataTable({
-                "ordering": true,
-                "aLengthMenu": [[10, 20, 40, -1], [10, 20, 40, "All"]],
-                "iDisplayLength": 10,
-                "bDestroy": true, //!!!--- for remove data table warning.
-                "aoColumnDefs": [
-                    {"sClass": "eamil_conform aligncenter", "aTargets": [0]},
-                    {"sClass": "eamil_conform aligncenter", "aTargets": [1]},
-                    {"sClass": "eamil_conform aligncenter", "aTargets": [2]},
-                    {"sClass": "eamil_conform aligncenter", "aTargets": [3]},
-                    {"sClass": "eamil_conform aligncenter", "aTargets": [4]},
-                    {"sClass": "eamil_conform aligncenter", "aTargets": [5]},
-                    {"sClass": "eamil_conform aligncenter", "aTargets": [6]},
-                    {"sClass": "eamil_conform aligncenter", "aTargets": [7]}
-                ]}
+    $(document).ready(function()
+    {
+        $(".pickdate").datepicker({dateFormat: "dd/mm/yy"});
+        //            var fix_history = $("#fault_history").DataTable({
+        //                "ordering": true,
+        //                "aLengthMenu": [[10, 20, 40, -1], [10, 20, 40, "All"]],
+        //                "iDisplayLength": 10,
+        //                "bDestroy": true, //!!!--- for remove data table warning.
+        //                "aoColumnDefs": [
+        //                    {"sClass": "eamil_conform aligncenter", "aTargets": [0]},
+        //                    {"sClass": "eamil_conform aligncenter", "aTargets": [1]},
+        //                    {"sClass": "eamil_conform aligncenter", "aTargets": [2]},
+        //                    {"sClass": "eamil_conform aligncenter", "aTargets": [3]},
+        //                    {"sClass": "eamil_conform aligncenter", "aTargets": [4]},
+        //                    {"sClass": "eamil_conform aligncenter", "aTargets": [5]},
+        //                    {"sClass": "eamil_conform aligncenter", "aTargets": [6]},
+        //                    {"sClass": "eamil_conform aligncenter", "aTargets": [7]},
+        //                ]
+        //            });
+        var fix_history1 = $("#fixed_history").DataTable({
+            "ordering": true,
+            "aLengthMenu": [[10, 20, 40, -1], [10, 20, 40, "All"]],
+            "iDisplayLength": 10,
+            "bDestroy": true, //!!!--- for remove data table warning.
+            "aoColumnDefs": [
+                {"sClass": "eamil_conform aligncenter", "aTargets": [0]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [1]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [2]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [3]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [4]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [5]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [6]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [7]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [8]},
+            ]
+        });
+        var open_history = $("#open_job").DataTable({
+            "ordering": true,
+            "aLengthMenu": [[10, 20, 40, -1], [10, 20, 40, "All"]],
+            "iDisplayLength": 10,
+            "bDestroy": true, //!!!--- for remove data table warning.
+            "aoColumnDefs": [
+                {"sClass": "eamil_conform aligncenter", "aTargets": [0]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [1]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [2]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [3]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [4]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [5]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [6]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [7]}
+            ]}
 
-            );
-        });</script>
+        );
+    });</script>
         <div class="row">
             <h1>Open Incident</h1>
         </div>
@@ -1790,15 +1790,15 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                                                 ?>
 
                                             </td>
-        <?php $account_id = $this->session->userdata('objSystemUser')->accountid; ?>
+                                            <?php $account_id = $this->session->userdata('objSystemUser')->accountid; ?>
                                             <td><a  href="<?php echo base_url("faults/getPdfForFaultHistory/$ticket[itemid]/$account_id"); ?>"><img src="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/img/pdf.png" title="Get pdf" alt="Get pdf" /></a></td>
                                             <td>
                                                 <span class="action-w"><a data-toggle="modal" actionmode="reportfault"  ticket_id = "<?php echo $ticket['id']; ?>"  id="itm_<?php echo $ticket['itemid']; ?>" account_id="<?php echo $this->session->userdata('objSystemUser')->accountid; ?>"  href="#viewfaultFix" title="View Incident" class="viewfaultFix" data_customer_id=''><i class="fa fa-eye franchises-i"></i></a>View Incident</span>
                                             </td>
                                         </tr>
-        <?php
-    }
-    ?></tbody>
+                                        <?php
+                                    }
+                                    ?></tbody>
                             </table>
                         </div>
                         <!-- /.table-responsive -->
@@ -1832,22 +1832,22 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                                         </thead>
                                         <tbody id="asset_body">
         <?php // var_dump($arrItemFixTicketHistory['itemFaultHistory']);  ?>
-    <?php
-    foreach ($arrItemFixTicketHistory['itemFaultHistory'] as $ticketData) {
-        foreach ($ticketData as $ticket) {
-            ?>
-                
-                                                            <tr>
-                                                                <td><?php echo $ticket['severity']; ?></td>
+        <?php
+        foreach ($arrItemFixTicketHistory['itemFaultHistory'] as $ticketData) {
+            foreach ($ticketData as $ticket) {
+                ?>
+                        
+                                                                    <tr>
+                                                                        <td><?php echo $ticket['severity']; ?></td>
                 <?php
                 if ($ticket['date']) {
                     $arr_date = explode(' ', $ticket['date']);
 //                                                    echo $arr_date[0]; 
                 }
                 ?>
-                                                                <td><?php echo date('d/m/Y', strtotime($arr_date[0])); ?></td>
-                                                                <td><?php echo $arr_date[1]; ?></td>
-                                                                <td><?php
+                                                                        <td><?php echo date('d/m/Y', strtotime($arr_date[0])); ?></td>
+                                                                        <td><?php echo $arr_date[1]; ?></td>
+                                                                        <td><?php
                 $datetime1 = new DateTime($ticket['date']);
                 $datetime2 = new DateTime('now');
                 $interval = $datetime1->diff($datetime2);
@@ -1855,12 +1855,12 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                 $week = $daysCal / 7;
                 echo $interval->format('%m month, ' . intval($week) . ' week and %d days');
                 ?></td>
-                
-                
-                                                                <td><?php echo $ticket['username']; ?></td>
-                
-                                                                <td><?php echo $ticket['order_no']; ?></td>
-                                                                <td>
+                        
+                        
+                                                                        <td><?php echo $ticket['username']; ?></td>
+                        
+                                                                        <td><?php echo $ticket['order_no']; ?></td>
+                                                                        <td>
                 <?php
                 $image_role = '';
                 $url_contain = base_url();
@@ -1907,15 +1907,15 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                     }
                 } echo $image_role;
                 ?>
-                
-                                                                </td>
-                                                                <td><a  href="<?php echo base_url("faults/getPdf/$ticket[id]"); ?>"><img src="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/img/pdf.png" title="Get pdf" alt="Get pdf" /></a></td>
-                
-                                                            </tr>
-            <?php
+                        
+                                                                        </td>
+                                                                        <td><a  href="<?php echo base_url("faults/getPdf/$ticket[id]"); ?>"><img src="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/img/pdf.png" title="Get pdf" alt="Get pdf" /></a></td>
+                        
+                                                                    </tr>
+                <?php
+            }
         }
-    }
-    ?></tbody>
+        ?></tbody>
                                     </table>
                                 </div>
                                  /.table-responsive 
@@ -2005,9 +2005,9 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                         <td><?php echo $pat_result->pattest_name; ?></td>
                         <td><?php echo $pat_result->firstname . ' ' . $pat_result->lastname ?></td>
                     </tr>
-        <?php
-    }
-    ?>
+                    <?php
+                }
+                ?>
 
             </tbody>
 
@@ -2024,25 +2024,25 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
     <div class="row">
         <h1>Condition History</h1>
     </div>
-        <?php
-        if ($this->session->flashdata('success')) {
-            ?>
+    <?php
+    if ($this->session->flashdata('success')) {
+        ?>
         <div class="alert alert-success alert-dismissable">
             <button aria-hidden="true" data-dismiss="alert" class="close" type="button">&times;</button>
-        <?php echo $this->session->flashdata('success'); ?>
+            <?php echo $this->session->flashdata('success'); ?>
         </div>
-    <?php
-}
-if ($this->session->flashdata('error')) {
-    ?>
+        <?php
+    }
+    if ($this->session->flashdata('error')) {
+        ?>
         <div class="alert alert-warning alert-dismissable">
             <button aria-hidden="true" data-dismiss="alert" class="close" type="button">&times;</button>
-        <?php echo $this->session->flashdata('error'); ?>
+            <?php echo $this->session->flashdata('error'); ?>
         </div>
-    <?php
-}
-?>
-<?php // echo $this->view('users/assets/asset_sidemenu');                  ?>
+        <?php
+    }
+    ?>
+    <?php // echo $this->view('users/assets/asset_sidemenu');                  ?>
     <div class="row">
         <div class="col-lg-12">
 
@@ -2064,7 +2064,7 @@ if ($this->session->flashdata('error')) {
                                 </tr>
                             </thead>
                             <tbody id="asset_body"> 
-                                        <?php foreach ($conditionhistory as $asset) { ?>
+                                <?php foreach ($conditionhistory as $asset) { ?>
                                     <tr>
                                         <td>
                                             <?php
@@ -2146,7 +2146,7 @@ if ($this->session->flashdata('error')) {
                                         <td><?php echo $asset['firstname'] . ' ' . $asset['lastname']; ?></td>
                                         <td><?php echo $asset['notes']; ?></td>
                                     </tr>
-<?php } ?>
+                                <?php } ?>
                             </tbody>
                         </table>
                     </div>
@@ -2458,9 +2458,9 @@ if ($this->session->flashdata('error')) {
                         </tr>
 
 
-    <?php } ?>
+                    <?php } ?>
                 </tbody>
-<!--                <tfoot>
+    <!--                <tfoot>
                 <th>Actions</th>
                 <th>Safety Name</th>
                 <th>Logged By</th>
@@ -2573,9 +2573,9 @@ if ($this->session->flashdata('error')) {
                     <div class="form-group col-md-12">
                         <div class="col-md-6"><label>New Condition</label> </div>
                         <div class="col-md-6"><select name="new_condition" class="form-control"><option>----SELECT----</option>  
-<?php foreach ($conditionlist as $condition) { ?>
+                                <?php foreach ($conditionlist as $condition) { ?>
                                     <option value="<?php echo $condition['id']; ?>"><?php echo $condition['condition']; ?></option>
-<?php } ?>
+                                <?php } ?>
                             </select>
                         </div>
                     </div>
@@ -2817,7 +2817,7 @@ if ($this->session->flashdata('error')) {
                         <div class="col-md-6">  <label>Enter QR Code*</label> </div>
                         <div class="col-md-6">  <div class="input-group">
                                 <div class="input-group-addon grpaddon">
-<?php echo $this->session->userdata('objSystemUser')->qrcode; ?></div>
+                                    <?php echo $this->session->userdata('objSystemUser')->qrcode; ?></div>
                                 <input placeholder="Enter QR Code" class="form-control barcss" name="item_barcode_similar" id="item_barcode_similar">
                             </div>
                             <div id="qrcodeerror_similar" class="qrcodeerror hide">QR Code Already Exist.</div>
@@ -2934,9 +2934,9 @@ if ($this->session->flashdata('error')) {
                                 foreach ($arrCondition as $arrConn) {
                                     ?>
                                     <option value="<?php echo $arrConn['id']; ?>"><?php echo $arrConn['condition']; ?></option>                     
-    <?php
-}
-?>
+                                    <?php
+                                }
+                                ?>
                             </select>
                         </div>
                     </div>
@@ -4083,7 +4083,7 @@ if ($this->session->flashdata('error')) {
                         .appendTo($(this).empty())
                         .on('change', function() {
                     if ($(this).val() != '')
-                    {  
+                    {
                         console.log(table);
                         table.column(i)
                                 .search('^' + $(this).val() + '$', true, false)
@@ -4106,7 +4106,7 @@ if ($this->session->flashdata('error')) {
                         });
                     }
                 });
-                table.column(i).data().unique().sort().each(function(d, j) { 
+                table.column(i).data().unique().sort().each(function(d, j) {
                     if (d != '&nbsp;')
                         select.append('<option value="' + d + '">' + d + '</option>');
                 });
@@ -4182,7 +4182,7 @@ if ($this->session->flashdata('error')) {
         $('body').on("click", '.getPdf_link', function() {
             var row = $(this).parent('td').parent('tr');
             var rowData = table.row(row).data();
-            rowData.shift();
+            rowData.shift(); 
             $('#genPdf_form input#pdfTasks').val(rowData[9]);
             rowData[9] = '';
             console.log(rowData);
