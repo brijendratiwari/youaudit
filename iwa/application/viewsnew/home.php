@@ -282,11 +282,11 @@
             });
         });
 // For Search on Dashboard
-        $(document).find('.multisiteclass').change(function() { 
+        $(document).find('.multisiteclass').change(function() {
             $(".multilocationclass").empty();
             var site_id = this.value;
             if (site_id != 0) {
-                
+
                 $.getJSON("<?php echo base_url('items/getlocationbysite'); ?>" + '/' + site_id, function(data) {
                     if (data.results.length != 0) {
 
@@ -337,7 +337,7 @@
 
         $("#item_barcode").on("keyup blur", function() {
 
-            var code = $("#asset_qrcode").val();
+            var code = $("#assetqrcode").val();
             var bar_code = $("#item_barcode").val();
             var qrcode = code + bar_code;
             var base_url_str = $("#base_url").val();
@@ -376,6 +376,7 @@
         $('#audit_location').on('click', function()
         {
             $('.barcode').css('display', 'none');
+            $('.site').css('display', 'block');
             $('.categorys').css('display', 'none');
             $('.itemmanus').css('display', 'none');
             $('.manufacturers').css('display', 'none');
@@ -385,14 +386,15 @@
 
         $('#change_owner').on('click', function()
         {
-            $('.barcode').css('display', 'none');
+            $('.barcode').css('display', 'block');
+            $('.site').css('display', 'none');
             $('.categorys').css('display', 'none');
             $('.itemmanus').css('display', 'none');
             $('.manufacturers').css('display', 'none');
             $('#app_icons').css('display', 'none');
             $('#search_box').css('display', 'block');
         });
-
+        var preauditarr = new Array();
         $('.search_item').on('click', function()
         {
             var barcode = $('#search_barcode').val();
@@ -401,69 +403,423 @@
             var manufacturer_id = $('#search_manufacturer option:selected').val();
             var site_id = $('#search_site option:selected').val();
             var location_id = $('#search_location option:selected').val();
+            var modal = $(".model_type").val();
 
-            $.ajax({
-                type: "POST",
-                url: base_url_str + "welcome/get_searchResults",
-                data: {
-                    'bar_code': barcode,
-                    'category_id': category_id,
-                    'manu_id': item_id,
-                    'manufacturer_id': manufacturer_id,
-                    'site_id': site_id,
-                    'location_id': location_id
-                },
-                success: function(data) {
-                    $('body').find('#search_box').find('input').val('');
-                    $('body').find('#search_box').find('select').val('');
-                    $('#search_box').css('display', 'none');
-                    $('#search_results #resdata').html('');
-                    $('#search_results').css('display', 'block');
-                    var searchdata = $.parseJSON(data);
-                    if (searchdata.length > 0) {
-                        for (var k = 0; k < searchdata.length; k++)
+            if (modal != "audit_location" && modal != "change_owner") {
+                $('#search_results #resdata').empty();
+                $.ajax({
+                    type: "POST",
+                    url: base_url_str + "welcome/get_searchResults",
+                    data: {
+                        'bar_code': barcode,
+                        'category_id': category_id,
+                        'manu_id': item_id,
+                        'manufacturer_id': manufacturer_id,
+                        'site_id': site_id,
+                        'location_id': location_id
+                    },
+                    success: function(data) {
+                        $('body').find('#search_box').find('input').val('');
+                        $('body').find('#search_box').find('select').val('');
+                        $('#search_box').css('display', 'none');
+                        $('#search_results #resdata').html('');
+                        $('#search_results').css('display', 'block');
+                        var searchdata = $.parseJSON(data);
+                        if (searchdata.length > 0) {
+                            for (var k = 0; k < searchdata.length; k++)
+                            {
+                                if (searchdata[k].item_manu != null)
+                                {
+                                    var manu = searchdata[k].item_manu;
+                                }
+                                else
+                                {
+                                    var manu = '';
+                                }
+                                if (searchdata[k].manufacturer != null)
+                                {
+                                    var manufacturer = searchdata[k].manufacturer;
+                                }
+                                else
+                                {
+                                    var manufacturer = '';
+                                }
+                                if (searchdata[k].model != null)
+                                {
+                                    var model = searchdata[k].model;
+                                }
+                                else
+                                {
+                                    var model = '';
+                                }
+
+//                            $('#search_results #resdata').append('<div class="list-group-item"><a href="' + base_url_str + 'items/view/' + searchdata[k].itemid + '">' + searchdata[k].barcode + ':' + manu + ' ' + manufacturer + ' ' + model + ' ' + searchdata[k].locationname + '</div>');
+
+                                if (modal === "check_condition")
+                                {
+                                    $('#search_results #resdata').append('<div class="list-group-item"><a class="current_modal" data-type="' + modal + '" -item="' + searchdata[k].itemid + '" data-condition="' + searchdata[k].itemconditionname + '" id="check_condition" data-target="#condition_check" data-toggle="modal">' + searchdata[k].barcode + ':' + manu + ' ' + manufacturer + ' ' + model + ' ' + searchdata[k].locationname + '</div>');
+                                }
+                                else if (modal === "report_fault")
+                                {
+                                    $('#search_results #resdata').append('<div class="list-group-item"><a class="current_modal" data-type="' + modal + '" data-item="' + searchdata[k].itemid + '" data-barcode="' + searchdata[k].barcode + '" data-manu="' + manu + '" data-manufacturer="' + manufacturer + '" data-model="' + model + '" data-category="' + searchdata[k].categoryname + '" data-location="' + searchdata[k].locationname + '" id="reportfault" data-target="#item_report_fault" data-toggle="modal">' + searchdata[k].barcode + ':' + manu + ' ' + manufacturer + ' ' + model + ' ' + searchdata[k].locationname + '</div>');
+                                }
+                                else if (modal === "addsimilaritem")
+                                {
+                                    $('#search_results #resdata').append('<div class="list-group-item"><a class="current_modal" data-type="' + modal + '" data-item="' + searchdata[k].itemid + '" id="addsimilaritem" data-target="#add_similar_item" data-toggle="modal">' + searchdata[k].barcode + ':' + manu + ' ' + manufacturer + ' ' + model + ' ' + searchdata[k].locationname + '</div>');
+                                }
+                                else if (modal === "ownership")
+                                {
+                                    $('#search_results #resdata').append('<div class="list-group-item"><a class="current_modal" data-type="' + modal + '" data-item="' + searchdata[k].itemid + '" id="change_owner" data-target="#change_owner_model" data-toggle="modal">' + searchdata[k].barcode + ':' + manu + ' ' + manufacturer + ' ' + model + ' ' + searchdata[k].locationname + '</div>');
+                                }
+                                else
+                                {
+                                    $('#search_results #resdata').append('<div class="list-group-item"><a href="' + base_url_str + 'items/view/' + searchdata[k].itemid + '">' + searchdata[k].barcode + ':' + manu + ' ' + manufacturer + ' ' + model + ' ' + searchdata[k].locationname + '</div>');
+                                }
+
+
+                            }
+                        }
+                        else
                         {
-                            if (searchdata[k].item_manu != null)
-                            {
-                                var manu = searchdata[k].item_manu;
-                            }
-                            else
-                            {
-                                var manu = '';
-                            }
-                            if (searchdata[k].manufacturer != null)
-                            {
-                                var manufacturer = searchdata[k].manufacturer;
-                            }
-                            else
-                            {
-                                var manufacturer = '';
-                            }
-                            if (searchdata[k].model != null)
-                            {
-                                var model = searchdata[k].model;
-                            }
-                            else
-                            {
-                                var model = '';
-                            }
-
-                            $('#search_results #resdata').append('<div class="list-group-item"><a href="' + base_url_str + 'items/view/' + searchdata[k].itemid + '">' + searchdata[k].barcode + ':' + manu + ' ' + manufacturer + ' ' + model + ' ' + searchdata[k].locationname + '</div>');
+                            $('#search_results #resdata').append('<div class="list-group-item">No Result Found</div>');
                         }
                     }
-                    else
-                    {
-                        $('#search_results #resdata').append('<div class="list-group-item">No Result Found</div>');
-                    }
+                });
+            }
+            else
+            {
+                if (modal === "audit_location")
+                {
+                    $.ajax({
+                        type: "POST",
+                        url: base_url_str + "welcome/get_AuditResults",
+                        data: {
+                            'bar_code': barcode,
+                            'category_id': category_id,
+                            'manu_id': item_id,
+                            'manufacturer_id': manufacturer_id,
+                            'site_id': site_id,
+                            'location_id': location_id
+                        },
+                        success: function(data) {
+                            var auditdata = $.parseJSON(data);
+                            if (auditdata.length > 0) {
+
+                                $(".auditdata").empty();
+                                $("#audit_locationid").val(auditdata[0].locationid);
+                                $("#locname").html(auditdata[0].locationname);
+                                $("#audit_date").html(auditdata[0].lastlocationauditdate);
+                                $("#audit_result").html('Present&nbsp;&nbsp;' + auditdata[0].lastauditpresentitemcount + '&nbsp;&nbsp;Missing&nbsp;&nbsp;' + auditdata[0].lastauditmissingitemcount);
+
+                                for (var n = 0; n < auditdata.length; n++)
+                                {
+                                    if (auditdata[n].item_manu == null)
+                                    {
+                                        auditdata[n].item_manu = '';
+                                    }
+                                    if (auditdata[n].manufacturer == null)
+                                    {
+                                        auditdata[n].manufacturer = '';
+                                    }
+                                    if (auditdata[n].manufacturer == null)
+                                    {
+                                        auditdata[n].model = '';
+                                    }
+
+                                    str = '<div class="form-group col-md-12 audit_loc" id="audit_' + auditdata[n].itemid + '">' + auditdata[n].quantity + '&nbsp;X&nbsp;' + auditdata[n].barcode + ':&nbsp;' + auditdata[n].item_manu + '' + auditdata[n].manufacturer + '' + auditdata[n].model + '</div>';
+                                    $(".auditdata").append(str);
+                                    preauditarr.push(auditdata[n].itemid);
+                                    var prearr = preauditarr.join(',');
+                                    $("#all_items").val(prearr);
+                                }
+                                $(".itemcount").html('Search Result Found&nbsp;' + auditdata.length + '&nbsp;Item');
+                            }
+
+                            $('#audit_location_model').modal('show');
+                        }
+                    });
                 }
+                // condition audit
+                if (modal === "change_owner")
+                {
+                    $.ajax({
+                        type: "POST",
+                        url: base_url_str + "welcome/get_AuditResults",
+                        data: {
+                            'bar_code': barcode,
+                            'category_id': category_id,
+                            'manu_id': item_id,
+                            'manufacturer_id': manufacturer_id,
+                            'site_id': site_id,
+                            'location_id': location_id
+                        },
+                        success: function(data) {
+                            var conditionauditdata = $.parseJSON(data);
+                            if (conditionauditdata.length > 0) {
+
+                                $(".conditionauditdata").empty();
+                                $("#auditlocationid").val(conditionauditdata[0].locationid);
+                                $("#condition_locname").html(conditionauditdata[0].locationname);
+                                $("#condition_audit_date").html(conditionauditdata[0].lastlocationauditdate);
+
+                                for (var n = 0; n < conditionauditdata.length; n++)
+                                {
+                                    if (conditionauditdata[n].item_manu == null)
+                                    {
+                                        conditionauditdata[n].item_manu = '';
+                                    }
+                                    if (conditionauditdata[n].manufacturer == null)
+                                    {
+                                        conditionauditdata[n].manufacturer = '';
+                                    }
+                                    if (conditionauditdata[n].manufacturer == null)
+                                    {
+                                        conditionauditdata[n].model = '';
+                                    }
+                                    if (conditionauditdata[n].itemconditionname == null)
+                                    {
+                                        conditionauditdata[n].itemconditionname = '';
+                                    }
+                                    str = '<div class="form-group col-md-12 audit_con" id="audit_' + conditionauditdata[n].itemid + '">' + conditionauditdata[n].quantity + '&nbsp;X&nbsp;' + conditionauditdata[n].barcode + ':&nbsp;' + conditionauditdata[n].item_manu + '' + conditionauditdata[n].manufacturer + '' + conditionauditdata[n].model + '<span id="con' + conditionauditdata[n].itemid + '" class="current_condition"><span class="conname_' + conditionauditdata[n].itemid + '">' + conditionauditdata[n].itemconditionname + '</span><select id="condition' + conditionauditdata[n].itemid + '" class="latest_condition hide"><option value="1">5 New</option><option value="2">4 Very Good</option><option value="3">3 Good</option><option value="4">2 Fair</option><option value="5">1 Poor</option><option value="6">Unserviceable</option></select></span>' + '</div>';
+//                                    $("#con_"+conditionauditdata[n].itemid+ "option[value='"+conditionauditdata[n].condition_now+"']").attr("selected",true);
+                                    $(".conditionauditdata").append(str);
+                                    preauditarr.push(conditionauditdata[n].itemid);
+                                    var prearr = preauditarr.join(',');
+                                    $("#allitems").val(prearr);
+                                }
+                                $(".item_count").html('Search Result Found&nbsp;' + conditionauditdata.length + '&nbsp;Item');
+                            }
+
+                            $('#condition_audit_model').modal('show');
+                        }
+                    });
+                }
+
+            }
+        });
+
+        var auditarr = new Array();
+        var loc_obj = new Array();
+        $("body").on("click", ".audit_loc", function() {
+            $("#items_missing").val('');
+            var auditlocation = this.id;
+
+            var audit_id = auditlocation.split('audit_');
+            $("#audit_" + audit_id[1]).removeClass('audit_loc');
+            $("#audit_" + audit_id[1]).addClass('auditloc');
+
+            auditarr.push(audit_id[1]);
+            var arr = auditarr.join(',');
+            $("#items_present").val(arr);
+            var allarr = $("#all_items").val();
+            var locArray = allarr.toString().split(",");
+            var loc_obj = $(locArray).not(auditarr).get();
+
+            var missingarr = loc_obj.join(',');
+            $("#items_missing").val(missingarr);
+            console.log(arr);
+        });
+
+        var auditconarr = new Array();
+        var locobj = new Array();
+        var condition_arr = new Array();
+
+        $("body").on("click", ".audit_con", function() {
+
+            var auditcondition = this.id;
+            var auditid = auditcondition.split('audit_');
+            $("#condition" + auditid[1]).removeClass("hide");
+            $(".conname_" + auditid[1]).addClass("hide");
+        });
+
+        $("body").on("change", ".latest_condition", function() {
+
+            var condition_id = this.id;
+            var con = $(this).val();
+
+            var item_id = condition_id.split("condition");
+            if (jQuery.inArray(item_id[1], auditconarr) == -1)
+            {
+//                var auditconarr = $(auditconarr).not([item_id[1]]).get();
+//                var condition_arr = $(condition_arr).not([item_id[1]] + '|' + con).get();
+
+                $("#audit_" + item_id[1]).removeClass('audit_loc');
+                $("#audit_" + item_id[1]).addClass('auditloc');
+                auditconarr.push(item_id[1]);
+                var conarr = auditconarr.join(',');
+                $("#itemspresent").val(conarr);
+                condition_arr.push(con + '|' + item_id[1]);
+                var con_arr = condition_arr.join(',');
+                $("#itemscondition").val(con_arr);
+            }
+
+            var all_arr = $("#allitems").val();
+            var loc_Array = all_arr.toString().split(",");
+            var locobj = $(loc_Array).not(auditconarr).get();
+
+            var missing_arr = locobj.join(',');
+            $("#itemsmissing").val(missing_arr);
+
+        });
+
+        $("body").on("click", ".current_modal", function()
+        {
+            var itemid = $(this).attr("data-item");
+            var type = $(this).attr("data-type");
+            if (type === "check_condition") {
+                var condition = $(this).attr("data-condition");
+                $(".condition_asset").val(itemid);
+                $("#current_condition").val(condition);
+            }
+            if (type === "report_fault")
+            {
+                var barcode = $(this).attr("data-barcode");
+                var item_manu = $(this).attr("data-manu");
+                var item_category = $(this).attr("data-category");
+                var item_location = $(this).attr("data-location");
+                var item_manufacturer = $(this).attr("data-manufacturer");
+                $("#report_item_id").val(itemid);
+                $("#report_item").val(item_manu);
+                $("#report_manufacturer").val(item_manufacturer);
+                $("#report_serialno").val(barcode);
+                $("#report_category").val(item_category);
+                $("#report_location").val(item_location);
+            }
+            if (type === "addsimilaritem")
+            {
+                $("#current_item").val(itemid);
+                $("#itemID").val(itemid);
+            }
+            if (type === "ownership")
+            {
+                $("#ownership_item").val(itemid);
+            }
+        });
+// Add similar asset data
+        $('body').on('click', '#addsimilaritem', function() {
+            var base_url_str = $("#base_url").val();
+            var item_id = $('#current_item').val();
+            $.ajax({
+                type: "POST",
+                url: base_url_str + "items/getassetdata/" + item_id,
+                success: function(data) {
+                    var assetdata = $.parseJSON(data);
+//                    var pre = $("#asset_qrcode").val();
+//                    var bar_code = pre + assetdata[0].barcode;
+
+                    $.getJSON(base_url_str + "categories/getCustomFields/" + assetdata[0].categoryid, function(data) {
+
+                        $('#customfielddiv').empty();
+                        for (var i = 0; i < data.length; i++) {
+                            if (data[i].field_value == 'text_type')
+                            {
+                                var str = '<div style="height:50px;"><div class="col-md-6">' +
+                                        '<label id="label_' + data[i].id + '" for="' + data[i].id + '">' + data[i].field_name + '</label></div><div class="col-md-6">' +
+                                        '<input type="text" class="form-control" id="custom_' + data[i].id + '" name="custom_' + data[i].id + '">' +
+                                        '</div></div>';
+                            }
+                            if (data[i].field_value == 'value_type')
+                            {
+                                var str = '<div style="height:50px;"><div class="col-md-6">' +
+                                        '<label id="label_' + data[i].id + '" for="' + data[i].id + '">' + data[i].field_name + '</label></div><div class="col-md-6">' +
+                                        '<div class="input-group col-md-12"><div class="input-group-addon grpaddon">$</div><input type="number" min="0" class="form-control custom_val" id="custom_' + data[i].id + '" name="custom_' + data[i].id + '">' +
+                                        '</div></div></div>';
+                            }
+                            if (data[i].field_value == 'num')
+                            {
+                                var str = '<div style="height:50px;"><div class="col-md-6">' +
+                                        '<label id="label_' + data[i].id + '" for="' + data[i].id + '">' + data[i].field_name + '</label></div><div class="col-md-6">' +
+                                        '<input type="number" min="0" class="form-control" id="custom_' + data[i].id + '" name="custom_' + data[i].id + '">' +
+                                        '</div></div>';
+                            }
+                            if (data[i].field_value == 'date_type')
+                            {
+                                var str = '<div style="height:50px;"><div class="col-md-6">' +
+                                        '<label id="label_' + data[i].id + '" for="' + data[i].id + '">' + data[i].field_name + '</label></div><div class="col-md-6">' +
+                                        '<input type="text" class="form-control dateval" id="custom_' + data[i].id + '" name="custom_' + data[i].id + '">' +
+                                        '</div></div>';
+                            }
+                            if (data[i].field_value == 'pick_list_type')
+                            {
+                                if (data[i].pick_values)
+                                {
+                                    var temp = new Array();
+                                    var opt1 = new Array();
+                                    var list = data[i].pick_values;
+                                    var temp = list.split(',');
+                                    for (var j = 0; j < temp.length; j++) {
+                                        var opt = '<option value="' + temp[j] + '">' + temp[j] + '</option>';
+                                        opt1.push(opt);
+                                    }
+                                    var option = opt1.join('');
+                                }
+                                var str = '<div style="height:50px;"><div class="col-md-6">' +
+                                        '<label id="label_' + data[i].id + '" for="' + data[i].id + '">' + data[i].field_name + '</label></div><div class="col-md-6">' +
+                                        '<select class="form-control" id="custom_' + data[i].id + '" name="custom_' + data[i].id + '">' + option +
+                                        '</select>' +
+                                        '</div></div>';
+                            }
+                            if (data[i].id) {
+                                $.getJSON(base_url_str + "categories/getCustomFieldContent/" + assetdata[0].categoryid + "/" + data[i].id + "/" + item_id, function(text) {
+                                    $("#custom_" + text.custom_field_id).val(text.content);
+                                });
+                            }
+                            $('#customfielddiv').append(str);
+                        }
+
+                        $(".dateval").datepicker({dateFormat: "dd/mm/yy"});
+                    });
+
+                    var org = assetdata[0].barcode + '/' + assetdata[0].categoryname + '/' + assetdata[0].item_manu_name + '/' + assetdata[0].manufacturer;
+                    $('.get_original').html(org);
+                    $('#item_quantity_similar').val(assetdata[0].quantity);
+                    $('#owner_id_similar option[value="' + assetdata[0].owner_now + '"]').attr('selected', 'selected');
+                    $('#site_id_similar option[value="' + assetdata[0].siteid + '"]').attr('selected', 'selected');
+                    $('#location_id_similar option[value="' + assetdata[0].location_now + '"]').attr('selected', 'selected');
+                    $('#supplier_similar option[value="' + assetdata[0].supplier + '"]').attr('selected', 'selected');
+                    if (assetdata[0].purchase_date != '') {
+                        var newdate = assetdata[0].purchase_date.split("-").reverse().join("/");
+                        $('#item_purchased_similar').val(newdate);
+                    }
+                    $('#item_value_similar').val(assetdata[0].value);
+                }
+
             });
         });
 
+        // select site according to location for multi acc
+        $(document).find('#new_owner_id').change(function() {
+
+
+            $('#updated_site_id').empty();
+            $('#updated_location_id').empty();
+            var owner_id = this.value;
+            $.getJSON("<?php echo base_url('items/getlocationbyowner'); ?>" + '/' + owner_id, function(data) {
+
+                if (data.results.length != 0) {
+                    $('#new_location_id option[value="' + data.results[0].location_id + '"]').attr('selected', 'selected');
+                    $('#updated_location_id').attr('value', +data.results[0].location_id);
+                    $.getJSON("<?php echo base_url('items/getsitebylocation'); ?>" + '/' + data.results[0].location_id, function(site_data) {
+                        if (data.results.length != 0)
+                        {
+                            $('.multi_site_class option[value="' + site_data.results[0].site_id + '"]').attr('selected', 'selected');
+                            $('#updated_site_id').attr('value', +site_data.results[0].site_id);
+                        }
+                        else {
+                            $('.multi_site_class option[value="0"]').attr('selected', 'selected');
+                        }
+                    });
+                }
+                else {
+                    $('#new_location_id option[value="0"]').attr('selected', 'selected');
+                }
+            });
+        });
         // Code To Check Unique Barcode
 
-        $("#item_barcode_similar").on("keyup blur", function() {
-            var code = $("#asset_qrcode").val();
-            var bar_code = $("#item_barcode_similar").val();
+        $("#item_barcodesimilar").on("keyup blur", function() {
+            var code = $("#assetqrcode").val();
+            var bar_code = $("#item_barcodesimilar").val();
             var qrcode = code + bar_code;
             var base_url_str = $("#base_url").val();
             $.ajax({
@@ -499,7 +855,7 @@
                     url: base_url_str + "items/getassetdata/" + item_id,
                     success: function(data) {
                         var assetdata = $.parseJSON(data);
-                        var pre = $("#asset_qrcode").val();
+                        var pre = $("#assetqrcode").val();
                         var bar_code = pre + assetdata[0].barcode;
                         if (assetdata[0].item_manu_name != null) {
                             var item_manu = assetdata[0].item_manu_name + '/';
@@ -573,7 +929,7 @@
                 url: base_url_str + "items/getassetdata/" + item_id,
                 success: function(data) {
                     var assetdata = $.parseJSON(data);
-                    var pre = $("#asset_qrcode").val();
+                    var pre = $("#assetqrcode").val();
                     var bar_code = pre + assetdata[0].barcode;
 
                     $('#report_item').val(assetdata[0].item_manu_name);
@@ -725,15 +1081,20 @@
                 } // End of success
             }); // End of ajax
         });
-
+        $("#app_icons a").on('click', function()
+        {
+            var searchid = this.id;
+            $(".model_type").val('');
+            $(".model_type").val(searchid);
+        });
     });
 </script>
 <!--<input type="hidden" id="similar_data" value="<?php echo $this->session->flashdata('item'); ?>">-->
-
-<input type="hidden" id="asset_qrcode" value="<?php echo $this->session->userdata('objSystemUser')->qrcode; ?>">
+<input type="hidden" id="current_item">
+<input type="hidden" id="assetqrcode" value="<?php echo $this->session->userdata('objSystemUser')->qrcode; ?>">
 <div id="page-wrapper" class="dashboard_sidebar" style="min-height: 573px;">
 
-    <?php // var_dump($arrSessionData['objSystemUser']->levelid);die;   ?>
+    <?php // var_dump($arrSessionData['objSystemUser']->levelid);die;         ?>
     <div style="margin-bottom: 20px;margin-top: 15px;" class="row">
         <!-- WEB APP -->
         <div class="col-lg-3 pull-left">
@@ -837,6 +1198,7 @@
                                 </select>
                             </span>
                         </div>
+                        <input type="hidden" class="model_type">
                         <div class="list-group-item" style="height: 40px;">
                             <span class="pull-left text-muted small"><a class="btn backpage"><i class="fa fa-backward"></i>Back</a></span>
                             <span class="pull-right text-muted small"><a class="btn search_item"><i class="fa fa-search"></i>Search</a>
@@ -1649,24 +2011,24 @@
 
 <!--                <form action="<?php echo base_url() . 'items/addSimilarItem/' ?>" method="POST" id="add_similaritem_form"  enctype="multipart/form-data">-->
 
-                            <div class="form-group col-md-12">
-                                <div class="col-md-5"><label><h4>Select QR Code</h4></label> </div>
-                                <div class="col-md-7"> 
-                                    <select name="item_id_similar" id="item_id_similar" class="form-control">
-                                        <option value="0">Select</option>
-                                        <?php foreach ($assetlist as $asset) { ?>
-                                            <option value="<?php echo $asset->itemid; ?>"><?php echo $asset->barcode; ?></option>
-                                        <?php } ?>
-                                    </select></div>
-
-                            </div>
+                            <!--                            <div class="form-group col-md-12">
+                                                            <div class="col-md-5"><label><h4>Select QR Code</h4></label> </div>
+                                                            <div class="col-md-7"> 
+                                                                <select name="item_id_similar" id="item_id_similar" class="form-control">
+                                                                    <option value="0">Select</option>
+                            <?php foreach ($assetlist as $asset) { ?>
+                                                                                                                                                                                                                                                                                                                                                                                            <option value="<?php echo $asset->itemid; ?>"><?php echo $asset->barcode; ?></option>
+                            <?php } ?>
+                                                                </select></div>
+                            
+                                                        </div>-->
                             <div class="form-group col-md-12">
                                 <div class="col-md-5">  <label>Enter QR Code*</label> </div>
                                 <div class="col-md-7">  
                                     <div class="input-group">
                                         <div class="input-group-addon grpaddon">
                                             <?php echo $this->session->userdata('objSystemUser')->qrcode; ?></div>
-                                        <input placeholder="Enter QR Code" class="form-control barcss" name="item_barcode_similar" id="item_barcode_similar"></div>
+                                        <input placeholder="Enter QR Code" class="form-control barcss" name="item_barcode_similar" id="item_barcodesimilar"></div>
                                     <div id="qrcodeerror_similar" class="qrcodeerror hide">QR Code Already Exist.</div>
                                 </div>
                             </div> <!-- /.form-group -->
@@ -1848,6 +2210,7 @@
                     </div>
 
                     <form action="<?php echo base_url('items/con_history'); ?>" method="post" id="condition_check_form">
+                        <input type="hidden" name="asset_id" class="condition_asset">
                         <div class="modal-body">
                             <!-- Condition Check -->
                             <div class="form-group col-md-12">
@@ -1855,14 +2218,18 @@
                             </div>
                             <div class="form-group col-md-12">
                             </div> 
+                            <!--                            <div class="form-group col-md-12">
+                                                            <div class="col-md-6"><label>Choose Item</label> </div>
+                                                            <div class="col-md-6"><select name="asset_id" class="form-control"><option value="">----SELECT----</option>  
+                            <?php foreach ($assetlist as $asset) { ?>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                        <option value="<?php echo $asset->itemid; ?>"><?php echo $asset->barcode; ?></option>
+                            <?php } ?>
+                                                                </select>
+                                                            </div>
+                                                        </div>-->
                             <div class="form-group col-md-12">
-                                <div class="col-md-6"><label>Choose Item</label> </div>
-                                <div class="col-md-6"><select name="asset_id" class="form-control"><option value="">----SELECT----</option>  
-                                        <?php foreach ($assetlist as $asset) { ?>
-                                            <option value="<?php echo $asset->itemid; ?>"><?php echo $asset->barcode; ?></option>
-                                        <?php } ?>
-                                    </select>
-                                </div>
+                                <div class="col-md-6"><label>Current Condition</label> </div>
+                                <div class="col-md-6"><input class="form-control" name="current_condition" id="current_condition" disabled> </div>
                             </div>
                             <div class="form-group col-md-12">
                             </div>
@@ -1900,94 +2267,94 @@
         </div>
 
         <!-- Change Location Modal -->
-        <!--        <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="change_owner_model" class="modal fade" style="display: none;">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">&times;</button>
-                                <h4 id="myModalLabel" class="modal-title">Change Owner And Location</h4>
-                            </div>
-                            items/changelinks/'.$objItem->itemid
-                            <form action="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/iwa/items/changelinks" method="post" id="change_owner_form">
-        
-                                <div class="modal-body">
-                                    <div class="form-group col-md-12">
-                                        <div class="col-md-6">  <label>Choose Item</label> </div>
-                                        <div class="col-md-6">  <select name="item_id" class="form-control"><option value="">----SELECT----</option>  
-        <?php foreach ($assetlist as $asset) { ?>
-                                                                    <option value="<?php echo $asset->itemid; ?>"><?php echo $asset->barcode; ?></option>
-        <?php } ?>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-md-12">
-                                        <div class="col-md-6">  <label>New Owner</label> </div>
-                                        <div class="col-md-6">  <select name="new_owner_id" id="new_owner_id" class="form-control">
-                                                <option value="0">----SELECT----</option>
-        <?php
-        foreach ($arrOwners['results'] as $arrOwner) {
-            echo "<option ";
-            echo 'value="' . $arrOwner->ownerid . '" ';
-            echo '>' . $arrOwner->owner_name . "</option>\r\n";
-        }
-        ?>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-md-12">
-                                        <div class="col-md-6">  <label>New Location</label> </div>
-                                        <div class="col-md-6">   <select name="new_location_id" id="new_location_id" class="form-control multi_location_class">
-        
-                                                <option value="0">----SELECT----</option>
-        <?php
-        foreach ($arrLocations['results'] as $arrLocation) {
-            echo "<option ";
-            echo 'value="' . $arrLocation->locationid . '" ';
-            echo '>' . $arrLocation->locationname . "</option>\r\n";
-        }
-        ?>
-                                            </select>
-                                            <input type="hidden" name="updated_location_id" id="updated_location_id" class="form-control multi_location_class" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-md-12">
-                                        <div class="col-md-6">  <label>New Site</label> </div>
-                                        <div class="col-md-6">  <select name="new_site_id" id="new_site_id" class="form-control multi_site_class">
-                                                <option value="0">----SELECT----</option>
-        <?php
-        foreach ($arrSites['results'] as $arrSite) {
-            echo "<option ";
-            echo 'value="' . $arrSite->siteid . '" ';
-            echo '>' . $arrSite->sitename . "</option>\r\n";
-        }
-        ?>
-                                            </select>
-                                            <input type="hidden" name="updated_site_id" id="updated_site_id" class="form-control multi_location_class" >
-                                        </div>
-                                    </div>
-        
-        
-        
-        
-        
-        
-        
-                                    <input type="hidden" name="userid" value="<?php echo $arrSessionData['objSystemUser']->userid; ?>"/>
-        
-                                </div>
-        
-                                <div class="modal-footer">
-                                    <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
-                                    <button class="btn btn-primary" type="submit" id="save_button">Save</button>
-        
-                                </div>
-                            </form>
-                        </div>
-        
+        <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="change_owner_model" class="modal fade" style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">&times;</button>
+                        <h4 id="myModalLabel" class="modal-title">Change Owner And Location</h4>
                     </div>
-                </div>-->
+
+                    <form action="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/iwa/items/changelinks" method="post" id="change_owner_form">
+                        <input type="hidden" id="ownership_item" name="item_id">
+                        <div class="modal-body"> 
+                            <!--                            <div class="form-group col-md-12">
+                                                            <div class="col-md-6">  <label>Choose Item</label> </div>
+                                                            <div class="col-md-6">  <select name="item_id" class="form-control"><option value="">----SELECT----</option>  
+                            <?php foreach ($assetlist as $asset) { ?>
+                                                                                                                                                                                                                                                                                                                                                    <option value="<?php echo $asset->itemid; ?>"><?php echo $asset->barcode; ?></option>
+                            <?php } ?>
+                                                                </select>
+                                                            </div>
+                                                        </div>-->
+                            <div class="form-group col-md-12">
+                                <div class="col-md-6">  <label>New Owner</label> </div>
+                                <div class="col-md-6">  <select name="new_owner_id" id="new_owner_id" class="form-control">
+                                        <option value="0">----SELECT----</option>
+                                        <?php
+                                        foreach ($arrOwners['results'] as $arrOwner) {
+                                            echo "<option ";
+                                            echo 'value="' . $arrOwner->ownerid . '" ';
+                                            echo '>' . $arrOwner->owner_name . "</option>\r\n";
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <div class="col-md-6">  <label>New Location</label> </div>
+                                <div class="col-md-6">   <select name="new_location_id" id="new_location_id" class="form-control multi_location_class">
+
+                                        <option value="0">----SELECT----</option>
+                                        <?php
+                                        foreach ($arrLocations['results'] as $arrLocation) {
+                                            echo "<option ";
+                                            echo 'value="' . $arrLocation->locationid . '" ';
+                                            echo '>' . $arrLocation->locationname . "</option>\r\n";
+                                        }
+                                        ?>
+                                    </select>
+                                    <input type="hidden" name="updated_location_id" id="updated_location_id" class="form-control multi_location_class" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <div class="col-md-6">  <label>New Site</label> </div>
+                                <div class="col-md-6">  <select name="new_site_id" id="new_site_id" class="form-control multi_site_class">
+                                        <option value="0">----SELECT----</option>
+                                        <?php
+                                        foreach ($arrSites['results'] as $arrSite) {
+                                            echo "<option ";
+                                            echo 'value="' . $arrSite->siteid . '" ';
+                                            echo '>' . $arrSite->sitename . "</option>\r\n";
+                                        }
+                                        ?>
+                                    </select>
+                                    <input type="hidden" name="updated_site_id" id="updated_site_id" class="form-control multi_location_class" >
+                                </div>
+                            </div>
+
+
+
+
+
+
+
+                            <input type="hidden" name="userid" value="<?php echo $arrSessionData['objSystemUser']->userid; ?>"/>
+
+                        </div>
+
+                        <div class="modal-footer">
+                            <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+                            <button class="btn btn-primary" type="submit" id="save_button">Save</button>
+
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
         <!-- Report fault Model -->
-        <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="report_fault" class="modal fade" style="display: none;">
+        <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="item_report_fault" class="modal fade" style="display: none;">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -2000,15 +2367,15 @@
                         <input type="hidden" name="report_ticket_id" id="report_ticket_id" value="" />
                         <input type="hidden" name="mode" id="mode" value="reportFault" />
                         <div class="modal-body">
-                            <div class="form-group col-md-12">
-                                <div class="col-md-6">  <label>Choose Item</label> </div>
-                                <div class="col-md-6">  <select name="report_item_id" id="report_item_id" class="form-control"><option value="">----SELECT----</option>  
-                                        <?php foreach ($assetlist as $asset) { ?>
-                                            <option value="<?php echo $asset->itemid; ?>"><?php echo $asset->barcode; ?></option>
-                                        <?php } ?>
-                                    </select>
-                                </div>
-                            </div>
+                            <!--                            <div class="form-group col-md-12">
+                                                            <div class="col-md-6">  <label>Choose Item</label> </div>
+                                                            <div class="col-md-6">  <select name="report_item_id" id="report_item_id" class="form-control"><option value="">----SELECT----</option>  
+                            <?php foreach ($assetlist as $asset) { ?>
+                                                                                                                                                                                                                                                                                                                                                                                            <option value="<?php echo $asset->itemid; ?>"><?php echo $asset->barcode; ?></option>
+                            <?php } ?>
+                                                                </select>
+                                                            </div>
+                                                        </div>-->
                             <div class="form-group col-md-12">
                                 <div class="col-md-6">  <label>Item</label> </div>
                                 <div class="col-md-6">  <input readonly="readonly" class="form-control" id="report_item">
@@ -2192,6 +2559,99 @@
             </div>
             <!-- /.modal-dialog -->
         </div>
+
+        <!-- Audit Location Modal -->
+        <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="audit_location_model" class="modal fade" style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">&times;</button>
+                        <h4 id="myModalLabel" class="modal-title">Audit Location</h4>
+                    </div>
+
+                    <form action="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/iwa/items/audit_location" method="post" id="audit_location_form">
+                        <input type="hidden" id="audit_locationid" name="location_id">
+                        <input type="hidden" id="items_present" name="items_present">
+                        <input type="hidden" id="items_missing" name="items_missing">
+                        <input type="hidden" id="all_items">
+                        <div class="modal-body"> 
+
+                            <div class="form-group col-md-12">
+                                <div class="col-md-6">  <label>Location Name</label> </div>
+                                <div class="col-md-6">  <span id="locname"></span>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <div class="col-md-6">  <label>Previous Audit Date</label> </div>
+                                <div class="col-md-6">  <span id="audit_date"></span>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <div class="col-md-6">  <label>Previous Audit Result</label> </div>
+                                <div class="col-md-6">  <span id="audit_result"></span>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-12 itemcount"></div>
+                            <div class="auditdata col-md-12"></div>
+                            <input type="hidden" name="userid" value="<?php echo $arrSessionData['objSystemUser']->userid; ?>"/>
+
+                        </div>
+
+                        <div class="modal-footer">
+                            <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+                            <button class="btn btn-primary" type="submit" id="update_button">Update</button>
+
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Condition By Audit Location Modal -->
+        <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="condition_audit_model" class="modal fade" style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">&times;</button>
+                        <h4 id="myModalLabel" class="modal-title">Condition Location</h4>
+                    </div>
+
+                    <form action="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/iwa/items/audit_condition" method="post" id="condition_audit_form">
+                        <input type="hidden" id="auditlocationid" name="location_id">
+                        <input type="hidden" id="itemspresent" name="items_present">
+                        <input type="hidden" id="itemsmissing" name="items_missing">
+                        <input type="hidden" id="itemscondition" name="items_condition">
+                        <input type="hidden" id="allitems">
+                        <div class="modal-body"> 
+
+                            <div class="form-group col-md-12">
+                                <div class="col-md-6">  <label>Location Name</label> </div>
+                                <div class="col-md-6">  <span id="condition_locname"></span>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <div class="col-md-6">  <label>Previous Audit Date</label> </div>
+                                <div class="col-md-6">  <span id="condition_audit_date"></span>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-12 item_count"></div>
+                            <div class="conditionauditdata col-md-12"></div>
+                            <input type="hidden" name="userid" value="<?php echo $arrSessionData['objSystemUser']->userid; ?>"/>
+
+                        </div>
+
+                        <div class="modal-footer">
+                            <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+                            <button class="btn btn-primary" type="submit" id="update_button">Update</button>
+
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
         <style>
             .table > thead > tr > th {
                 color: #ffffff !important;
@@ -2252,7 +2712,7 @@
                 height: 230px;
                 overflow-y: scroll;
             }
-            #report_fault .modal-body,#fix_item .modal-body
+            #item_report_fault .modal-body,#fix_item .modal-body
             {
                 height: 565px;
                 overflow-y: scroll;
@@ -2296,6 +2756,53 @@
                 font-weight: bold;
                 text-align: left;
                 font-size: 14px;
+            }
+            .qrcode_error
+            {
+                color: red;
+                font-weight: bold;
+            }
+            .qrcodeerror
+            {
+                color: red;
+                font-weight: bold;
+            }
+            #change_owner_model .modal-body {
+                height: 200px !important;
+            }
+            #audit_location_model .modal-body
+            {
+                min-height: 130px;
+                max-height: 500px;
+                overflow-y: auto;
+            }
+            .audit_loc,.audit_con
+            {
+                padding: 5px;
+                background: #DE9FAB;
+                color: #000000;
+            }
+            .auditloc
+            {
+                padding: 5px;
+                background: #8fc337;
+                color: #000000;
+            }
+
+            .itemcount,.item_count
+            {
+                font-weight:bold;
+                font-size: 16px;
+            }
+            #condition_audit_model .modal-body
+            {
+                min-height: 230px;
+                max-height: 500px;
+                overflow-y: auto;
+            }
+            .current_condition
+            {
+                float: right;
             }
         </style>
 

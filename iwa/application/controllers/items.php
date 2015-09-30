@@ -3025,6 +3025,81 @@ class Items extends MY_Controller {
         }
     }
 
+    public function audit_location() {
+        $this->load->model('items_model');
+        $this->load->model('audits_model');
+        $intLocationId = $this->input->post('location_id');
+        if ($intLocationId > 0) {
+            $arrAuditInformation = array();
+            $arrAuditInformation['location_id'] = $intLocationId;
+            $arrAuditInformation['account_id'] = $this->session->userdata('objSystemUser')->accountid;
+            $arrAuditInformation['user_id'] = $this->session->userdata('objSystemUser')->userid;
+            $arrAuditInformation['completed'] = date("Y-m-d H:i:s");
+            $intAuditId = $this->audits_model->logOne($arrAuditInformation);
+            $arrPresentItems = explode(",", $this->input->post('items_present'));
+            $arrMissingItems = explode(",", $this->input->post('items_missing'));
+            foreach ($arrPresentItems as $intItemPresent) {
+                $arrAuditItem = array('item_id' => (int) $intItemPresent, 'audit_id' => $intAuditId, 'present' => 1);
+                $this->audits_model->addItemToAudit($arrAuditItem);
+                $item_status = $this->items_model->getItemStatus((int) $intItemPresent);
+                if ($item_status == 6) {
+                    $this->items_model->setItemStatus((int) $intItemPresent, 1); //1 = OK and not missing
+                }
+            }
+            foreach ($arrMissingItems as $intItemMissing) {
+                $arrAuditItem = array('item_id' => (int) $intItemMissing, 'audit_id' => $intAuditId, 'present' => 0);
+                $this->audits_model->addItemToAudit($arrAuditItem);
+                $this->items_model->setItemStatus((int) $intItemMissing, 6); //6 = Missing Status
+            }
+            redirect('/','refresh');
+        }
+        
+    }
+    
+    public function audit_condition() {
+        $this->load->model('items_model');
+        $this->load->model('audits_model');
+        $intLocationId = $this->input->post('location_id');
+        if ($intLocationId > 0) {
+            $arrAuditInformation = array();
+            $arrAuditInformation['location_id'] = $intLocationId;
+            $arrAuditInformation['account_id'] = $this->session->userdata('objSystemUser')->accountid;
+            $arrAuditInformation['user_id'] = $this->session->userdata('objSystemUser')->userid;
+            $arrAuditInformation['completed'] = date("Y-m-d H:i:s");
+            $intAuditId = $this->audits_model->logOne($arrAuditInformation);
+            
+            $arrConditionItems = explode(",", $this->input->post('items_condition'));
+            $arrPresentItems = explode(",", $this->input->post('items_present'));
+            $arrMissingItems = explode(",", $this->input->post('items_missing'));
+            
+            //            Audit New Condition
+            foreach ($arrConditionItems as $intItemCondition) {
+
+                $item_details = explode('|', $intItemCondition);
+                $item_id = (int) $item_details[1];
+                $condition_id = (int) $item_details[0];
+                $this->items_model->auditCondition_logForWEb($item_id, $condition_id);
+            }
+            
+            foreach ($arrPresentItems as $intItemPresent) {
+                $arrAuditItem = array('item_id' => (int) $intItemPresent, 'audit_id' => $intAuditId, 'present' => 1);
+                $this->audits_model->addItemToAudit($arrAuditItem);
+                $item_status = $this->items_model->getItemStatus((int) $intItemPresent);
+                if ($item_status == 6) {
+                    $this->items_model->setItemStatus((int) $intItemPresent, 1); //1 = OK and not missing
+                }
+            }
+            foreach ($arrMissingItems as $intItemMissing) {
+                $arrAuditItem = array('item_id' => (int) $intItemMissing, 'audit_id' => $intAuditId, 'present' => 0);
+                $this->audits_model->addItemToAudit($arrAuditItem);
+                $this->items_model->setItemStatus((int) $intItemMissing, 6); //6 = Missing Status
+            }
+            redirect('/','refresh');
+        }
+        
+
+    }
+
 }
 
 /* End of file welcome.php */

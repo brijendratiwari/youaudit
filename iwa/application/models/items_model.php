@@ -3192,6 +3192,25 @@ items.id AS itemid,
         }
     }
 
+    
+    // update new condition in condition history for Web
+    public function auditCondition_logForWeb($item_id, $condition_id) {
+
+        $arrConditionHistory = array('item_id' => $item_id,
+            'condition_id' => $condition_id,
+            'date' => date('Y-m-d H:i:s'),
+            'logged_by' => $this->session->userdata('objSystemUser')->userid);
+        $this->db->insert('item_condition_history_link', $arrConditionHistory);
+        $id = $this->db->insert_id();
+        if ($id) {
+            $setdata = array('condition_now' => $condition_id, 'condition_since' => date('Y-m-d H:i:s'));
+            $this->db->set($setdata)->where('id', $item_id)->update('items');
+            return $id;
+        } else {
+            return FALSE;
+        }
+    }
+    
 // update new condition in condition history
     public function auditCondition_logForApp($item_id, $condition_id) {
 
@@ -3476,6 +3495,7 @@ items.id AS itemid,
                         items.pattest_date,
                         items.pattest_status,
                         items.quantity,
+                        items.condition_now,
                         items.current_value,
                         item_manu.doc as pdf_name,
 		categories.id AS categoryid,
@@ -3490,7 +3510,7 @@ items.id AS itemid,
                 sites.id AS siteid, 
                 sites.name AS sitename,
                 itemstatus.id AS itemstatusid,
-                itemstatus.name AS itemstatusname');
+                itemstatus.name AS itemstatusname,audititems.item_id as audititem,audititems.audit_id');
 
             $this->db->from('items');
             $this->db->join('items_categories_link', 'items.id = items_categories_link.item_id', 'left');
@@ -3506,6 +3526,7 @@ items.id AS itemid,
             $this->db->join('sites', 'items.site = sites.id', 'left');
             $this->db->join('itemstatus', 'items.status_id = itemstatus.id', 'left');
             $this->db->join('suppliers', 'suppliers.supplier_id = items.supplier', 'left');
+            $this->db->join('audititems', 'audititems.item_id = items.id', 'left');
 
             $this->db->where('items.account_id', $intAccountId);
             $this->db->where('items.active', 1);
@@ -3532,7 +3553,7 @@ items.id AS itemid,
             if ($intCategory != "") {
                 $this->db->where('categories.id', $intCategory);
             }
-
+            $this->db->group_by('items.id');
             $resQuery = $this->db->get();
 
             if ($resQuery->num_rows() > 0) {

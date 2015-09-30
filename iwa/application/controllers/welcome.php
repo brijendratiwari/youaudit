@@ -131,6 +131,54 @@ class Welcome extends CI_Controller {
         die;
     }
 
+    public function get_AuditResults() {
+        $this->load->model('items_model');
+        $this->load->model('audits_model');
+        $result = $this->items_model->search_Items(
+                $this->session->userdata('objSystemUser')->accountid
+                , $this->input->post('manufacturer_id')
+                , (int) $this->input->post('site_id')
+                , (int) $this->input->post('location_id')
+                , (int) $this->input->post('category_id')
+                , (int) $this->input->post('manu_id')
+                , $this->input->post('bar_code')
+        );
+        $arr = array();
+        for ($i = 0; $i < count($result); $i++) {
+            if (isset($result[$i]->audititem)) {
+                $audit = $this->db->select('audititems.audit_id')->from('audititems')->where('audititems.item_id', $result[$i]->audititem)->join('audits', 'audititems.audit_id=audits.id')->get();
+                if ($audit->num_rows() > 0) {
+                    
+                    $Presentcount = $this->audits_model->getCount_PresentDetailsOfLastAudit($result[$i]->audititem);
+                    
+//                    $missingcount = $this->audits_model->getCount_MissingDetailsOfLastAudit($result[$i]->audititem);
+                    
+                    if ($Presentcount['Total_present'] > 0) {
+                        $Present[] = 1;
+                    }
+//                    if ($missingcount['Total_missing'] > 0) {
+//                        $Missing[] = 1;
+//                    }
+                }
+                $location_audit_details = $this->audits_model->getLastAuditForLocation($result[$i]->locationid);
+                if (strtotime($location_audit_details['date']) > 0) {
+                    $result[$i]->lastlocationauditdate = date('d/m/Y', strtotime($location_audit_details['date']));
+                } else {
+                    $result[$i]->lastlocationauditdate = 'N/A';
+                }
+
+                $arr[] = $result[$i];
+            }
+        }
+        
+        $missingdata = count($arr) - count($Present);
+        $arr[0]->lastauditpresentitemcount = count($Present);
+        $arr[0]->lastauditmissingitemcount = $missingdata;
+
+        echo json_encode($arr);
+        die;
+    }
+
     public function get_image_properties($path = '', $return = FALSE) {
         // For now we require GD but we should
         // find a way to determine this using IM or NetPBM
@@ -267,14 +315,14 @@ class Welcome extends CI_Controller {
 
         $this->email->send();
     }
-    
-  // get item name ....
-  public function getItemManu($item_manu,$account_id){
-      $this->load->model('items_model');
-     $res = $this->items_model->db->select('item_manu_name')->from('item_manu')->where(array('id'=>$item_manu,'account_id'=>$account_id))->get();
-    $data = $res->result_array();
-     return $data[0]['item_manu_name'];
-  }    
+
+    // get item name ....
+    public function getItemManu($item_manu, $account_id) {
+        $this->load->model('items_model');
+        $res = $this->items_model->db->select('item_manu_name')->from('item_manu')->where(array('id' => $item_manu, 'account_id' => $account_id))->get();
+        $data = $res->result_array();
+        return $data[0]['item_manu_name'];
+    }
 
 }
 

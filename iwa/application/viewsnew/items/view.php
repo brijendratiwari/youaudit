@@ -1344,7 +1344,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
 
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody> 
                             <?php
                             foreach ($arrItemHistory as $strDate => $arrRecord) {
                                 ?>
