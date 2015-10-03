@@ -331,7 +331,7 @@ $strHtml .= "<div>&nbsp;</div>";
         
 $strHtml .= "</body></html>";
         
-      echo $strHtml;die;  
+//      echo $strHtml;die;  
        $this->load->library('Mpdf');
             $mpdf = new Pdf('en-GB', 'A4');
            // $mpdf->setFooter('{PAGENO} of {nb}');
