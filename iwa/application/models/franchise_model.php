@@ -1143,7 +1143,7 @@ COUNT( accounts.id ) >=1
     public function checkProfile($profilename, $account_id) {
 
         $this->db->select('profile_name');
-        $this->db->where('account_type', 2);
+//        $this->db->where('account_type', 2);
         $this->db->where('account_id', $account_id);
         $this->db->where('profile_name', $profilename);
         $res_franchise = $this->db->get('profile');

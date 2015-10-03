@@ -563,8 +563,8 @@ class Master_Model extends CI_Model {
     public function addComplianceTestForMaster($data) {
 
         $idArr = array();
-        $arr = $data['task_details'];
-        $arr = explode(',', $arr);
+        $arr = $data['task_details'];        
+        $arr = explode(',', $arr); 
         foreach ($arr as $key => $value) {
             $newArr = explode('|', $value);
             if (!empty($newArr)) {
@@ -1169,7 +1169,7 @@ COUNT( accounts.id ) >=1
     public function checkProfile($profilename, $account_id) {
 
         $this->db->select('profile_name');
-        $this->db->where('account_type', 1);
+//        $this->db->where('account_type', 1);
         $this->db->where('account_id', $account_id);
         $this->db->where('profile_name', $profilename);
         $res_master = $this->db->get('profile');

@@ -357,7 +357,13 @@ if ($this->session->flashdata('success')) {
                                 foreach ($summary as $record) {
                                     ?>
                                     <tr> 
-                                        <td><a href="<?php echo base_url(); ?>youaudit/customerlist/<?php echo $record['id']; ?>"><?php echo $record['sys_admin_name']; ?></a></td>
+                                        <td><a href="<?php
+                                            if ($record['master_account_id']) {
+                                                echo base_url('youaudit/master_admins/customerlist/' . $record['id']);
+                                            } else {
+                                                echo base_url('youaudit/franchise_admins/franchise_customerlist/' . $record['id']);
+                                            }
+                                            ?>"><?php echo $record['sys_admin_name']; ?></a></td>
                                         <td><?php echo $record['type']; ?></td>
                                         <td><?php echo $record['total']; ?></td>
                                         <td><?php echo $record['enabled']; ?></td>
@@ -398,10 +404,16 @@ if ($this->session->flashdata('success')) {
 
                             <?php
                             $recent_accounts = array_splice($recent_accounts, 0, 5);
-                            foreach ($recent_accounts as $recent) {                                                            
+                            foreach ($recent_accounts as $recent) {
                                 ?>
                                 <tr>
-                                    <td><a href="http://dev-iis.com/youaudit/iwa/youaudit/customerlist/<?php echo $recent['id']; ?>"><?php echo $recent['sys_admin_name']; ?></a></td>
+                                    <td><a href="<?php
+                                        if ($recent['type'] == 'master') {
+                                            echo base_url('youaudit/master_admins/customerlist/' . $recent['id']);
+                                        } else {
+                                            echo base_url('youaudit/franchise_admins/franchise_customerlist/' . $recent['id']);
+                                        }
+                                        ?>"><?php echo $recent['sys_admin_name']; ?></a></td>
                                     <td><?php echo $recent['type']; ?></td>
                                     <td><?php echo $recent['company']; ?></td>
                                     <td><?php echo $recent['package']; ?></td>

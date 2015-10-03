@@ -21,15 +21,15 @@
             }
         });
         // script for edit user
-        $("body").on("click", ".edit", function() {
-
-            $("#edit_form input").attr('disabled', false);
-            $("#edit_form select").attr('disabled', false);
-            $("#edit_form textarea").attr('disabled', false);
-            var profilename = $(this).attr("data_profilename");
-            var adminuser_id = $(this).attr("data_adminuser_id");
-            $("#adminuser_id_1").attr("value", adminuser_id);
-        });
+//        $("body").on("click", ".edit", function() {
+//
+//            $("#edit_form input").attr('disabled', false);
+//            $("#edit_form select").attr('disabled', false);
+//            $("#edit_form textarea").attr('disabled', false);
+//            var profilename = $(this).attr("data_profilename");
+//            var adminuser_id = $(this).attr("data_adminuser_id");
+//            $("#adminuser_id_1").attr("value", adminuser_id);
+//        });
         var max_fields = 100; //maximum input boxes allowed
         var wrapper = $("#profilebody"); //Fields wrapper
         var add_button = $(".add_field_button"); //Add button ID
@@ -62,6 +62,188 @@
         });
         $(document).ajaxComplete(function() {
             $("#loader").css("display", "none");
+        });
+
+        $("body").on("click", ".edit", function() {
+
+            $("#edit_form input").attr('disabled', false);
+            $("#edit_form select").attr('disabled', false);
+            $("#edit_form textarea").attr('disabled', false);
+            var profilename = $(this).attr("data_profilename");
+            var adminuser_id = $(this).attr("data_adminuser_id");
+            $("#adminuser_id_1").attr("value", adminuser_id);
+            $("#owner_list").empty();
+            $("#categories_list").empty();
+            $("#item_list").empty();
+            $("#manufacturer_list").empty();
+            $("#name_list").empty();
+            $("#type_list").empty();
+            $('#profile_limit').attr('disabled', false);
+            $("#save_button").css("display", "none");
+            var base_url_str = $("#base_url").val();
+
+            $("#edit_profile_name").attr("value", profilename);
+            $("#profileid").val(adminuser_id);
+            $.ajax({
+                type: "POST",
+                url: base_url_str + "youaudit/master_admins/viewProfile/" + adminuser_id,
+                success: function(data) {
+
+                    var profiledata = $.parseJSON(data);
+                    var ownerstr = (profiledata.owner);
+                    var category = (profiledata.category);
+                    var manu = (profiledata.manu);
+                    var manufacturer = profiledata.manufacturer;
+                    var field_name = profiledata.cus_name;
+                    var field_type = profiledata.cus_type;
+//                    alert(field_name);
+//                    alert(field_type);
+                    // To Show Owner
+
+                    if (ownerstr) {
+                        var owner_obj = new Array();
+                        var ownerArray = ownerstr.toString().split(",");
+                        $.each(ownerArray, function(index, value) {
+                            if (value != 'N/A' && value != '0') {
+                                owner_obj.push(value);
+                                owner_obj.sort();
+                            }
+                        });
+                        var owner_arr = owner_obj.join('\n');
+                        if (owner_arr) {
+                            owner_str = '<textarea name="owner[]" class="form-control item" rows="30">' + owner_arr + '</textarea>';
+                            $("#owner_list").append(owner_str);
+                        }
+                    }
+                    else
+                    {
+                        owner_str = '<textarea name="owner[]" class="form-control item" rows="30"></textarea>';
+                        $("#owner_list").append(owner_str);
+                    }
+
+                    // To Show Category
+                    if (category) {
+                        var category_obj = new Array();
+                        var categoryArray = category.toString().split(",");
+
+                        $.each(categoryArray, function(index, value) {
+                            if (value != 'N/A' && value != '0') {
+                                category_obj.push(value);
+                                category_obj.sort();
+                            }
+                        });
+                        var category_arr = category_obj.join('\n');
+                        if (category_arr) {
+                            category_str = '<textarea name="category[]" class="form-control item" rows="30">' + category_arr + '</textarea>';
+                            $("#categories_list").append(category_str);
+                        }
+                    }
+                    else
+                    {
+                        category_str = '<textarea name="category[]" class="form-control item" rows="30"></textarea>';
+                        $("#categories_list").append(category_str);
+                    }
+
+                    // To Show Item List
+                    if (manu) {
+                        var item_obj = new Array();
+                        var itemArray = manu.toString().split(",");
+
+                        $.each(itemArray, function(index, value) {
+                            if (value != 'N/A' && value != '0') {
+                                item_obj.push(value);
+                                item_obj.sort();
+                            }
+                        });
+                        var item_arr = item_obj.join('\n');
+                        if (item_arr) {
+                            item_str = '<textarea name="item[]" class="form-control item" rows="30">' + item_arr + '</textarea>';
+                            $("#item_list").append(item_str);
+                        }
+                    }
+                    else
+                    {
+                        item_str = '<textarea name="item[]" class="form-control item" rows="30"></textarea>';
+                        $("#item_list").append(item_str);
+                    }
+
+                    // To Show Manufacturer List
+                    if (manufacturer) {
+                        var manufacturer_obj = new Array();
+                        var manufacturerArray = manufacturer.toString().split(",");
+
+                        $.each(manufacturerArray, function(index, value) {
+                            if (value != 'N/A' && value != '0') {
+                                manufacturer_obj.push(value);
+                                manufacturer_obj.sort();
+                            }
+                        });
+                        var manufacturer_arr = manufacturer_obj.join('\n');
+                        if (manufacturer_arr) {
+                            manufacturer_str = '<textarea name="manufacturer[]" class="form-control item" rows="30">' + manufacturer_arr + '</textarea>';
+                            $("#manufacturer_list").append(manufacturer_str);
+                        }
+                    }
+                    else
+                    {
+                        manufacturer_str = '<textarea name="manufacturer[]" class="form-control item" rows="30"></textarea>';
+                        $("#manufacturer_list").append(manufacturer_str);
+                    }
+
+                    // Show Custom Field Name 
+                    if (field_name) {
+                        var fieldname_obj = new Array();
+                        var fieldnameobj = new Array();
+                        var fieldnameArray = field_name.toString().split(",");
+
+                        $.each(fieldnameArray, function(index, value) {
+                            if (value != 'N/A' && value != '0') {
+                                fieldname_obj.push(value);
+                            }
+                        });
+                        var fieldnames = fieldname_obj.join(',');
+                        var fieldnamesArray = fieldnames.toString().split(",");
+                        $.each(fieldnamesArray, function(index, value) {
+                            fieldnameobj.push(value);
+                        });
+
+                        // Show Custom Field Value
+                        var fieldtype_obj = new Array();
+                        var fieldtypeArray = field_type.toString().split(",");
+
+                        $.each(fieldtypeArray, function(index, value) {
+                            fieldtype_obj.push(value);
+                        });
+
+                        if (fieldnameobj.length > 0) {
+                            for (var j = 0; j < fieldnameobj.length; j++) {
+
+                                if (fieldnameobj[j] != null && fieldnameobj[j] != '0' && fieldnameobj[j] != '') {
+                                    str_name = '<div class="list-group-item"><input value="' + fieldnameobj[j] + '"  name="names[]" class="form-control item"></div>'
+                                    $("#name_list").append(str_name);
+                                }
+                                else
+                                {
+                                    $("#name_list input").parent('div').remove();
+                                }
+                                str_types = '<div class="list-group-item"><select class="form-control" name="types[]" id="profileedit' + j + '" onchange="custom_txt(' + j + ')"><option value="">Select Type</option><option value="text_type">Text</option>\n\
+                    <option value="pick_list_type">Pick List</option><option value="value_type">$ value</option><option value="date_type">Date</option><option value="num">Number</option></select></div>'
+
+                                $("#type_list").append(str_types);
+                                if (fieldtype_obj[j] != null && fieldtype_obj[j] != '0' && fieldtype_obj[j] != '') {
+                                    $('#type_list #profileedit' + j + ' option[value="' + fieldtype_obj[j] + '"]').attr('selected', 'selected');
+                                }
+                                else
+                                {
+//                            $('#type_list #profileedit' + j + ' option[value=""]').attr('selected', 'selected');
+                                    $('#type_list #profileedit' + j).parent('div').remove();
+                                }
+                            }
+                        }
+                    }
+                }
+
+            });
         });
 
         $("body").on("change", "#profilelimit", function() {
@@ -125,13 +307,13 @@
                         });
                         var owner_arr = owner_obj.join('\n');
                         if (owner_arr) {
-                            owner_str = '<textarea disabled name="owner[]" class="form-control item">' + owner_arr + '</textarea>';
+                            owner_str = '<textarea disabled name="owner[]" class="form-control item" rows="30">' + owner_arr + '</textarea>';
                             $("#owner_list").append(owner_str);
                         }
                     }
                     else
                     {
-                        owner_str = '<textarea disabled name="owner[]" class="form-control item"></textarea>';
+                        owner_str = '<textarea disabled name="owner[]" class="form-control item" rows="30"></textarea>';
                         $("#owner_list").append(owner_str);
                     }
 
@@ -154,13 +336,13 @@
                         });
                         var category_arr = category_obj.join('\n');
                         if (category_arr) {
-                            category_str = '<textarea disabled name="category[]" class="form-control item">' + category_arr + '</textarea>';
+                            category_str = '<textarea disabled name="category[]" class="form-control item" rows="30">' + category_arr + '</textarea>';
                             $("#categories_list").append(category_str);
                         }
                     }
                     else
                     {
-                        category_str = '<textarea disabled name="category[]" class="form-control item"></textarea>';
+                        category_str = '<textarea disabled name="category[]" class="form-control item" rows="30"></textarea>';
                         $("#categories_list").append(category_str);
                     }
 
@@ -183,13 +365,13 @@
                         });
                         var item_arr = item_obj.join('\n');
                         if (item_arr) {
-                            item_str = '<textarea disabled name="item[]" class="form-control item">' + item_arr + '</textarea>';
+                            item_str = '<textarea disabled name="item[]" class="form-control item" rows="30">' + item_arr + '</textarea>';
                             $("#item_list").append(item_str);
                         }
                     }
                     else
                     {
-                        item_str = '<textarea disabled name="item[]" class="form-control item"></textarea>';
+                        item_str = '<textarea disabled name="item[]" class="form-control item" rows="30"></textarea>';
                         $("#item_list").append(item_str);
                     }
 
@@ -212,13 +394,13 @@
                         });
                         var manufacturer_arr = manufacturer_obj.join('\n');
                         if (manufacturer_arr) {
-                            manufacturer_str = '<textarea disabled name="manufacturer[]" class="form-control item">' + manufacturer_arr + '</textarea>';
+                            manufacturer_str = '<textarea disabled name="manufacturer[]" class="form-control item" rows="30">' + manufacturer_arr + '</textarea>';
                             $("#manufacturer_list").append(manufacturer_str);
                         }
                     }
                     else
                     {
-                        manufacturer_str = '<textarea disabled name="manufacturer[]" class="form-control item"></textarea>';
+                        manufacturer_str = '<textarea disabled name="manufacturer[]" class="form-control item" rows="30"></textarea>';
                         $("#manufacturer_list").append(manufacturer_str);
                     }
 
@@ -260,7 +442,7 @@
                             for (var j = 0; j < fieldnameobj.length; j++) {
 
                                 if (fieldnameobj[j] != null && fieldnameobj[j] != '0' && fieldnameobj[j] != '') {
-                                    str_name = '<div class="list-group-item"><input disabled value="' + fieldnameobj[j] + '"  name="names[]" class="form-control item"></div>'
+                                    str_name = '<div class="list-group-item"><input disabled value="' + fieldnameobj[j] + '"  name="names[]" class="form-control item" rows="30"></div>'
                                     $("#name_list").append(str_name);
                                 }
                                 else
@@ -295,6 +477,7 @@
             $("#name_list").empty();
             $("#type_list").empty();
             $('#profile_limit').attr('disabled', false);
+            $("#save_button").css("display", "none");
             var base_url_str = $("#base_url").val();
 
             var profile_id = $(this).attr("profile_id");
@@ -324,17 +507,18 @@
                         $.each(ownerArray, function(index, value) {
                             if (value != 'N/A' && value != '0') {
                                 owner_obj.push(value);
+                                owner_obj.sort();
                             }
                         });
                         var owner_arr = owner_obj.join('\n');
                         if (owner_arr) {
-                            owner_str = '<textarea disabled name="owner[]" class="form-control item">' + owner_arr + '</textarea>';
+                            owner_str = '<textarea disabled name="owner[]" class="form-control item" rows="30">' + owner_arr + '</textarea>';
                             $("#owner_list").append(owner_str);
                         }
                     }
                     else
                     {
-                        owner_str = '<textarea disabled name="owner[]" class="form-control item"></textarea>';
+                        owner_str = '<textarea disabled name="owner[]" class="form-control item" rows="30"></textarea>';
                         $("#owner_list").append(owner_str);
                     }
 
@@ -346,17 +530,18 @@
                         $.each(categoryArray, function(index, value) {
                             if (value != 'N/A' && value != '0') {
                                 category_obj.push(value);
+                                category_obj.sort();
                             }
                         });
                         var category_arr = category_obj.join('\n');
                         if (category_arr) {
-                            category_str = '<textarea disabled name="category[]" class="form-control item">' + category_arr + '</textarea>';
+                            category_str = '<textarea disabled name="category[]" class="form-control item" rows="30">' + category_arr + '</textarea>';
                             $("#categories_list").append(category_str);
                         }
                     }
                     else
                     {
-                        category_str = '<textarea disabled name="category[]" class="form-control item"></textarea>';
+                        category_str = '<textarea disabled name="category[]" class="form-control item" rows="30"></textarea>';
                         $("#categories_list").append(category_str);
                     }
 
@@ -368,17 +553,18 @@
                         $.each(itemArray, function(index, value) {
                             if (value != 'N/A' && value != '0') {
                                 item_obj.push(value);
+                                item_obj.sort();
                             }
                         });
                         var item_arr = item_obj.join('\n');
                         if (item_arr) {
-                            item_str = '<textarea disabled name="item[]" class="form-control item">' + item_arr + '</textarea>';
+                            item_str = '<textarea disabled name="item[]" class="form-control item" rows="30">' + item_arr + '</textarea>';
                             $("#item_list").append(item_str);
                         }
                     }
                     else
                     {
-                        item_str = '<textarea disabled name="item[]" class="form-control item"></textarea>';
+                        item_str = '<textarea disabled name="item[]" class="form-control item" rows="30"></textarea>';
                         $("#item_list").append(item_str);
                     }
 
@@ -390,17 +576,18 @@
                         $.each(manufacturerArray, function(index, value) {
                             if (value != 'N/A' && value != '0') {
                                 manufacturer_obj.push(value);
+                                manufacturer_obj.sort();
                             }
                         });
                         var manufacturer_arr = manufacturer_obj.join('\n');
                         if (manufacturer_arr) {
-                            manufacturer_str = '<textarea disabled name="manufacturer[]" class="form-control item">' + manufacturer_arr + '</textarea>';
+                            manufacturer_str = '<textarea disabled name="manufacturer[]" class="form-control item" rows="30">' + manufacturer_arr + '</textarea>';
                             $("#manufacturer_list").append(manufacturer_str);
                         }
                     }
                     else
                     {
-                        manufacturer_str = '<textarea disabled name="manufacturer[]" class="form-control item"></textarea>';
+                        manufacturer_str = '<textarea disabled name="manufacturer[]" class="form-control item" rows="30"></textarea>';
                         $("#manufacturer_list").append(manufacturer_str);
                     }
 
@@ -455,123 +642,6 @@
                             }
                         }
                     }
-
-//                    if (field_name == 0) {
-//                        var length_name = 0;
-//                    } else {
-//                        var length_name = field_name.length;
-//                    }
-//
-//                    if (field_type == 0) {
-//                        var length_type = 0;
-//                    } else {
-//                        var length_type = field_type.length;
-//
-//                    }
-//
-//                    if (ownerstr == 0) {
-//                        var length_owner = 0;
-//                    } else {
-//                        var length_owner = ownerstr.length;
-//                    }
-//
-//                    if (category == 0) {
-//                        var length_category = 0;
-//                    } else {
-//                        var length_category = category.length;
-//                    }
-//
-//                    if (manu == 0) {
-//                        var length_manu = 0;
-//                    } else {
-//                        var length_manu = manu.length;
-//                    }
-//
-//                    if (manufacturer == 0) {
-//                        var length_manufacturer = 0;
-//                    } else {
-//                        var length_manufacturer = manufacturer.length;
-//                    }
-//
-//                    var length = [length_owner, length_category, length_manu, length_manufacturer, length_name, length_type];
-//
-//                    var maxField = Math.max.apply(Math, length);
-//                    var limit = $('#profile_limit option:selected').val();
-//
-//                    if (limit < maxField)
-//                    {
-//                        limit = limit;
-//                    }
-//                    else
-//                    {
-//                        limit = maxField;
-//                    }
-//                    if (limit == 0)
-//                    {
-//                        limit = maxField;
-//                    }
-//
-//                    for (var i = 0; i < limit; i++)
-//                    {
-//                        if (!ownerstr[i]) {
-//                            strowner = 'N/A';
-//                        } else {
-//                            strowner = ownerstr[i];
-//                        }
-//
-//                        if (!category[i]) {
-//                            strcategory = 'N/A';
-//                        } else {
-//                            strcategory = category[i];
-//                        }
-//
-//                        if (!manu[i]) {
-//                            strmanu = 'N/A';
-//                        } else {
-//                            strmanu = manu[i];
-//                        }
-//
-//                        if (!manufacturer[i]) {
-//                            strmanufacturer = 'N/A';
-//                        } else {
-//                            strmanufacturer = manufacturer[i];
-//                        }
-//
-//                        if (!field_name[i]) {
-//                            str_name = 'N/A';
-//                        } else {
-//                            str_name = field_name[i];
-//                        }
-//
-//                        if (!field_type[i]) {
-//                            str_type = 'N/A';
-//                        } else {
-//                            str_type = field_type[i];
-//                        }
-
-//                        str = '<div class="list-group-item"><input disabled value="' + strowner + '"  name="owner[]" class="form-control item"></div>';
-//                        $("#owner_list").append(str);
-//                        str_cat = '<div class="list-group-item"><input disabled value="' + strcategory + '"  name="category[]" class="form-control item"></div>'
-//                        $("#categories_list").append(str_cat);
-//                        str_item = '<div class="list-group-item"><input disabled value="' + strmanu + '"  name="item[]" class="form-control item"></div>'
-//                        $("#item_list").append(str_item);
-//                        str_manufacturer = '<div class="list-group-item"><input disabled value="' + strmanufacturer + '"  name="manufacturer[]" class="form-control item"></div>'
-//                        $("#manufacturer_list").append(str_manufacturer);
-//                        str_name = '<div class="list-group-item"><input disabled value="' + str_name + '"  name="names[]" class="form-control item"></div>'
-//                        $("#name_list").append(str_name);
-//
-//                        str_types = '<div class="list-group-item"><select class="form-control" name="types[]" id="profileedit' + i + '" disabled><option value="">Select Type</option><option value="text_type">Text</option>\n\
-//                    <option value="pick_list_type">Pick List</option><option value="value_type">$ value</option><option value="date_type">Date</option><option value="num">Number</option></select></div>'
-//
-//                        $("#type_list").append(str_types);
-//                        if (str_type != null) {
-//                            $('#type_list #profileedit' + i + ' option[value="' + str_type + '"]').attr('selected', 'selected');
-//                        }
-//                        else
-//                        {
-//                            $('#type_list #profileedit' + i + ' option[value=""]').attr('selected', 'selected');
-//                        }
-//                    }
                 }
 
             });
@@ -719,6 +789,7 @@
         {
             $('#new_profile').css('display', 'block');
             $('#edit_form').css('display', 'none');
+            $('#save_button').css('display', 'block');
         });
 
         $('.add-fieldname').on('click', function()
@@ -1061,19 +1132,19 @@ if ($this->session->flashdata('error')) {
                 <div class="form-group col-md-12" id="profileadd">
                     <div class="col-md-2" id="profile_owner">
                         <div class="profilehead">Owners</div>
-                        <div class="multi-field"><textarea class="form-control pull-left" name="owner_name[]" id="owners"></textarea></div>
+                        <div class="multi-field"><textarea class="form-control pull-left" name="owner_name[]" id="owners" rows="30"></textarea></div>
                     </div>
                     <div class="col-md-2" id="profile_category">
                         <div class="profilehead">Categories</div>
-                        <textarea class="form-control pull-left" name="category_name[]" id="categories"></textarea>
+                        <textarea class="form-control pull-left" name="category_name[]" id="categories" rows="30"></textarea>
                     </div>
                     <div class="col-md-2" id="profile_item">
                         <div class="profilehead">Item</div>
-                        <textarea class="form-control pull-left" name="manu_name[]" id="manus"></textarea>
+                        <textarea class="form-control pull-left" name="manu_name[]" id="manus" rows="30"></textarea>
                     </div>
                     <div class="col-md-2" id="profile_manufacturer">
                         <div class="profilehead">Manufacturer</div> 
-                        <textarea class="form-control pull-left" name="manufacturer_name[]" id="manufactures"></textarea>
+                        <textarea class="form-control pull-left" name="manufacturer_name[]" id="manufactures" rows="30"></textarea>
                     </div>
                     <div class="col-md-2" id="profile_field">
                         <div class="profilehead">Custom Field Name</div> 

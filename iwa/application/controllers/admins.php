@@ -2361,7 +2361,10 @@ class Admins extends CI_Controller {
 
         for ($j = 0; $j < count($category_data); $j++) {
             if ($category_data[$j]) {
-                $category[] = $category_data[$j];
+                $check_category = $this->db->where('name', $category_data[$j])->get('categories');
+                if ($check_category->num_rows() < 1) {
+                    $category[] = $category_data[$j];
+                }
             } else {
                 $category[] = "";
             }
@@ -2374,7 +2377,10 @@ class Admins extends CI_Controller {
 
         for ($k = 0; $k < count($manu_data); $k++) {
             if ($manu_data[$k]) {
-                $manu[] = $manu_data[$k];
+                $check_manu = $this->db->where('item_manu_name', $manu_data[$k])->get('item_manu');
+                if ($check_manu->num_rows() < 1) {
+                    $manu[] = $manu_data[$k];
+                }
             } else {
                 $manu[] = "";
             }
@@ -2387,7 +2393,10 @@ class Admins extends CI_Controller {
 
         for ($m = 0; $m < count($manufacturer_data); $m++) {
             if ($manufacturer_data[$m]) {
-                $manufacturer[] = $manufacturer_data[$m];
+                $check_manufacturer = $this->db->where('manufacturer_name', $manufacturer_data[$m])->get('manufacturer_list');
+                if ($check_manufacturer->num_rows() < 1) {
+                    $manufacturer[] = $manufacturer_data[$m];
+                }
             } else {
                 $manufacturer[] = "";
             }
@@ -2442,38 +2451,6 @@ class Admins extends CI_Controller {
 
         if ($this->input->post()) {
 
-//            $this->load->model('admins_model');
-//
-//            $owner = $this->input->post('owner');
-//            
-//            foreach ($owner as $key => $value) {
-//                if ($value == '') {
-//                    unset($owner[$key]);
-//                }
-//            }
-//
-//            $category = $this->input->post('category');
-//
-//            foreach ($category as $key => $value) {
-//                if ($value == '') {
-//                    unset($category[$key]);
-//                }
-//            }
-//
-//            $item = $this->input->post('item');
-//
-//            foreach ($item as $key => $value) {
-//                if ($value == '') {
-//                    unset($item[$key]);
-//                }
-//            }
-//            $manufacturer = $this->input->post('manufacturer');
-//            foreach ($manufacturer as $key => $value) {
-//                if ($value == '') {
-//                    unset($manufacturer[$key]);
-//                }
-//            }
-
             $owner = array();
             $this->load->model('admins_model');
             $owner_data = array();
@@ -2492,7 +2469,10 @@ class Admins extends CI_Controller {
 
             for ($i = 0; $i < count($owner_data); $i++) {
                 if ($owner_data[$i]) {
-                    $owner[] = $owner_data[$i];
+                    $check_owner = $this->db->where('owner_name', $owner_data[$i])->get('owner');
+                    if ($check_owner->num_rows() < 1) {
+                        $owner[] = $owner_data[$i];
+                    }
                 } else {
                     $owner[] = "";
                 }
@@ -2505,7 +2485,10 @@ class Admins extends CI_Controller {
 
             for ($j = 0; $j < count($category_data); $j++) {
                 if ($category_data[$j]) {
-                    $category[] = $category_data[$j];
+                    $check_category = $this->db->where('name', $category_data[$j])->get('categories');
+                    if ($check_category->num_rows() < 1) {
+                        $category[] = $category_data[$j];
+                    }
                 } else {
                     $category[] = "";
                 }
@@ -2518,7 +2501,10 @@ class Admins extends CI_Controller {
 
             for ($k = 0; $k < count($manu_data); $k++) {
                 if ($manu_data[$k]) {
-                    $manu[] = $manu_data[$k];
+                    $check_manu = $this->db->where('item_manu_name', $manu_data[$k])->get('item_manu');
+                    if ($check_manu->num_rows() < 1) {
+                        $manu[] = $manu_data[$k];
+                    }
                 } else {
                     $manu[] = "";
                 }
@@ -2531,7 +2517,10 @@ class Admins extends CI_Controller {
 
             for ($m = 0; $m < count($manufacturer_data); $m++) {
                 if ($manufacturer_data[$m]) {
-                    $manufacturer[] = $manufacturer_data[$m];
+                    $check_manufacturer = $this->db->where('manufacturer_name', $manufacturer_data[$m])->get('manufacturer_list');
+                    if ($check_manufacturer->num_rows() < 1) {
+                        $manufacturer[] = $manufacturer_data[$m];
+                    }
                 } else {
                     $manufacturer[] = "";
                 }

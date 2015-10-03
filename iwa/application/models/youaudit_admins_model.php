@@ -853,6 +853,7 @@ HAVING ( COUNT(accounts.annual_value) >= 1)";
 
         $sitedata = array('name' => $this->input->post('package_name'),
             'item_limit' => $this->input->post('package_asset'),
+            'package_annual'=>$this->input->post('package_annual'),
             'compliance_module' => $compliance,
             'fleet_module' => $fleet,
             'conditionmodule' => $condition,

@@ -171,6 +171,11 @@ if ($this->session->flashdata('error')) {
                         </div>
                     </div> <!-- /.form-group -->
                     <div class="form-group col-md-12">
+                        <div class="col-md-6">  <label>Annual Value :</label> </div>
+                        <div class="col-md-6">  <input class="form-control" name="package_annual" id="packageannual" value="1000">
+                        </div>
+                    </div> <!-- /.form-group -->
+                    <div class="form-group col-md-12">
                         <div class="col-md-6">  <label>Compliance Module :</label> </div>
                         <div class="col-md-6">  <label class="checkbox-inline"><input type="checkbox" name="enable_compliance" id="enable_compliance"></label>
                         </div>

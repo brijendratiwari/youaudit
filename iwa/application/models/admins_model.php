@@ -1106,15 +1106,15 @@ class Admins_model extends CI_Model {
 
         if (array_key_exists('master_account_id', $arrPageData['arrSessionData']['objAdminUser'])) {
             $account_type = 1;
-//            $account_id = $arrPageData['arrSessionData']['objAdminUser']->master_account_id;
+            $account_id = $arrPageData['arrSessionData']['objAdminUser']->master_account_id;
         } else {
             $account_type = 2;
-//            $account_id = $arrPageData['arrSessionData']['objAdminUser']->franchise_account_id;
+            $account_id = $arrPageData['arrSessionData']['objAdminUser']->franchise_account_id;
         }
 
         $this->db->select('profile_name');
-        $this->db->where('account_type', $account_type);
-//        $this->db->where('account_id', $account_id);
+//        $this->db->where('account_type', $account_type);
+        $this->db->where('account_id', $account_id);
         $this->db->where('profile_name', $profilename);
         $res_master = $this->db->get('profile');
 

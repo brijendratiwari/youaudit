@@ -402,7 +402,7 @@
                     url: base_url + "index.php/youaudit/youaudit_admins/package_limit/" + package_id,
                     success: function(data) {
                         var package = $.parseJSON(data);
-                        $('#annual_value').val(package[0].item_limit);
+                        $('#annual_value').val(package[0].package_annual);
                         $(document).find('#compliance_module option[value="' + package[0].compliance_module + '"]').prop('selected', true);
                         $(document).find('#fleet_module option[value="' + package[0].fleet_module + '"]').prop('selected', true);
                         $(document).find('#condition_module option[value="' + package[0].conditionmodule + '"]').prop('selected', true);

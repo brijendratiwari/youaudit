@@ -681,6 +681,7 @@ COUNT( accounts.id ) >=1
         }
 
         $owner = array();
+        $this->load->model('admin_section_model');
         $this->load->model('master_model');
         $data = array();
         $masterid = $this->input->post('masterid');
@@ -716,7 +717,10 @@ COUNT( accounts.id ) >=1
 
         for ($j = 0; $j < count($category_data); $j++) {
             if ($category_data[$j]) {
-                $category[] = $category_data[$j];
+                $check_category = $this->db->where('name', $category_data[$j])->get('categories');
+                if ($check_category->num_rows() < 1) {
+                    $category[] = $category_data[$j];
+                }
             } else {
                 $category[] = "";
             }
@@ -729,7 +733,10 @@ COUNT( accounts.id ) >=1
 
         for ($k = 0; $k < count($manu_data); $k++) {
             if ($manu_data[$k]) {
-                $manu[] = $manu_data[$k];
+                $check_manu = $this->db->where('item_manu_name', $manu_data[$k])->get('item_manu');
+                if ($check_manu->num_rows() < 1) {
+                    $manu[] = $manu_data[$k];
+                }
             } else {
                 $manu[] = "";
             }
@@ -742,7 +749,10 @@ COUNT( accounts.id ) >=1
 
         for ($m = 0; $m < count($manufacturer_data); $m++) {
             if ($manufacturer_data[$m]) {
-                $manufacturer[] = $manufacturer_data[$m];
+                $check_manufacturer = $this->db->where('manufacturer_name', $manufacturer_data[$m])->get('manufacturer_list');
+                if ($check_manufacturer->num_rows() < 1) {
+                    $manufacturer[] = $manufacturer_data[$m];
+                }
             } else {
                 $manufacturer[] = "";
             }
@@ -813,7 +823,10 @@ COUNT( accounts.id ) >=1
 
             for ($i = 0; $i < count($owner_data); $i++) {
                 if ($owner_data[$i]) {
-                    $owner[] = $owner_data[$i];
+                    $check_owner = $this->db->where('owner_name', $owner_data[$i])->get('owner');
+                    if ($check_owner->num_rows() < 1) {
+                        $owner[] = $owner_data[$i];
+                    }
                 } else {
                     $owner[] = "";
                 }
@@ -826,7 +839,10 @@ COUNT( accounts.id ) >=1
 
             for ($j = 0; $j < count($category_data); $j++) {
                 if ($category_data[$j]) {
-                    $category[] = $category_data[$j];
+                    $check_category = $this->db->where('name', $category_data[$j])->get('categories');
+                    if ($check_category->num_rows() < 1) {
+                        $category[] = $category_data[$j];
+                    }
                 } else {
                     $category[] = "";
                 }
@@ -839,7 +855,10 @@ COUNT( accounts.id ) >=1
 
             for ($k = 0; $k < count($manu_data); $k++) {
                 if ($manu_data[$k]) {
-                    $manu[] = $manu_data[$k];
+                    $check_manu = $this->db->where('item_manu_name', $manu_data[$k])->get('item_manu');
+                    if ($check_manu->num_rows() < 1) {
+                        $manu[] = $manu_data[$k];
+                    }
                 } else {
                     $manu[] = "";
                 }
@@ -852,7 +871,10 @@ COUNT( accounts.id ) >=1
 
             for ($m = 0; $m < count($manufacturer_data); $m++) {
                 if ($manufacturer_data[$m]) {
-                    $manufacturer[] = $manufacturer_data[$m];
+                    $check_manufacturer = $this->db->where('manufacturer_name', $manufacturer_data[$m])->get('manufacturer_list');
+                    if ($check_manufacturer->num_rows() < 1) {
+                        $manufacturer[] = $manufacturer_data[$m];
+                    }
                 } else {
                     $manufacturer[] = "";
                 }
