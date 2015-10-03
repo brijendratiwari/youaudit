@@ -182,9 +182,9 @@ class Faults extends MY_Controller {
         $fullItemsData = $this->items_model->basicGetOneWithTicket($item_id, $intAccountId,"Fix");
         $user = $this->users_model->getOne($fullItemsData[0]->user_id,$intAccountId);
                 $loggedName = $user['result'][0]->firstname . " " . $user['result'][0]->lastname;
-        
 //        $all_job_notes = $this->tickets_model->getAllJob($item_id,$intAccountType);      
         $all_job_notes = $this->tickets_model->getAllJobData($fullItemsData[0]->ticket_id);      
+        $previousHistory = $this->tickets_model->getFaultHistoryByItem($fullItemsData[0]->itemid);     
 //   $jobnote = '';
    $allJob = array();
    $actionData = '';
@@ -200,7 +200,6 @@ class Faults extends MY_Controller {
         $fullItemsData[0]->loggedByDate=date('d/m/Y',strtotime($fullItemsData[0]->dt));
        
 
-        
     
         
 //     $strHtml .= $this->load->view('faults/incidentpdf', array("historyData"=>$fullItemsData[0],"allJobNotes"=>$all_job_notes), TRUE);
@@ -245,9 +244,7 @@ $strHtml .= "<div>&nbsp;</div>";
         $strHtml .= "<div>&nbsp;</div>";
         $strHtml .= "<div>&nbsp;</div>";
        
-        $strHtml .= "<div><h1 style='color:#00aeef;'>Incident Timeline</h1></div>";
-    
-        //##############################################
+   $strHtml .= "<div><h1 style='color:#00aeef;'>Incident Timeline</h1></div>";
         $strHtml .= "<table class=\"report\">";
         $strHtml .= "<thead>";
         $strHtml .= "<tr style='background-color:#00AEEF;color:white;'>";
@@ -274,7 +271,58 @@ $strHtml .= "<div>&nbsp;</div>";
         }
         $strHtml .= "</tbody></table>";
         //#############################################
+           
+        $strHtml .= "<div><h1 style='color:#00aeef;'>Photo Images</h1></div>";
         
+                   //##############################################
+        $strHtml .= "<table class=\"report\">";
+               $strHtml .= "<tbody>";
+            $strHtml .= "<tr>";
+
+    $strHtml .= "<td style='padding:10px;'><div style='width:500px;height:200px;'><img width='300' height='200' alt=\"ictracker\" src='".  base_url()."index.php/images/viewList/".$fullItemsData[0]->photoid."'></div></td>";
+            $strHtml .= "</tr>";
+        $strHtml .= "</tbody></table>";
+        //#############################################
+               $strHtml .= "<div>&nbsp;</div>";
+        $strHtml .= "<div>&nbsp;</div>";
+
+        
+        
+        $strHtml .= "<div><h1 style='color:#00aeef;'>History - Previous Faults</h1></div>";
+        //##############################################
+        $strHtml .= "<table class=\"report\">";
+        $strHtml .= "<thead>";
+        $strHtml .= "<tr style='background-color:#00AEEF;color:white;'>";
+
+            $strHtml .= "<th style='padding:10px;'>Date</th><th>Time</th><th>Type Of Fault</th><th>Code</th><th>Logged By</th><th>Fix Time</th>";
+
+        $strHtml .= "</tr>";
+        $strHtml .= "</thead><tbody>";
+               foreach($previousHistory as $val1){
+                   
+                    $date2 = date('d-m-Y', strtotime($val1['fix_date']));
+                                                    $date1 = date('d-m-Y H:i:s', strtotime($val1['date']));
+
+                                                    $diff = abs(strtotime($date2) - strtotime($date1));
+
+                                                    $days = floor($diff / 3600 / 24);
+                                                    $months = floor(($diff - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
+
+                                                    $total_time= $months . ' month ' . $days . ' days ';
+                   
+                   
+            $strHtml .= "<tr>";
+
+            $strHtml .= "<td style='padding:10px;'>". date('Y/m/d',strtotime($val1['date']))."</td><td>". date('h:i:s',strtotime($val1['date']))."</td><td>".$val1['fault_type']."</td><td>".$val1['fix_code']."</td><td>".$val['firstname']." ".$val['lastname']."</td><td>".$total_time."</td>";
+            $strHtml .= "<td>";
+                   
+
+                    $strHtml .= "</tr>";
+                }
+                $strHtml .= "</tbody></table>";
+                //############################################# 
+       
+       
         
 $strHtml .= "</body></html>";
         
@@ -524,6 +572,7 @@ $strHtml .= "</body></html>";
         $mode = $this->input->post('mode');
         $this->load->model('items_model');
         $this->load->model('tickets_model');
+        $this->load->model('photos_model'); 
 
 
         if ($mode == "fixFault") {
@@ -552,7 +601,7 @@ $strHtml .= "</body></html>";
                 
                 
                 if ($result) {
-                    $this->load->model('photos_model'); 
+                    
                       if (array_key_exists('photo_file_1', $_FILES) && ($_FILES['photo_file_1']['size'] > 0)) {
                                     $arrConfig['upload_path'] = './uploads/';
                                     $arrConfig['allowed_types'] = 'gif|jpg|png';
@@ -636,11 +685,45 @@ $strHtml .= "</body></html>";
                     $historyData['ticket_id']=$ticket_id;
                     $historyData['action']="Update Incident";
                     $historyData["user_id"] = $this->session->userdata('objSystemUser')->userid;
-                    $this->tickets_model->addUpdateHistory($historyData);
-                    
+                    $result1=$this->tickets_model->addUpdateHistory($historyData);
+                    if($result1){
+                             if (array_key_exists('photo_file_1', $_FILES) && ($_FILES['photo_file_1']['size'] > 0)) {
+                                    $arrConfig['upload_path'] = './uploads/';
+                                    $arrConfig['allowed_types'] = 'gif|jpg|png';
+                                    $arrConfig['max_size'] = '0';
+                                    $arrConfig['max_width'] = '0';
+                                    $arrConfig['max_height'] = '0';
+
+// load helper
+                                    $this->load->library('upload', $arrConfig);
+                                    
+// photo upload done
+                                   
+                                    for ($i = 1; $i <= count($_FILES); $i++) {
+                                        if ($this->upload->do_upload('photo_file_' . $i)) {
+                                            $strPhotoTitle = "Item Picture";
+                                            
+                                            $intPhotoId[] = $this->photos_model->setOne($this->upload->data(), $strPhotoTitle, "item/default");
+                                          
+//                                            $arrPageData['intPhotoId'] = $intPhotoId;
+                                        } else {
+
+
+                                            $intPhotoError = 1;
+                                        }
+                                        
+                                    }
+                                  
+                                    $photoid = implode(',', $intPhotoId);
+                                 
+                                    
+                                    $this->tickets_model->setPhoto($historyData['ticket_id'], $photoid);
+                                } 
+                          
                     $this->session->set_userdata('booCourier', true);
                     $this->session->set_userdata('arrCourier', array('arrUserMessages' => array('Fault Update successfully')));
                     redirect('/faults/filter', 'refresh');
+                    }
                 } else {
                     $this->session->set_userdata('booCourier', true);
                     $this->session->set_userdata('arrCourier', array('arrErrorMessages' => array('Fault could not updated ')));

@@ -998,7 +998,7 @@ if ($this->session->flashdata('arrCourier')) {
                             <div id="collapseOne" class="accordion-body collapse out">
                                 <div class="accordion-inner">
                                     <select name="select_anather_user" id="select_anather_user" class="form-control">
-                                        <option value="1">----select user----</option>
+                                        <option value="">----select user----</option>
                                         <?php
                                         foreach ($all_user as $val) {
                                             ?>
@@ -1040,7 +1040,7 @@ if ($this->session->flashdata('arrCourier')) {
                             <div id="collapseTwo" class="accordion-body collapse">
                                 <div class="accordion-inner">
                                     <select name="select_anather_user" id="select_anather_user" class="form-control">
-                                        <option value="1">----select user----</option>
+                                        <option value="">----select user----</option>
                                         <?php
                                         foreach ($supplier_user as $sup) {
                                             ?>

@@ -1,3 +1,4 @@
+<?php // var_dump($this->session->flashdata('importDataMsg'));die; ?>
 <link href="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/css/sub_style.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" language="javascript" src="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/bootbox/bootbox.min.js"></script>
 <?php $this->load->helper('text'); ?>
@@ -261,11 +262,22 @@ $("body").on("change", "#field_type", function()
 
 
 <?php
-if ($this->session->flashdata('success')) {
+if ($this->session->flashdata('importDataMsg')) {
+    
+    $importMsg = $this->session->flashdata('importDataMsg');
+    if(empty($importMsg['existedQrCode'])){
+        
+        $msg = 'Data Import Successfully';
+    }else{
+        foreach($importMsg['existedQrCode'] as $qrCode){
+            $qrCodes[] = $qrCode;
+        }
+        $msg = "There is some QrCode which is allready existing,Can't be import '".  implode(',',$qrCodes)."'";
+    }
     ?>
     <div class="alert alert-success alert-dismissable">
         <button aria-hidden="true" data-dismiss="alert" class="close" type="button">&times;</button>
-        <?php echo $this->session->flashdata('success'); ?>
+        <?php echo $msg; ?>
     </div>
 
 

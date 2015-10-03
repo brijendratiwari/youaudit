@@ -780,6 +780,7 @@ if ($this->session->flashdata('error')) {
                                 <td><div class="input-group">
                                         <div class="input-group-addon grp_addon">
                                             <?php echo $arrSessionData["objSystemUser"]->qrcode; ?></div>
+                                        <input type="hidden" value="<?php echo $arrSessionData["objSystemUser"]->qrcode; ?>" name="multiLocQr">
                                         <input type="text" data=""  class="form-control multicat location_bar"  name="qrcode_1" id="qrcode_1" placeholder="Enter QR Code Na" onblur="check_barcode(this);"></div>
                                     <div id="locqrcode_err1" class="locqrcode_error hide">QR Code Already Exist.</div>
                                 </td>

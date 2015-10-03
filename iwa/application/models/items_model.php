@@ -522,14 +522,15 @@ class Items_model extends CI_Model {
 
     public function getFiveNewestItemsFor($intAccountId = -1) {
         if ($intAccountId > 0) {
-            $this->db->select('items.id AS id,items.item_manu, items.barcode AS barcode, items.manufacturer AS manufacturer, items.model AS model, 
+            $this->db->select('items.id AS id,items.item_manu,items.added_date,items.barcode AS barcode, items.manufacturer AS manufacturer, items.model AS model, 
                                     categories.name AS categoryname,locations.name as locationname,
-                                    photos2.id AS itemphotoid, photos2.title AS itemphototitle');
+                                    photos2.id AS itemphotoid, photos2.title AS itemphototitle,owner.owner_name');
             $this->db->from('items');
             $this->db->join('items_categories_link', 'items.id = items_categories_link.item_id', 'left');
             $this->db->join('categories', 'items_categories_link.category_id = categories.id', 'left');
             $this->db->join('photos AS photos2', 'items.photo_id = photos2.id', 'left');
             $this->db->join('locations', 'items.location_now = locations.id', 'left');
+            $this->db->join('owner', 'items.owner_now = owner.id', 'left');
 
             $this->db->where('items.account_id', $intAccountId);
             $this->db->where('items.active', 1);

@@ -113,13 +113,20 @@ if ($this->session->userdata['theme_design']->color != "") {
 </style>
 <div class="box">
     <div class="heading">
-        <h1>Edit Account</h1>
+        <h1>Account Details</h1>
 
         <div class="buttons">
             <a class="button icon-with-text round" onclick="$('#edit_account_form').submit();"><i class="fa fa-arrow-circle-down"></i>Save</a>
         </div>
         <div class="col-md-10 text-right">
-            <span class="com-name">                     <?= $strAccountName; ?>
+            <span class="com-name">    
+                 <?php 
+                 
+                $objUserData = $this->session->userdata['objSystemUser'];
+                $objUserData->accountname = $strAccountName;
+                $this->session->set_userdata('objSystemUser',$objUserData);
+                ?>
+                 <?= $strAccountName; ?>
                 <!--<img src="<?= base_url('/img/circle-red.png'); ?>" width="60" /></span>-->
             </span>
             <?php
@@ -197,7 +204,7 @@ if ($this->session->userdata['theme_design']->color != "") {
                             <tr><td><label for="account_contactname">Contact Name*</label></td>
                                 <td><input class="form-control" type="input" name="account_contactname" value="<?php echo $strAccountContactName; ?>" /></td><?php echo form_error('account_name'); ?></tr>
                             <tr><td><label for="account_contactemail">Username/Email Address*</label></td><td><input class="form-control" type="input" name="account_contactemail" value="<?php echo $strAccountContactEmail; ?>" /></td><?php echo form_error('account_contactemail'); ?></tr>
-                            <tr><td><label for="account_contactnumber">Contact Number*</label></td>
+                            <tr><td><label for="account_contactnumber">Contact Number</label></td>
                                 <td><input class="form-control" type="input" name="account_contactnumber" value="<?php echo $strAccountContactNumber; ?>" /></td><?php echo form_error('account_contactnumber'); ?></tr>
                             <tr><td><label for="account_supportaddress">Support eMail*</label></td><td><input class="form-control" type="input" name="account_supportaddress" value="<?php echo $strAccountSupportAddress; ?>" /></td><?php echo form_error('account_supportaddress'); ?></tr>
                             <?php if ($this->session->userdata('objSystemUser')->fleet == 1) { ?>

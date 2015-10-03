@@ -99,9 +99,11 @@
         $("#add_owner_form").validate({
             rules: {
                 owner_name: "required",
+                location_id: "required",
             },
             messages: {
                 owner_name: "Please Enter Owner Name",
+                location_id: "Please Select a location for this owner",
             }
         });
 

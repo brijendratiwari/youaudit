@@ -92,7 +92,7 @@ class Account extends CI_Controller {
 //                $this->form_validation->set_rules('account_package', 'Account Package', 'required');
                 $this->form_validation->set_rules('account_contactname', 'Contact Name', 'trim|required');
                 $this->form_validation->set_rules('account_contactemail', 'Contact Email', 'trim|required');
-                $this->form_validation->set_rules('account_contactnumber', 'Contact Number', 'trim|required');
+//                $this->form_validation->set_rules('account_contactnumber', 'Contact Number', 'trim|required');
                 $this->form_validation->set_rules('account_supportaddress', 'Support eMail', 'trim|required');
 //                $this->form_validation->set_rules('account_fleetcontact', 'Fleet Contact Name', 'trim|required');
 //                    $this->form_validation->set_rules('color', 'color', 'trim|required');

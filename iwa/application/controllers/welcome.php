@@ -267,6 +267,14 @@ class Welcome extends CI_Controller {
 
         $this->email->send();
     }
+    
+  // get item name ....
+  public function getItemManu($item_manu,$account_id){
+      $this->load->model('items_model');
+     $res = $this->items_model->db->select('item_manu_name')->from('item_manu')->where(array('id'=>$item_manu,'account_id'=>$account_id))->get();
+    $data = $res->result_array();
+     return $data[0]['item_manu_name'];
+  }    
 
 }
 

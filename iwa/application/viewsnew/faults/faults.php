@@ -92,8 +92,8 @@
                     $("#view_fault #v_locationname").val(data.locationname);
                     $("#view_fault #v_itemstatusname").val(data.itemstatusname);
                     $("#view_fault #v_order_no").val(data.order_no);
-                    $("#view_fault #loggedBy_div").html(data.loggedBy);
-                    $("#view_fault #loggedByDate_div").html(data.loggedByDate);
+                    $("#view_fault #loggedBy_div").val(data.loggedBy);
+                    $("#view_fault #loggedByDate_div").val(data.loggedByDate);
                     $("#view_fault .actionData").html(data.actionData);
 
 
@@ -305,6 +305,32 @@
 
                         }
                     });
+                     if (data.allPhoto != null) {
+                        var updatePhoto = data.allPhoto.split(',');
+                    }
+                    else {
+                        var updatePhoto = data.photoid.split(',');
+                    }
+                                      if (updatePhoto.length != 0) {
+                        $('.fault_photo1').css('display', 'block');
+
+
+                        $("#photo_div_update").empty();
+                        for (var i = 0; i < updatePhoto.length; i++) {
+                            var img_div = '';
+                            img_div += "<div style='float:left' class='ui-lightbox-gallery'>";
+                            img_div += "<div class='image_single'>";
+                            img_div += "<img width='65' alt='Gallery Image' style='display: inline-block' class='thumbnail thumb'  src='" + base_url + "/index.php/images/viewList/" + updatePhoto[i] + "'>";
+                            img_div += "</div></div>";
+                            $("#photo_div_update").append(img_div);
+                        }
+                    }
+                    else
+                    {
+                        $('.fault_photo1').css('display', 'none');
+                    }
+                    
+                    
                     $("#update_fault #job_notes").val(data.jobnote);
                     $("#save_button").show();
 
@@ -363,6 +389,31 @@
                             $(opt).attr('selected', 'selected');
                         }
                     });
+                    alert(data.allPhoto);
+                        if (data.allPhoto != null) {
+                        var updatePhoto = data.allPhoto.split(',');
+                    }
+                    else {
+                        var updatePhoto = data.photoid.split(',');
+                    }
+                                      if (updatePhoto.length != 0) {
+                        $('.fault_photo2').css('display', 'block');
+
+
+                        $("#photo_div_resolve").empty();
+                        for (var i = 0; i < updatePhoto.length; i++) {
+                            var img_div = '';
+                            img_div += "<div style='float:left' class='ui-lightbox-gallery'>";
+                            img_div += "<div class='image_single'>";
+                            img_div += "<img width='65' alt='Gallery Image' style='display: inline-block' class='thumbnail thumb'  src='" + base_url + "/index.php/images/viewList/" + updatePhoto[i] + "'>";
+                            img_div += "</div></div>";
+                            $("#photo_div_resolve").append(img_div);
+                        }
+                    }
+                    else
+                    {
+                        $('.fault_photo2').css('display', 'none');
+                    }
 
                     $("#fix_item #job_notes").val(data.jobnote);
                     $("#save_button").show();
@@ -465,7 +516,7 @@
         );
       //$(".dataTable thead tr:eq(1) th:eq(0)").html('<input id="selectAll" type="checkbox" title="Select ALL"><button id="multiComEditBtn" class="btn btn-warning fade hide" style="padding:0 5px;" type="button">Edit</button>');
         $(".dataTable thead tr:eq(1) th").each(function(i) {
-            if (i == 3) {
+            if (i == 4) {
 
                 var select = $('<select class="categorylist"><option value=""></option></select>')
                         .appendTo($(this).empty())
@@ -481,7 +532,7 @@
                     }
                 });
             }
-            if (i == 4) {
+            if (i == 5) {
 
                 var select = $('<select class="itemmanu"><option value=""></option></select>')
                         .appendTo($(this).empty())
@@ -497,7 +548,7 @@
                     }
                 });
             }
-            if (i == 5) {
+            if (i == 6) {
 
                 var select = $('<select class="manufacturer"><option value=""></option></select>')
                         .appendTo($(this).empty())
@@ -876,8 +927,91 @@
             $('#multiResolveIncident').modal('show');
         });
 
-    }
-    );
+
+    // button for add image
+                     var max_fields = 10; //maximum input boxes allowed
+                var wrapper = $(); //Fields wrapper
+                var add_button = $(".add_field_button"); //Add button ID
+                var x = 1;
+                var y = 1;
+                //initlal text box count
+
+                $("body").find("#img_button").click(function(e) { //on add input button click
+
+                    e.preventDefault();
+                    if (x < max_fields) { //max input box allowed
+                        x++; //text box increment
+                        $(".input_fields_wrap").append('<div> <input class="fileupload upload form-control" type="file" name="photo_file_' + x + '" size="20"><a href="#" class="remove_field">Remove</a></div>'); //add input box
+
+
+                    }
+                });
+                $(".input_fields_wrap").on("click", ".remove_field", function(e) { //user click on remove text
+                    e.preventDefault();
+                    $(this).parent('div').remove();
+                    x--;
+                    total--;
+                });
+                $("body").find("#img_fix_button").click(function(e) { //on add input button click
+
+                    e.preventDefault();
+                    if (x < max_fields) { //max input box allowed
+                        x++; //text box increment
+                        $(".input_fix_wrap").append('<div> <input class="fileupload upload form-control" type="file" name="photo_file_' + x + '" size="20"><a href="#" class="remove_field">Remove</a></div>'); //add input box
+
+
+                    }
+                });
+                $(".input_fix_wrap").on("click", ".remove_field", function(e) { //user click on remove text
+                    e.preventDefault();
+                    $(this).parent('div').remove();
+                    x--;
+                    total--;
+                });
+
+// for update incident..
+  // button for add image
+                     var max_fields = 10; //maximum input boxes allowed
+                var wrapper = $(); //Fields wrapper
+                var add_button = $(".add_field_button1"); //Add button ID
+                var x = 1;
+                var y = 1;
+                //initlal text box count
+
+                $("body").find("#img_button1").click(function(e) { //on add input button click
+
+                    e.preventDefault();
+                    if (x < max_fields) { //max input box allowed
+                        x++; //text box increment
+                        $(".input_fields_wrap").append('<div> <input class="fileupload upload form-control" type="file" name="photo_file_' + x + '" size="20"><a href="#" class="remove_field1">Remove</a></div>'); //add input box
+
+
+                    }
+                });
+                $(".input_fields_wrap1").on("click", ".remove_field1", function(e) { //user click on remove text
+                    e.preventDefault();
+                    $(this).parent('div').remove();
+                    x--;
+                    total--;
+                });
+                $("body").find("#img_fix_button1").click(function(e) { //on add input button click
+
+                    e.preventDefault();
+                    if (x < max_fields) { //max input box allowed
+                        x++; //text box increment
+                        $(".input_fix_wrap1").append('<div> <input class="fileupload upload form-control" type="file" name="photo_file_' + x + '" size="20"><a href="#" class="remove_field1">Remove</a></div>'); //add input box
+
+
+                    }
+                });
+                $(".input_fix_wrap1").on("click", ".remove_field1", function(e) { //user click on remove text
+                    e.preventDefault();
+                    $(this).parent('div').remove();
+                    x--;
+                    total--;
+                });
+
+    });
 </script>
 
 
@@ -1244,9 +1378,21 @@
                     <div class="col-md-6"><input readonly class="form-control" name="locationname" id="v_locationname">
                     </div>
                 </div>
-
-                <div class="form-group col-md-12">
+                    <div class="form-group col-md-12">
                 </div>
+                                <div class="form-group col-md-12 fault_loggedBy">
+                    <div class="col-md-6"><label>Incident Logged By</label>   </div>
+                    <div class="col-md-6" > <input type="text"  id="loggedBy_div" class="form-control" value="" disabled="" /></div>
+
+
+                </div> 
+                <div class="form-group col-md-12 fault_loggedByDate">
+                    <div class="col-md-6"><label>Incident Logged Date</label>   </div>
+                    <div class="col-md-6" > <input type="text"  id="loggedByDate_div" class="form-control" value="" disabled="" /></div>
+
+
+                </div> 
+            
                 <div class="form-group col-md-12">
                     <div class="col-md-6"><label>Severity</label> </div>
                     <div class="col-md-6">
@@ -1268,18 +1414,7 @@
                     <div class="col-md-6"><input type="text" name="order_no" id="v_order_no" class="form-control" value="" disabled="" /></div></div> <!-- /.form-group -->
                 <div class="form-group col-md-12">
                 </div>
-                <div class="form-group col-md-12 fault_loggedBy">
-                    <div class="col-md-6"><label>Incident Logged By</label>   </div>
-                    <div class="col-md-6" id="loggedBy_div"> </div>
 
-
-                </div> 
-                <div class="form-group col-md-12 fault_loggedByDate">
-                    <div class="col-md-6"><label>Incident Logged Date</label>   </div>
-                    <div class="col-md-6" id="loggedByDate_div"> </div>
-
-
-                </div> 
                 <div class="actionData">
 
                 </div> 
@@ -1319,7 +1454,7 @@
                 <h4 id="myModalLabel" class="modal-title">Fix Item</h4>
             </div>
 
-            <form action="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/iwa/faults/fixfault" method="post" id="fix_item_form">
+            <form action="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/iwa/faults/fixfault" method="post" id="fix_item_form" enctype="multipart/form-data">
                 <div class="modal-body">
                     <!-- Fix Item -->
 
@@ -1390,6 +1525,19 @@
                         <div class="col-md-12"><textarea placeholder="Enter Job Notes" class="form-control" name="job_notes" id="job_notes" cols="10" rows="2"></textarea>  
                         </div>
                     </div>
+                       <div class="form-group col-md-12 fault_photo2">
+                    <div class="col-md-6"><label>Photos</label>   </div>
+                    <div class="col-md-6" id="photo_div_resolve"> </div>
+                </div>
+                       <div class="form-group col-md-12">
+                        <div class="col-md-6"> <label>Photo</label>
+                        </div>
+                        <div class="col-md-6 input_fields_wrap"> </br>
+                            <button class="btn btn-primary btn-circle btn-xs add_field_button" id="img_button" title="add more image" type="button"><i class="glyphicon glyphicon-plus"></i></button>    
+                            <div><input class="fileupload upload form-control" type="file" name="photo_file_1" size="20"></div>
+
+                        </div>
+                    </div>
 
                 </div>
 
@@ -1412,7 +1560,7 @@
                 <h4 id="myModalLabel" class="modal-title">Update Incident</h4>
             </div>
 
-            <form action="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/iwa/faults/fixfault" method="post" id="update_fault_form">
+            <form action="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/iwa/faults/fixfault" method="post" id="update_fault_form" enctype="multipart/form-data">
                 <div class="modal-body">
                     <!-- Fix Item -->
 
@@ -1484,6 +1632,20 @@
                         <div class="col-md-12"><textarea placeholder="Enter Job Notes" class="form-control" name="job_notes" id="job_notes" cols="10" rows="2"></textarea>  
                         </div>
                     </div>
+                 <div class="form-group col-md-12 fault_photo1">
+                    <div class="col-md-6"><label>Photos</label>   </div>
+                    <div class="col-md-6" id="photo_div_update"> </div>
+                </div>
+                    
+                      <div class="form-group col-md-12">
+                        <div class="col-md-6"> <label>Photo</label>
+                        </div>
+                        <div class="col-md-6 input_fields_wrap1"> </br>
+                            <button class="btn btn-primary btn-circle btn-xs add_field_button1" id="img_button1" title="add more image" type="button"><i class="glyphicon glyphicon-plus"></i></button>    
+                            <div><input class="fileupload upload form-control" type="file" name="photo_file_1" size="20"></div>
+
+                        </div>
+                    </div>
 
                 </div>
 
@@ -1503,7 +1665,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button aria-hidden="true" data-dismiss="modal" class="close" type="button">&times;</button>
-                <h4 id="myModalLabel" class="modal-title">Edit Multiple Fault</h4>
+                <h4 id="myModalLabel" class="modal-title">Update Multiple Jobs</h4>
             </div>
             <form action="<?php echo base_url('faults/editMultipleFaults'); ?>" method="post" id="edit_multiplefault">
                 <div class="modal-body" style="min-height:100px; overflow: auto;">

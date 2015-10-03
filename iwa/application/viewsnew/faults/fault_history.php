@@ -134,23 +134,29 @@
 
                         }
                     });
-                    if (data.allPhoto) {
-                        $('.fault_photo').css('display', 'block');
+                      if (data.allPhoto != null) {
+                        var updatePhoto = data.allPhoto.split(',');
+                    }
+                    else {
+                        var updatePhoto = data.photoid.split(',');
+                    }
+                                      if (updatePhoto.length != 0) {
+                        $('.fault_photo2').css('display', 'block');
 
-                        var photoid = data.allPhoto.split(',');
-                        $("#photo_div").empty();
-                        for (var i = 0; i < photoid.length; i++) {
+
+                        $("#photo_div_resolve").empty();
+                        for (var i = 0; i < updatePhoto.length; i++) {
                             var img_div = '';
                             img_div += "<div style='float:left' class='ui-lightbox-gallery'>";
                             img_div += "<div class='image_single'>";
-                            img_div += "<img width='65' alt='Gallery Image' style='display: inline-block' class='thumbnail thumb'  src='" + base_url + "/index.php/images/viewList/" + photoid[i] + "'>";
+                            img_div += "<img width='65' alt='Gallery Image' style='display: inline-block' class='thumbnail thumb'  src='" + base_url + "/index.php/images/viewList/" + updatePhoto[i] + "'>";
                             img_div += "</div></div>";
-                            $("#photo_div").append(img_div);
+                            $("#photo_div_resolve").append(img_div);
                         }
                     }
                     else
                     {
-                        $('.fault_photo').css('display', 'none');
+                        $('.fault_photo2').css('display', 'none');
                     }
 
 //                    if (data.allNotes) {
@@ -873,6 +879,9 @@
             $('#multiUserEditModal').modal('show');
         });
 
+        
+
+
     }
     );
 </script>
@@ -1135,6 +1144,8 @@
                         </div>
                     </div>
 
+                    
+                    
                 </div>
 
                 <div class="modal-footer">
@@ -1224,11 +1235,9 @@
                 <div class="form-group col-md-12" >
 
                 </div>
-                <div class="form-group col-md-12 fault_photo">
+                  <div class="form-group col-md-12 fault_photo2">
                     <div class="col-md-6"><label>Photos</label>   </div>
-                    <div class="col-md-6" id="photo_div"> </div>
-
-
+                    <div class="col-md-6" id="photo_div_resolve"> </div>
                 </div>
             </div>
 

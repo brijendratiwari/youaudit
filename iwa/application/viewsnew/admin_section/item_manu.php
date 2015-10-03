@@ -57,6 +57,7 @@
                 {"sType": 'string-case', "sClass": "eamil_conform aligncenter", "aTargets": [0]},
                 {"sClass": "eamil_conform aligncenter", "aTargets": [1]},
                 {"sClass": "eamil_conform aligncenter", "aTargets": [2]},
+                {"sClass": "eamil_conform aligncenter", "aTargets": [3]},
             ]
         });
         $("#MANUFACTURE_Datatable").DataTable({
@@ -229,6 +230,7 @@ if ($this->session->flashdata('error')) {
                                     <tr>
                                         <th>Item</th>
                                         <th>Doc</th>
+                                         <th>Documents</th>
                                         <th>Action</th>
                                     </tr>
 
@@ -250,6 +252,19 @@ if ($this->session->flashdata('error')) {
 
                                                     </span>
                                                 </td>                   
+                                                <td>
+                                                    <?php 
+                                                     $doc = explode(',',$val['doc']);
+                                                     foreach ($doc as $docFiles){ ?>
+                                                            <?php 
+                                                                if (strlen($docFiles) > 10)
+                                                                   $str = substr($docFiles, 0, 7) . '...';
+                                                            echo '<a href="#" style="text-decoration:none;color:black;" title='.$docFiles.'>'.$str.'</a>'.'<br>'; ?>
+                                                         
+                                                  <?php   }
+                                                    
+                                                    ?>
+                                                </td>
                                                 <td><span class="action-w"><a  href="javascript:void(0)" data-toggle="modal" onclick="deleteitem(this)" data-href="<?php echo base_url('admin_section/archiveItem/' . $val['id']); ?>"  title="Archive"><i class="glyphicon glyphicon-remove franchises-i"></i></a>Delete</span></td>
                                             </tr>
                                             <?php

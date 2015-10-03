@@ -117,6 +117,8 @@ class Admin_Section extends MY_Controller {
             $this->session->set_userdata('strReferral', '/items/filter/');
             redirect('users/login/', 'refresh');
         }
+//        var_dump($_FILES);
+//        var_dump($this->input->post());die;
         $data = array();
         $this->load->model('admin_section_model');
         $arrPageData['arrSessionData'] = $this->session->userdata;
@@ -1092,7 +1094,7 @@ class Admin_Section extends MY_Controller {
         $number_of_location = $this->input->post('count_row');
         for ($i = 1; $i <= $number_of_location; $i++) {
             $data[] = array('locationname' => $this->input->post('location_name_' . $i),
-                'qrcode' => $this->input->post('qrcode_' . $i),
+                'qrcode' => $this->input->post('multiLocQr').''.$this->input->post('qrcode_' . $i),
                 'sitename' => $this->input->post('site_name_' . $i),
                 'owner_id' => $this->input->post('multi_owner_id_' . $i));
         }
@@ -2307,16 +2309,14 @@ class Admin_Section extends MY_Controller {
 
                 $my_new[] = $item_details;
             }
-
+            $existedQrCode = array();
             for ($i = 0; $i < count($my_new); $i++) {
                 foreach ($my_new as $item_value) {
+            
+                    $qrCode = $item_value['qr_code'];
 
-
-
-                    $bool = $this->items_model->checkBarcodeForItem($item_value['qr_code']);
-
+                    $bool = $this->items_model->checkBarcodeForItem($qrCode);
                     if (!$bool) {
-
 
 
                         /* ----------------------add qrcode-------------------------------------------- */
@@ -2565,11 +2565,12 @@ class Admin_Section extends MY_Controller {
                             redirect("admin_section/data_import", "refresh");
                         }
                     } else {
+                        array_push($existedQrCode,$qrCode);
                         continue;
                     }
                 }
             }
-            $this->session->set_flashdata('success', 'Data Import Successfully');
+            $this->session->set_flashdata('importDataMsg',array('success'=>'Data Import Successfully','existedQrCode'=>$existedQrCode));
             redirect("admin_section/data_import", "refresh");
              }else{
                  

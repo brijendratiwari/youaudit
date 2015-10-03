@@ -114,27 +114,27 @@ class Tickets_model extends CI_Model {
             if ($result) {
                 $this->db->where('id', $data['ticket_id']);
                 $this->db->update('tickets', array("user_id" => $this->session->userdata('objSystemUser')->userid, "fix_code" => $data['fix_code'], "status" => $data['status'], "jobnote" => $data['job_notes'], "ticket_action" => "Fix", "fix_date" => $data['fix_date'], "photoid" => $data['photoid']));
-                
-            $open_history = $this->getTicketData($data['ticket_id']);
-            $history = array(
-                'item_id' => $open_history->item_id,
-                'user_id' => $open_history->user_id,
-                'date' => date('Y-m-d h:i:s'),
-                'status' => $open_history->status,
-                'severity' => $open_history->severity,
-                'jobnote' => $open_history->jobnote,
-                'order_no' => $open_history->order_no,
-                'fix_code' => $open_history->fix_code,
-                'reason_code' => $open_history->reason_code,
-                'photoid' => $open_history->photoid,
-                'ticket_id' => $open_history->id
-            );
-            foreach ($history as $key => $value) {
-                if ($value = '') {
-                    unset($history[$key]);
+
+                $open_history = $this->getTicketData($data['ticket_id']);
+                $history = array(
+                    'item_id' => $open_history->item_id,
+                    'user_id' => $open_history->user_id,
+                    'date' => date('Y-m-d h:i:s'),
+                    'status' => $open_history->status,
+                    'severity' => $open_history->severity,
+                    'jobnote' => $open_history->jobnote,
+                    'order_no' => $open_history->order_no,
+                    'fix_code' => $open_history->fix_code,
+                    'reason_code' => $open_history->reason_code,
+                    'photoid' => $open_history->photoid,
+                    'ticket_id' => $open_history->id
+                );
+                foreach ($history as $key => $value) {
+                    if ($value = '') {
+                        unset($history[$key]);
+                    }
                 }
-            }
-            $this->db->insert('tickets_history', $history);
+                $this->db->insert('tickets_history', $history);
                 return TRUE;
             } else {
                 return FALSE;
@@ -222,7 +222,7 @@ class Tickets_model extends CI_Model {
             } elseif ($export == 'PDF') {
                 $arrFields = array(
                     array('strName' => 'QR Code', 'strFieldReference' => 'barcode', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
-                    array('strName' => 'Photos','strConversion' => 'img', 'strFieldReference' => 'photo_id', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Photos', 'strConversion' => 'img', 'strFieldReference' => 'photo_id', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
                     array('strName' => 'Category', 'strFieldReference' => 'categoryname', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
                     array('strName' => 'Item', 'strFieldReference' => 'item_manu_name', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
                     array('strName' => 'Manufacturer', 'strFieldReference' => 'manufacturer', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
@@ -232,7 +232,7 @@ class Tickets_model extends CI_Model {
                     array('strName' => 'Owner', 'strConversion' => 'user', 'strFieldReference' => 'firstname', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
                     array('strName' => 'Status', 'strFieldReference' => 'statusname', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
                     array('strName' => 'Action', 'strFieldReference' => 'ticket_action', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
-                    array('strName' => 'Date Default Reported','strConversion' => 'dt', 'strFieldReference' => 'dt', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
+                    array('strName' => 'Date Default Reported', 'strConversion' => 'dt', 'strFieldReference' => 'dt', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
                     array('strName' => 'Fault Time', 'strConversion' => 'fault_time', 'strFieldReference' => 'dt', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
                     array('strName' => 'Severity', 'strFieldReference' => 'severity', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
                     array('strName' => 'Order No', 'strFieldReference' => 'order_no', 'arrFooter' => array('booTotal' => false, 'booTotalLabel' => false, 'intColSpan' => 0)),
@@ -287,7 +287,9 @@ class Tickets_model extends CI_Model {
                 tickets.fix_date,
                 tickets.photoid,
                 tickets.date as dt,
-                tickets.ticket_action');
+                tickets.ticket_action,
+                owner.owner_name
+                ');
 
 
             $this->db->from('items');
@@ -747,7 +749,7 @@ OR `categories`.`name` LIKE '%$strfreetext%')");
 
                         case 'dt':
                             if ($objItem['dt'] != '') {
-                                $strHtml .= date('d/m/Y',strtotime($objItem['dt']));
+                                $strHtml .= date('d/m/Y', strtotime($objItem['dt']));
                             } else {
                                 $strHtml .= "Unknown";
                             }
@@ -844,7 +846,7 @@ OR `categories`.`name` LIKE '%$strfreetext%')");
 
         $strHtml .= "<p>Produced by " . $arrPageData['arrSessionData']["objSystemUser"]->firstname . " " . $arrPageData['arrSessionData']["objSystemUser"]->lastname . " (" . $arrPageData['arrSessionData']["objSystemUser"]->username . ") on " . date('d/m/Y') . "</p>";
         $strHtml .= "</div></body></html>";
-   
+        
         if (!$booOutputHtml) {
             $this->load->library('Mpdf');
             $mpdf = new Pdf('en-GB', 'A4');
@@ -1177,42 +1179,40 @@ OR `categories`.`name` LIKE '%$strfreetext%')");
         }
     }
 
-  public function addUpdateHistory($data){
-      
-      $result = $this->db->insert('tickets_history',$data);
-      if($this->db->affected_rows() > 0){
-          return TRUE;
-      }else{
-          return FALSE;
-      }
-      
-  }  
-  public function getAllJobData($ticket_id){
-      
-      $this->db->select('users.firstname,users.lastname,tickets_history.jobnote,tickets_history.reason_code,tickets_history.fix_code,tickets_history.action,tickets_history.date');
-      $this->db->from('tickets_history');
-      $this->db->where('tickets_history.ticket_id',$ticket_id);
-      $this->db->join('users','users.id=tickets_history.user_id');
-      $result = $this->db->get();
-      if($result->num_rows() > 0){
-          return $result->result_array();
-      }else{
-          return FALSE;
-      }
-      
-  }
-  
- public function fixedMultipleFault($tickets_Id,$ticketData){
-   
-     foreach($tickets_Id as $val){
-         
-         $this->db->where('id',$val);
-         $this->db->update('tickets',$ticketData);
-         
-     } 
-     
-    foreach($tickets_Id as $val){
-     $open_history = $this->getTicketData($val);
+    public function addUpdateHistory($data) {
+
+        $result = $this->db->insert('tickets_history', $data);
+        if ($this->db->affected_rows() > 0) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function getAllJobData($ticket_id) {
+
+        $this->db->select('users.firstname,users.lastname,tickets_history.jobnote,tickets_history.reason_code,tickets_history.fix_code,tickets_history.action,tickets_history.date');
+        $this->db->from('tickets_history');
+        $this->db->where('tickets_history.ticket_id', $ticket_id);
+        $this->db->join('users', 'users.id=tickets_history.user_id');
+        $result = $this->db->get();
+        if ($result->num_rows() > 0) {
+            return $result->result_array();
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function fixedMultipleFault($tickets_Id, $ticketData) {
+
+        foreach ($tickets_Id as $val) {
+
+            $this->db->where('id', $val);
+            $this->db->update('tickets', $ticketData);
+        }
+
+        foreach ($tickets_Id as $val) {
+            $open_history = $this->getTicketData($val);
             $history = array(
                 'item_id' => $open_history->item_id,
                 'user_id' => $open_history->user_id,
@@ -1232,10 +1232,31 @@ OR `categories`.`name` LIKE '%$strfreetext%')");
                 }
             }
             $this->db->insert('tickets_history', $history);
-     }
-    
-     return TRUE;
- } 
+        }
+
+        return TRUE;
+    }
+
+    public function getFaultHistoryByItem($item_id = FALSE) {
+        
+        $this->db->select('tickets.date,tickets.fix_date,tickets.fix_code,itemstatus.name as fault_type,users.firstname,users.lastname');
+        $this->db->from('tickets');
+        $this->db->where('tickets.item_id',$item_id);
+        $this->db->where('tickets_history.status !=',1);
+     
+        $this->db->join('users','users.id=tickets.user_id');
+        $this->db->join('tickets_history','tickets_history.ticket_id=tickets.id');
+           $this->db->join('itemstatus','itemstatus.id=tickets_history.status');
+        $result = $this->db->get();
+        if($result->num_rows() > 0){
+            
+            return $result->result_array();
+        }else{
+            return FALSE;
+        }
+        
+    }
+
 }
 
 ?>

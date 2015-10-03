@@ -209,11 +209,12 @@
             "ordering": true,
             "aLengthMenu": [[10, 20, 40, -1], [10, 20, 40, "All"]],
             "iDisplayLength": 10,
+            "bSortCellsTop": true,
             "bDestroy": true, //!!!--- for remove data table warning.
             "fnRowCallback": function(nRow, aData) {
 
                 var $nRow = $(nRow); // cache the row wrapped up in jQuery
-                tdhtm = $nRow.children()[16].innerHTML;
+                var tdhtm = $nRow.children()[16].innerHTML;
 
                 if (tdhtm.search("enable") != -1) {
                     $nRow.css("background-color", "#f2b4b4");
@@ -241,6 +242,28 @@
                 {"sClass": "eamil_conform aligncenter", "aTargets": [16]}
             ]}
         );
+
+   
+        $(".dataTable thead tr:eq(1) th").each(function(i) {
+            if (i == 1) {
+
+                var select = $('<select class="categorylist"><option value=""></option></select>')
+                        .appendTo($(this).empty())
+                        .on('change', function() {
+                    var val = $(this).val();
+                    supplier.column(i)
+                            .search(val ? '^' + $(this).val() + '$' : val, true, false)
+                            .draw();
+                });
+                supplier.column(i).data().unique().sort().each(function(d, j) {
+                    if (d != "") {
+                        select.append('<option id="level" value="' + d + '">' + d + '</option>');
+                    }
+                });
+            }
+
+
+    });
 
         // script for edit supplier
         $("body").on("click", ".edit", function() {
@@ -531,7 +554,28 @@ if ($this->session->flashdata('error')) {
                                 <th>Contract End Date</th>
                                 <th style="width: 8%;">Action</th>
                             </tr>
-                        </thead>
+                              
+                              <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                      
                         <tbody id="Master_Customer_body">
                             <?php foreach ($suppliers as $supplier) {
                                 ?>

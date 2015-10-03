@@ -99,11 +99,10 @@ class Admin_Section_Model extends CI_Model {
 
 // Action to edit item/manu
     public function editItems_Manu($editItem) {
-
         if (isset($editItem)) {
             $this->load->model('items_model');
 
-            for ($i = 0; $i < count($editItem['item_id']); $i++) {
+            for ($i = 0; $i < count($editItem['doc']['name']); $i++) {
 
                 $data = array(
                     'item_manu_name' => $editItem['item_manu_name'][$i],
@@ -120,7 +119,8 @@ class Admin_Section_Model extends CI_Model {
 
                     $this->s3->putObjectFile($file, "smartaudit", 'youaudit/' . $editItem['item_id'][$i] . '/' . $strFileName, S3::ACL_PUBLIC_READ);
                 }
-                if ($this->checkitem($editItem['item_manu_name'][$i], $this->session->userdata('objSystemUser')->accountid) == 0) {
+//                echo $this->checkitem($editItem['item_manu_name'][$i], $this->session->userdata('objSystemUser')->accountid);
+                if ($this->checkitem($editItem['item_manu_name'][$i], $this->session->userdata('objSystemUser')->accountid) != 0) {
                     $this->db->set('item_manu_name', $editItem['item_manu_name'][$i]);
                     $this->db->where('id', $editItem['item_id'][$i]);
                     $this->db->update('item_manu');
@@ -192,7 +192,7 @@ class Admin_Section_Model extends CI_Model {
                     'manufacturer_name' => $editManufacturer['manufacturer_name'][$i]
                 );
 
-                if ($this->checkmanufacturer($editManufacturer['manufacturer_name'][$i], $this->session->userdata('objSystemUser')->accountid) == 0) {
+                if ($this->checkmanufacturer($editManufacturer['manufacturer_name'][$i], $this->session->userdata('objSystemUser')->accountid) != 0) {
                     $this->db->set('manufacturer_name', $editManufacturer['manufacturer_name'][$i]);
                     $this->db->where('id', $editManufacturer['manufacturer_id'][$i]);
                     $this->db->update('manufacturer_list');
@@ -474,7 +474,6 @@ class Admin_Section_Model extends CI_Model {
 
     // add category
     public function addCategory($arrCategory) {
-
         if (isset($arrCategory)) {
             $this->db->insert('categories', $arrCategory);
             return $this->db->insert_id();
@@ -854,7 +853,7 @@ class Admin_Section_Model extends CI_Model {
                 $userid = $this->db->insert_id();
             }
             if ($value['owner'] == 1) {
-                $data = array('owner_name' => $value['user_name'],
+                $data = array('owner_name' => $value['first_name'].' '.$value['last_name'],
                     'account_id' => $arrPageData['arrSessionData']['objSystemUser']->accountid,
                     'active' => 1,
                     'is_user' => $id);
@@ -2088,7 +2087,6 @@ class Admin_Section_Model extends CI_Model {
             $this->db->where('account_id', $account_id);
             $query = $this->db->get('item_manu');
             $rowcount = $query->num_rows();
-
             return $rowcount;
         }
     }
@@ -2287,6 +2285,7 @@ class Admin_Section_Model extends CI_Model {
     }
 
     public function updateMultiplecategories($data) {
+//        var_dump($data);die;
         $this->load->model('customfields_model');
 
         if ($data['category_id'] != '') {
@@ -2338,9 +2337,11 @@ class Admin_Section_Model extends CI_Model {
                     unset($cat[$key]);
                 }
             }
-
             if (empty($cat)) {
-                
+                $cat['custom_fields'] = '';
+               for ($j = 0; $j < count($ids); $j++) {
+                    $this->db->where('id', $ids[$j])->update('categories', $cat);
+                }
             } else {
                 for ($j = 0; $j < count($ids); $j++) {
                     $this->db->where('id', $ids[$j])->update('categories', $cat);

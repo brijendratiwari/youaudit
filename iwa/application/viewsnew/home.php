@@ -794,12 +794,12 @@
                                 </span>
                             </div>
                             <div class="list-group-item">
-                                Total Asset
+                                Total Assets
                                 <span class="pull-right text-muted small"><em><?php echo $arrTotalItemsOnAccount[0]->total_items; ?></em>
                                 </span>
                             </div>
                             <div class="list-group-item">
-                                Asset Remaining
+                                Assets Remaining
                                 <span class="pull-right text-muted small"><em><?= $intItemsRemainingOnAccount; ?></em>
                                 </span>
                             </div>
@@ -907,6 +907,7 @@
                                     <th>Category</th>
                                     <th>Location</th>
                                     <th>Owner</th>
+                                    <th>Date Added</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -917,10 +918,11 @@
                                         ?>
                                         <tr>
                                             <td><a href="<?php echo base_url($strUrl); ?>"><?php echo $objItem->barcode; ?></a></td>
-                                            <td> <?php echo $objItem->item_manu; ?></td>
+                                            <td> <?php echo Welcome::getItemManu($objItem->item_manu,$this->session->userdata('objSystemUser')->accountid); ?></td>
                                             <td> <?php echo $objItem->categoryname; ?></td>
                                             <td> <?php echo $objItem->locationname; ?></td>
-                                            <td> <?php echo 'Remaining adding'; ?></td>
+                                            <td> <?php echo $objItem->owner_name; ?></td>
+                                            <td> <?php echo date('Y/m/d',strtotime($objItem->added_date)); ?></td>
 
                                         </tr>
                                         <?php
@@ -957,7 +959,7 @@
                                         <tr>
 
                                             <td><?php echo $objItem->category_name; ?></td>
-                                            <td><?php echo $objItem->item_manu; ?></td>
+                                            <td><?php echo Welcome::getItemManu($objItem->item_manu,$this->session->userdata('objSystemUser')->accountid); ?></td>
                                             <td><?php echo $objItem->manufacturer; ?></td>
                                             <td><?php echo $objItem->count; ?></td>
                                         </tr>
@@ -1003,7 +1005,7 @@
                                                 <td><a href="<?php echo base_url($strUrl);
                                             ?>"><?php echo $objItem->barcode; ?></a></td>
 
-                                                <td><?php echo $objItem->item_manu; ?></td>
+                                                <td><?php echo $objItem->item_manu_name  ; ?></td>
                                                 <td><?php echo $objItem->category_name; ?></td>
                                                 <td><?php echo $objItem->location_name; ?></td>
                                                 <td><?php echo $objItem->item_manu; ?></td>
@@ -1064,10 +1066,10 @@
                                         ?>
                                         <tr>
                                             <td><a href="<?php echo base_url($strUrl); ?>"><?php echo $fault->barcode; ?></a></td>
-                                            <td><?php echo $fault->item_manu; ?></td>
+                                            <td><?php echo Welcome::getItemManu($fault->item_manu,$this->session->userdata('objSystemUser')->accountid); ?></td>
                                             <td><?php echo $fault->categoryname; ?></td>
                                             <td><?php echo $fault->locationname; ?></td>
-                                            <td><?php echo $fault->ownername; ?></td>
+                                            <td><?php echo $fault->owner_name; ?></td>
                                         </tr>
                                         <?php
                                     }
@@ -1100,7 +1102,7 @@
                                     ?>
                                     <tr>
                                         <td><a href="<?php echo base_url($strUrl); ?>"><?php echo $missingItem['barcode']; ?></a></td>
-                                        <td><?php echo $missingItem['item_manu']; ?></td>
+                                        <td><?php echo Welcome::getItemManu($missingItem['item_manu'],$this->session->userdata('objSystemUser')->accountid); ?></td>
                                         <td><?php echo $missingItem['categoryname']; ?></td>
                                         <td><?php echo $missingItem['locationname']; ?></td>
                                         <td><?php echo $missingItem['firstname'] . " " . $missingItem['lastname']; ?></td>
