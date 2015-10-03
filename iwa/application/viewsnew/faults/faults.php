@@ -389,7 +389,6 @@
                             $(opt).attr('selected', 'selected');
                         }
                     });
-                    alert(data.allPhoto);
                         if (data.allPhoto != null) {
                         var updatePhoto = data.allPhoto.split(',');
                     }
@@ -983,7 +982,7 @@
                     e.preventDefault();
                     if (x < max_fields) { //max input box allowed
                         x++; //text box increment
-                        $(".input_fields_wrap").append('<div> <input class="fileupload upload form-control" type="file" name="photo_file_' + x + '" size="20"><a href="#" class="remove_field1">Remove</a></div>'); //add input box
+                        $(".input_fields_wrap1").append('<div> <input class="fileupload upload form-control" type="file" name="photo_file_' + x + '" size="20"><a href="#" class="remove_field1">Remove</a></div>'); //add input box
 
 
                     }

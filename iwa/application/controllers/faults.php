@@ -278,9 +278,14 @@ $strHtml .= "<div>&nbsp;</div>";
         $strHtml .= "<table class=\"report\">";
                $strHtml .= "<tbody>";
             $strHtml .= "<tr>";
-
-    $strHtml .= "<td style='padding:10px;'><div style='width:500px;height:200px;'><img width='300' height='200' alt=\"ictracker\" src='".  base_url()."index.php/images/viewList/".$fullItemsData[0]->photoid."'></div></td>";
-            $strHtml .= "</tr>";
+//var_dump($fullItemsData);die;
+             $photoIds = explode(",",$fullItemsData[0]->photoid);
+             $strHtml .= "<td style='padding:10px;'><div style='width:1000px;height:200px;'>";
+             foreach ($photoIds as $photo_id){
+            $faultPhoto = $this->getPhotoPath($photo_id);
+             $strHtml .= "<img style='margin-left:7px;' width='300' height='200' alt=\"ictracker\" src='".base_url($faultPhoto)."'>";
+       }        
+    $strHtml .= "</div></td></tr>";
         $strHtml .= "</tbody></table>";
         //#############################################
                $strHtml .= "<div>&nbsp;</div>";
@@ -326,7 +331,7 @@ $strHtml .= "<div>&nbsp;</div>";
         
 $strHtml .= "</body></html>";
         
-//      echo $strHtml;die;  
+      echo $strHtml;die;  
        $this->load->library('Mpdf');
             $mpdf = new Pdf('en-GB', 'A4');
            // $mpdf->setFooter('{PAGENO} of {nb}');
@@ -914,6 +919,16 @@ $strHtml .= "</body></html>";
           redirect('/faults/filter');
      }
  } 
+ 
+ public function getPhotoPath($photo_id){
+     
+     $res = $this->db->select('path')->from('photos')->where('id',$photo_id)->get();
+     if($res->num_rows() > 0){
+         return $res->result_array()[0]['path'];
+     }else{
+         return FALSE;
+     }
+ }
 }
 
 /* End of file faults.php */
