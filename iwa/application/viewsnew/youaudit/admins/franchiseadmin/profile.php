@@ -121,13 +121,13 @@
                         });
                         var owner_arr = owner_obj.join('\n');
                         if (owner_arr) {
-                            owner_str = '<textarea name="owner[]" class="form-control item">' + owner_arr + '</textarea>';
+                            owner_str = '<textarea name="owner[]" class="form-control item" rows="30">' + owner_arr + '</textarea>';
                             $("#owner_list").append(owner_str);
                         }
                     }
                     else
                     {
-                        owner_str = '<textarea name="owner[]" class="form-control item"></textarea>';
+                        owner_str = '<textarea name="owner[]" class="form-control item" rows="30"></textarea>';
                         $("#owner_list").append(owner_str);
                     }
 
@@ -144,13 +144,13 @@
                         });
                         var category_arr = category_obj.join('\n');
                         if (category_arr) {
-                            category_str = '<textarea name="category[]" class="form-control item">' + category_arr + '</textarea>';
+                            category_str = '<textarea name="category[]" class="form-control item" rows="30">' + category_arr + '</textarea>';
                             $("#categories_list").append(category_str);
                         }
                     }
                     else
                     {
-                        category_str = '<textarea name="category[]" class="form-control item"></textarea>';
+                        category_str = '<textarea name="category[]" class="form-control item" rows="30"></textarea>';
                         $("#categories_list").append(category_str);
                     }
 
@@ -167,13 +167,13 @@
                         });
                         var item_arr = item_obj.join('\n');
                         if (item_arr) {
-                            item_str = '<textarea name="item[]" class="form-control item">' + item_arr + '</textarea>';
+                            item_str = '<textarea name="item[]" class="form-control item" rows="30">' + item_arr + '</textarea>';
                             $("#item_list").append(item_str);
                         }
                     }
                     else
                     {
-                        item_str = '<textarea name="item[]" class="form-control item"></textarea>';
+                        item_str = '<textarea name="item[]" class="form-control item" rows="30"></textarea>';
                         $("#item_list").append(item_str);
                     }
 
@@ -190,13 +190,13 @@
                         });
                         var manufacturer_arr = manufacturer_obj.join('\n');
                         if (manufacturer_arr) {
-                            manufacturer_str = '<textarea name="manufacturer[]" class="form-control item">' + manufacturer_arr + '</textarea>';
+                            manufacturer_str = '<textarea name="manufacturer[]" class="form-control item" rows="30">' + manufacturer_arr + '</textarea>';
                             $("#manufacturer_list").append(manufacturer_str);
                         }
                     }
                     else
                     {
-                        manufacturer_str = '<textarea name="manufacturer[]" class="form-control item"></textarea>';
+                        manufacturer_str = '<textarea name="manufacturer[]" class="form-control item" rows="30"></textarea>';
                         $("#manufacturer_list").append(manufacturer_str);
                     }
 
@@ -316,13 +316,13 @@
                         });
                         var owner_arr = owner_obj.join('\n');
                         if (owner_arr) {
-                            owner_str = '<textarea disabled name="owner[]" class="form-control item">' + owner_arr + '</textarea>';
+                            owner_str = '<textarea disabled name="owner[]" class="form-control item" rows="30">' + owner_arr + '</textarea>';
                             $("#owner_list").append(owner_str);
                         }
                     }
                     else
                     {
-                        owner_str = '<textarea disabled name="owner[]" class="form-control item"></textarea>';
+                        owner_str = '<textarea disabled name="owner[]" class="form-control item" rows="30"></textarea>';
                         $("#owner_list").append(owner_str);
                     }
 
@@ -345,13 +345,13 @@
                         });
                         var category_arr = category_obj.join('\n');
                         if (category_arr) {
-                            category_str = '<textarea disabled name="category[]" class="form-control item">' + category_arr + '</textarea>';
+                            category_str = '<textarea disabled name="category[]" class="form-control item" rows="30">' + category_arr + '</textarea>';
                             $("#categories_list").append(category_str);
                         }
                     }
                     else
                     {
-                        category_str = '<textarea disabled name="category[]" class="form-control item"></textarea>';
+                        category_str = '<textarea disabled name="category[]" class="form-control item" rows="30"></textarea>';
                         $("#categories_list").append(category_str);
                     }
 
@@ -374,13 +374,13 @@
                         });
                         var item_arr = item_obj.join('\n');
                         if (item_arr) {
-                            item_str = '<textarea disabled name="item[]" class="form-control item">' + item_arr + '</textarea>';
+                            item_str = '<textarea disabled name="item[]" class="form-control item" rows="30">' + item_arr + '</textarea>';
                             $("#item_list").append(item_str);
                         }
                     }
                     else
                     {
-                        item_str = '<textarea disabled name="item[]" class="form-control item"></textarea>';
+                        item_str = '<textarea disabled name="item[]" class="form-control item" rows="30"></textarea>';
                         $("#item_list").append(item_str);
                     }
 
@@ -403,13 +403,13 @@
                         });
                         var manufacturer_arr = manufacturer_obj.join('\n');
                         if (manufacturer_arr) {
-                            manufacturer_str = '<textarea disabled name="manufacturer[]" class="form-control item">' + manufacturer_arr + '</textarea>';
+                            manufacturer_str = '<textarea disabled name="manufacturer[]" class="form-control item" rows="30">' + manufacturer_arr + '</textarea>';
                             $("#manufacturer_list").append(manufacturer_str);
                         }
                     }
                     else
                     {
-                        manufacturer_str = '<textarea disabled name="manufacturer[]" class="form-control item"></textarea>';
+                        manufacturer_str = '<textarea disabled name="manufacturer[]" class="form-control item" rows="30"></textarea>';
                         $("#manufacturer_list").append(manufacturer_str);
                     }
 
@@ -521,13 +521,13 @@
                         });
                         var owner_arr = owner_obj.join('\n');
                         if (owner_arr) {
-                            owner_str = '<textarea disabled name="owner[]" class="form-control item">' + owner_arr + '</textarea>';
+                            owner_str = '<textarea disabled name="owner[]" class="form-control item" rows="30">' + owner_arr + '</textarea>';
                             $("#owner_list").append(owner_str);
                         }
                     }
                     else
                     {
-                        owner_str = '<textarea disabled name="owner[]" class="form-control item"></textarea>';
+                        owner_str = '<textarea disabled name="owner[]" class="form-control item" rows="30"></textarea>';
                         $("#owner_list").append(owner_str);
                     }
 
@@ -544,13 +544,13 @@
                         });
                         var category_arr = category_obj.join('\n');
                         if (category_arr) {
-                            category_str = '<textarea disabled name="category[]" class="form-control item">' + category_arr + '</textarea>';
+                            category_str = '<textarea disabled name="category[]" class="form-control item" rows="30">' + category_arr + '</textarea>';
                             $("#categories_list").append(category_str);
                         }
                     }
                     else
                     {
-                        category_str = '<textarea disabled name="category[]" class="form-control item"></textarea>';
+                        category_str = '<textarea disabled name="category[]" class="form-control item" rows="30"></textarea>';
                         $("#categories_list").append(category_str);
                     }
 
@@ -567,13 +567,13 @@
                         });
                         var item_arr = item_obj.join('\n');
                         if (item_arr) {
-                            item_str = '<textarea disabled name="item[]" class="form-control item">' + item_arr + '</textarea>';
+                            item_str = '<textarea disabled name="item[]" class="form-control item" rows="30">' + item_arr + '</textarea>';
                             $("#item_list").append(item_str);
                         }
                     }
                     else
                     {
-                        item_str = '<textarea disabled name="item[]" class="form-control item"></textarea>';
+                        item_str = '<textarea disabled name="item[]" class="form-control item" rows="30"></textarea>';
                         $("#item_list").append(item_str);
                     }
 
@@ -590,13 +590,13 @@
                         });
                         var manufacturer_arr = manufacturer_obj.join('\n');
                         if (manufacturer_arr) {
-                            manufacturer_str = '<textarea disabled name="manufacturer[]" class="form-control item">' + manufacturer_arr + '</textarea>';
+                            manufacturer_str = '<textarea disabled name="manufacturer[]" class="form-control item" rows="30">' + manufacturer_arr + '</textarea>';
                             $("#manufacturer_list").append(manufacturer_str);
                         }
                     }
                     else
                     {
-                        manufacturer_str = '<textarea disabled name="manufacturer[]" class="form-control item"></textarea>';
+                        manufacturer_str = '<textarea disabled name="manufacturer[]" class="form-control item" rows="30"></textarea>';
                         $("#manufacturer_list").append(manufacturer_str);
                     }
 
@@ -1146,19 +1146,19 @@ if ($this->session->flashdata('error')) {
                 <div class="form-group col-md-12" id="profileadd">
                     <div class="col-md-2" id="profile_owner">
                         <div class="profilehead">Owners</div>
-                        <div class="multi-field"><textarea class="form-control pull-left" name="owner_name[]" id="owners"></textarea></div>
+                        <div class="multi-field"><textarea class="form-control pull-left" name="owner_name[]" id="owners" rows="30"></textarea></div>
                     </div>
                     <div class="col-md-2" id="profile_category">
                         <div class="profilehead">Categories</div>
-                        <textarea class="form-control pull-left" name="category_name[]" id="categories"></textarea>
+                        <textarea class="form-control pull-left" name="category_name[]" id="categories" rows="30"></textarea>
                     </div>
                     <div class="col-md-2" id="profile_item">
                         <div class="profilehead">Item</div>
-                        <textarea class="form-control pull-left" name="manu_name[]" id="manus"></textarea>
+                        <textarea class="form-control pull-left" name="manu_name[]" id="manus" rows="30"></textarea>
                     </div>
                     <div class="col-md-2" id="profile_manufacturer">
                         <div class="profilehead">Manufacturer</div> 
-                        <textarea class="form-control pull-left" name="manufacturer_name[]" id="manufactures"></textarea>
+                        <textarea class="form-control pull-left" name="manufacturer_name[]" id="manufactures" rows="30"></textarea>
                     </div>
                     <div class="col-md-2" id="profile_field">
                         <div class="profilehead">Custom Field Name</div> 
