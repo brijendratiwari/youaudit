@@ -924,7 +924,8 @@ $strHtml .= "</body></html>";
      
      $res = $this->db->select('path')->from('photos')->where('id',$photo_id)->get();
      if($res->num_rows() > 0){
-         return $res->result_array()[0]['path'];
+         $photos = $res->result_array();
+         return $photos[0]['path'];
      }else{
          return FALSE;
      }
