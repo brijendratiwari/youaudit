@@ -6,7 +6,9 @@
         $logo = 'logo.png';
     }
     ?>
-    <div class='logo_cls'><img alt='Youaudit' src="http://<?php echo $_SERVER['HTTP_HOST']; ?>/youaudit/iwa/brochure/logo/<?php echo $logo; ?>"></div>
+    <div class='logo_cls'>
+        <div style="float: left;font-weight:bold;font-size:20px;"><?php echo $this->session->userdata['objSystemUser']->firstname.''.$this->session->userdata['objSystemUser']->lastname.'/'.$this->session->userdata['objSystemUser']->accountname; ?></div>
+        <img alt='Youaudit' src="http://<?php echo $_SERVER['HTTP_HOST']; ?>/youaudit/iwa/brochure/logo/<?php echo $logo; ?>"></div>
 </div>
 <div id="wrapper">
     <div id="content">
