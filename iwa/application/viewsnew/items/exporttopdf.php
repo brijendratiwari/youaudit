@@ -24,9 +24,11 @@ if ($this->session->userdata['theme_design']->logo) {
     <body>
         <div class="main_container" style='width: 100%;'>
             <div class="border_top">
+                <div style="float: left;font-weight:bold;font-size:20px;"><?php echo $this->session->userdata['objSystemUser']->firstname.''.$this->session->userdata['objSystemUser']->lastname.'/'.$this->session->userdata['objSystemUser']->accountname; ?></div>
                 <!--<img src="<?php // echo 'http://' . $_SERVER['HTTP_HOST'];  ?>/youaudit/includes/report_files/images/border_bg.png"/>-->
-                <img alt='Youaudit' src='<?php echo base_url('brochure/logo/' . $logo); ?>'>
+                <div style="float: left;"><img alt='Youaudit' src='<?php echo base_url('brochure/logo/' . $logo); ?>'></div>
             </div>
+            <div style="clear:both;"></div>
             <!--            <div class="logo">
                             <img src="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/includes/report_files/images/logo.png"/>
                         </div>-->
@@ -51,7 +53,7 @@ if ($this->session->userdata['theme_design']->logo) {
             </div>
 
             <div class="border_top border_top1 footer_bg">
-                <img src="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/report_files/images/border_bg.png"/>
+                <!--<img src="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/report_files/images/border_bg.png"/>-->
             </div>
         </div>
     </body>
