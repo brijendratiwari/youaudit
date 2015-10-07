@@ -57,6 +57,9 @@
         min-height: 75px;
         overflow: auto !important;
     }
+    .categorylist{
+        width:100px !important;
+    }
 </style>
 <script>
     $(document).ready(function() {
