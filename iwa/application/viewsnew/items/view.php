@@ -63,37 +63,49 @@
     {
         display: none;
     }
+    .input_fields_wrap .file-select {
+        width: 100%;
+    }
+    .input_fields_wrap .file-select .selectedpdf {
+        font-size: 70%;
+    }
+    .input_pdf_wrap .selectedpdf {
+        font-size: 66%;
+    }
+    .nopadding {
+        padding: 0;
+    }
 </style>
 <script>
 
 
-    function Handlechange()
+ function Handlechange()
     {
         var fileinput = document.getElementById("item_photo");
-        document.getElementById("select_file").innerHTML = fileinput.value.replace("C:\\fakepath\\", "");
+        document.getElementById("select_file").innerHTML = '<span class="selectedpdf">'+ fileinput.value.replace("C:\\fakepath\\", "")+'</span>';
     }
     function Handle_change(img_id)
     {
         var fileinput = document.getElementById("photo_file_" + img_id);
-        document.getElementById("select_file" + img_id).innerHTML = fileinput.value.replace("C:\\fakepath\\", "");
+        document.getElementById("select_file" + img_id).innerHTML = '<span class="selectedpdf">'+ fileinput.value.replace("C:\\fakepath\\", "")+'</span>';
     }
 
     function Handlefilechange()
     {
         var fileinput = document.getElementById('pdf');
-        document.getElementById("select-pdf").innerHTML = fileinput.value.replace("C:\\fakepath\\", "");
+        document.getElementById("select-pdf").innerHTML = '<span class="selectedpdf">'+fileinput.value.replace("C:\\fakepath\\", "")+'</span>';
     }
     function Handle_filechange(doc)
     {
         var fileinput = document.getElementById('pdf_file_' + doc);
-        document.getElementById("select-pdf" + doc).innerHTML = fileinput.value.replace("C:\\fakepath\\", "");
+        document.getElementById("select-pdf" + doc).innerHTML = '<span class="selectedpdf">'+ fileinput.value.replace("C:\\fakepath\\", "")+'</span>';
     }
-    function goBack() {
-//    base_url = $('#base_url').val();
-//            window.location.href = base_url + "index.php/items/filter";
-        parent.history.back();
-        return false;
-    }
+//    function goBack() {
+////    base_url = $('#base_url').val();
+////            window.location.href = base_url + "index.php/items/filter";
+//        parent.history.back();
+//        return false;
+//    }
 
 //    function showImg() {
 //        $('.ui-lightbox-gallery').each(function() {
@@ -150,11 +162,12 @@
         var y = 1;
         //initlal text box count
 
-        $(add_button).click(function(e) { //on add input button click
+            $(add_button).click(function(e) { //on add input button click
             e.preventDefault();
             if (x < max_fields) { //max input box allowed
                 x++; //text box increment
-                $(wrapper).append('<div style="height:48px;"><span class="col-lg-12" style="padding-top:10px;"><span class="col-lg-5" style="padding: 0"><span class="file-select" id="select_file' + x + '">choose file <i class="fa fa-sort pull-right"></i></span><input class="item_photo col-lg-10" id="photo_file_' + x + '" type="file" name="photo_file_' + x + '" value="upload" onChange="Handle_change(' + x + ');" style="opacity: 0"></span><button class="btn btn-primary btn-circle btn-xs remove_file" onclick="rem(' + x + ')" title="remove image" type="button"><i class="glyphicon glyphicon-minus"></i></button></span></div>');
+                $(wrapper).append('<div class="" style="height:48px;"><span class="col-lg-12" style="padding-top:10px !important; padding:0px; ">\n\
+    <span class="col-lg-6" style="padding: 0"><span class="file-select" id="select_file' + x + '">choose file <i class="fa fa-sort pull-right"></i></span><input class="item_photo col-lg-10" id="photo_file_' + x + '" type="file" name="photo_file_' + x + '" value="upload" onChange="Handle_change(' + x + ');" style="opacity: 0;"></span><button class="btn btn-primary btn-circle btn-xs remove_file" onclick="rem(' + x + ')" title="remove image" type="button"><i class="glyphicon glyphicon-minus"></i></button></span></div>');
 //            $(wrapper).append(' <div> <input class="fileupload upload form-control" type="file" name="photo_file_' + x + '" size="20"><a href="#" class="remove_field">Remove</a></div>'); //add input box
             }
         });
@@ -162,7 +175,7 @@
             e.preventDefault();
             if (y < max_fields) { //max input box allowed
                 y++; //text box increment
-                $(".input_pdf_wrap").append('<div style="height:48px;"><span class="col-lg-12" style="padding-top:10px;"><span class="col-lg-5" style="padding: 0"><span class="file-select" id="select-pdf' + y + '">choose file <i class="fa fa-sort pull-right"></i></span><input class="item_photo col-lg-10" id="pdf_file_' + y + '" type="file" name="pdf_file_' + y + '" value="upload" onChange="Handle_filechange(' + y + ');" style="opacity: 0"></span><button class="btn btn-primary btn-circle btn-xs remove_file" onclick="rem_pdf(' + y + ')" title="remove image" type="button"><i class="glyphicon glyphicon-minus"></i></button></span></div>');
+                $(".input_pdf_wrap").append('<div class="pdf_wrap_" style="height:48px;"><span class="col-lg-12" style="padding-top:10px !important;padding:0px;"><span class="col-lg-6" style="padding: 0"><span class="file-select" id="select-pdf' + y + '">choose file <i class="fa fa-sort pull-right"></i></span><input class="item_photo col-lg-10" id="pdf_file_' + y + '" type="file" name="pdf_file_' + y + '" value="upload" onChange="Handle_filechange(' + y + ');" style="opacity: 0"></span><button class="btn btn-primary btn-circle btn-xs remove_file" onclick="rem_pdf(' + y + ')" title="remove image" type="button"><i class="glyphicon glyphicon-minus"></i></button></span></div>');
 //            $(wrapper).append(' <div> <input class="fileupload upload form-control" type="file" name="photo_file_' + x + '" size="20"><a href="#" class="remove_field">Remove</a></div>'); //add input box
             }
         });
@@ -1107,12 +1120,12 @@
                     <form enctype="multipart/form-data" class="blue-border" accept-charset="utf-8" method="post" action="<?php echo base_url('/items/photo_upload/' . $objItem->itemid); ?>">
                         <div class="panel-footer input_fields_wrap">
 
-                            <span class="col-lg-12">
-                                <span class="col-lg-4" style="padding: 0"> 
+                            <span class="col-lg-12 nopadding">
+                                <span class="col-lg-6" style="padding: 0"> 
                                     <span class="file-select" id="select_file">choose file <i class="fa fa-sort pull-right"></i></span>
-                                    <input class="item_photo" id="item_photo" type="file" name="photo_file_1" value="upload" onChange="Handlechange();"   style="opacity: 0" id="image_file"> </span>
-                                <span class="col-lg-4"><button type="button" title="add more image" class="btn btn-primary btn-circle btn-xs add_field_button"><i class="glyphicon glyphicon-plus"></i> Add More<br>Image</button></span>
-                                <span class="col-lg-3" style="padding: 0"><button  class="grad pic_button">UPLOAD</button></span>
+                                    <input class="item_photo" id="item_photo" type="file" name="photo_file_1" value="upload" onChange="Handlechange();"   style="opacity: 0; width: 100%" id="image_file"> </span>
+                                <span class="col-lg-4"><button type="button" title="add more image" class="btn btn-primary btn-circle btn-xs add_field_button"><i class="glyphicon glyphicon-plus"></i> Add More</button></span>
+                                <span class="col-lg-2 pull-right" style="padding: 0;"><button  class="grad pic_button">UPLOAD</button></span>
                                 <input type="hidden" name="pervious_image" value="<?php echo $objItem->photo_id; ?>">
                             </span>
                         </div>
@@ -1145,11 +1158,17 @@
                     </div>
                     <form enctype="multipart/form-data" class="blue-border" accept-charset="utf-8" method="post" action="<?php echo base_url('/items/pdf_upload'); ?>">
                         <div class="panel-footer input_pdf_wrap">
-                            <span class="col-lg-12"><span class="col-lg-4" style="padding: 0">
+                            <span class="col-lg-12" style="padding: 0px;">
+                                <span class="col-lg-6" style="padding: 0">
                                     <span class="file-select" id="select-pdf">choose file <i class="fa fa-sort pull-right"></i></span>
-                                    <input class="item_photo" id="pdf" type="file" name="pdf_file_1" value="upload" style="opacity: 0" onChange="Handlefilechange(this);"> </span>
-                                <span class="col-lg-4"><button type="button" title="add more pdf" class="btn btn-primary btn-circle btn-xs add_pdf_button"><i class="glyphicon glyphicon-plus"></i> Add More<br>Pdf</button></span>
-                                <span class="col-lg-3" style="padding: 0"><button type="submit" class="pic_button grad">UPLOAD</button></span>
+                                    <input class="item_photo" id="pdf" type="file" name="pdf_file_1" value="upload" style="opacity: 0; width: 100%;" onChange="Handlefilechange(this);"> </span>
+                                <span class="col-lg-4">
+                                    <button type="button" title="add more pdf" class="btn btn-primary btn-circle btn-xs add_pdf_button">
+                                        <i class="glyphicon glyphicon-plus"></i> Add More</button>
+                                </span>
+                                <span class="col-md-2 pull-right" style="padding: 0">
+                                    <button type="submit" class="pic_button grad">UPLOAD</button>
+                                </span>
                             </span>
                         </div>
                         <input type="hidden" name="item_id" value="<?php echo $objItem->itemid; ?>" >

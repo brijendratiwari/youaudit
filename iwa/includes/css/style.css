@@ -577,8 +577,8 @@ label .form_help{
 .fileupload {
     float: left;
     margin-left: 2%;
-	padding:0 !important;
-	margin-bottom:10px;
+    padding:0 !important;
+    margin-bottom:10px;
 }
 .pdf_upload {
     border: 1px solid #EEEEEE;
@@ -775,7 +775,14 @@ div#content div.box_content div.content_main div.pagination strong {
     font-weight: bold;
     padding: 4px;
     text-align: center;
-    width: 150px;
+    width: 80px;
+}
+.file-select
+{
+    font-size: 12px;
+}
+.btn.btn-primary.btn-circle.btn-xs.remove_file {
+    margin-left: 20px;
 }
 #item_table thead tr th, #item_table tbody tr td /*,#open_jobs thead tr th, #open_jobs tbody tr td, #fix_jobs_filter .table thead tr th, #fix_jobs_filter .table tbody tr td*/ {
     min-width: 150px; text-align: center !important;
@@ -846,7 +853,7 @@ table.dataTable thead .sorting{background: url("../images/sort_both.png") no-rep
     top: 10px;
     width: auto;
     text-transform: uppercase;
-    
+
 }
 /*.eamil_conform.aligncenter.sorting_1 img {
     float: left;
@@ -867,10 +874,10 @@ table.dataTable thead .sorting{background: url("../images/sort_both.png") no-rep
     max-width: 350px !important;
 }
 .logocls {
-        float: right;
-        padding: 10px 5px;
-        width: 140px;
-        overflow: hidden;
+    float: right;
+    padding: 10px 5px;
+    width: 140px;
+    overflow: hidden;
 }
 .img_replace{
     display: block;
@@ -883,7 +890,7 @@ table.dataTable thead .sorting{background: url("../images/sort_both.png") no-rep
     width: 100%;
     background-size: 100% auto;
     padding-top: 0px;
-    
+
 }	
 .back {
     border-radius: 4px !important;

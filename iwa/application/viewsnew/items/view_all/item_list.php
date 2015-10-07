@@ -979,14 +979,34 @@
         // ----------CSV Export----------------        
         $('#exportCsvButton').on('click', function(e) {
             var data1 = $("#item_table").dataTable()._('tr', {"filter": "applied"});
-
+            var purchase = 0;
+            var current = 0;
+            var purchaseArr = [];
+            var currentArr = [];
             var data = data1.map(function(row) {
                 var rowArr = [];
+
                 $.each(arr, function(i, v) {
                     rowArr.push(row[v]);
+                    if (v == 20) {
+                        purchaseArr.push(row[v]);
+                    }
+                    if (v == 21) {
+                        currentArr.push(row[v]);
+                    }
                 });
                 return rowArr.join(',');
             }).join('|');
+
+            for (var s = 0; s < purchaseArr.length; s++)
+            {
+                purchase += Number(purchaseArr[s]);
+            }
+            
+            for (var t = 0; t < currentArr.length; t++)
+            {
+                current += Number(currentArr[t]);
+            }
 
             var cloneHead = [];
             var cloneFoot = [];
@@ -1004,6 +1024,7 @@
             var heads = cloneHead.split(',');
             var reshead = [];
             var thCount = 0;
+            var thfCount = 0;
             $.each(heads, function(i, v) {
                 if (thCount != 1) {
                     reshead.push(heads[i]);
@@ -1012,13 +1033,20 @@
             });
             var foots = cloneFoot.split(',');
             var resfoot = [];
-            $.each(foots, function(j, v) {
-                if (heads[j] != 'Photo') {
+            $.each(foots, function(j, v) { 
+                if (thfCount != 1) {
                     if (j == '0') {
                         foots[j] = 'Summary- TOTAL / COUNT = ' + data1.length + '';
                     }
+                    if (heads[j].search("Purchase Price") != '-1') {
+                        foots[j] = purchase;
+                    }
+                    if (heads[j].search("Current Value") != '-1') { 
+                        foots[j] = current;
+                    }
                     resfoot.push(foots[j]);
                 }
+                thfCount++;
             });
             $('#csv_table_content').val(reshead + '|' + data + '|' + resfoot);
             $('#export_csv_form').submit();
@@ -1059,6 +1087,37 @@
             }
         });
 
+// Establish Link to Owner,Location and Site
+        $('body').find('#owner_id_similar').change(function() {
+            var owner_id = this.value;
+            if (owner_id != 0) {
+                $.getJSON("<?php echo base_url('items/getlocationbyowner'); ?>" + '/' + owner_id, function(data) {
+
+                    if (data.results.length != 0) {
+                        $('.multilocationclass option[value="' + data.results[0].location_id + '"]').attr('selected', 'selected');
+                        $.getJSON("<?php echo base_url('items/getsitebylocation'); ?>" + '/' + data.results[0].location_id, function(site_data) {
+                            if (site_data != null)
+                            {
+                                $('.multisiteclass option[value="' + site_data.results[0].site_id + '"]').attr('selected', 'selected');
+                            }
+                            else {
+                                $('.multisiteclass option[value="0"]').attr('selected', 'selected');
+                            }
+                        });
+                    }
+                    else {
+                        $('.multilocationclass option[value="0"]').attr('selected', 'selected');
+                        $('.multisiteclass option[value="0"]').attr('selected', 'selected');
+                    }
+                });
+            }
+            else
+            {
+                $('.multilocationclass option[value="0"]').attr('selected', 'selected');
+                $('.multisiteclass option[value="0"]').attr('selected', 'selected');
+            }
+        });
+
 
         // establish link and site link
 
@@ -1072,7 +1131,7 @@
                     }
                     else
                     {
-                        $('#owner_id option[value="0"]').attr('selected', 'selected');
+//                        $('#owner_id option[value="0"]').attr('selected', 'selected');
                     }
                 });
                 $.getJSON("<?php echo base_url('items/getlocationbysite'); ?>" + '/' + site_id, function(data) {
@@ -1106,6 +1165,7 @@
                 });
             }
         });
+
         // select site accroding to location for multi acc
         $(document).find('.multi_location_class').change(function() {
 
@@ -1117,7 +1177,7 @@
                 }
                 else
                 {
-                    $('#owner_id option[value="0"]').attr('selected', 'selected');
+//                    $('#owner_id option[value="0"]').attr('selected', 'selected');
                 }
             });
             $.getJSON("<?php echo base_url('items/getsitebylocation'); ?>" + '/' + site_id, function(data) {
@@ -1127,6 +1187,78 @@
                 }
                 else {
                     $('.multi_site_class option[value="0"]').attr('selected', 'selected');
+                }
+            });
+        });
+
+        // establish link and site link for similar item
+
+        $(document).find('.multisiteclass').change(function() {
+            $(".multilocationclass").empty();
+            var site_id = this.value;
+            if (site_id != 0) {
+                $.getJSON("<?php echo base_url('items/getownerbysite'); ?>" + '/' + site_id, function(data) {
+                    if (data.results.length != 0) {
+                        $('#owner_id_similar option[value="' + data.results[0].id + '"]').attr('selected', 'selected');
+                    }
+                    else
+                    {
+//                        $('#owner_id option[value="0"]').attr('selected', 'selected');
+                    }
+                });
+                $.getJSON("<?php echo base_url('items/getlocationbysite'); ?>" + '/' + site_id, function(data) {
+                    if (data.results.length != 0) {
+
+                        var location_data = '';
+                        for (var i = 0; i < data.results.length; i++) {
+                            location_data += '<option value=' + data.results[i].id + '>' + data.results[i].name + '</option>';
+                        }
+                        $(".multilocationclass").append(location_data);
+                    }
+                    else {
+                        $(".multilocationclass").append("<option value='0'>Not Set</option>");
+                    }
+                });
+            }
+            else {
+                $.getJSON("<?php echo base_url('items/getalllocation'); ?>", function(data) {
+                    if (data.results.length != 0) {
+
+                        var location_data = '';
+                        location_data += "<option value='0'>Not Set</option>";
+                        for (var i = 0; i < data.results.length; i++) {
+                            location_data += '<option value=' + data.results[i].locationid + '>' + data.results[i].locationname + '</option>';
+                        }
+                        $(".multilocationclass").append(location_data);
+                    }
+                    else {
+                        $(".multilocationclass").append("<option value='0'>Not Set</option>");
+                    }
+                });
+            }
+        });
+
+        // select site accroding to location for multi acc
+        $(document).find('.multilocationclass').change(function() {
+
+
+            var site_id = this.value;
+            $.getJSON("<?php echo base_url('items/getownerbylocation'); ?>" + '/' + site_id, function(data) {
+                if (data.results.length != 0) {
+                    $('#owner_id_similar option[value="' + data.results[0].id + '"]').attr('selected', 'selected');
+                }
+                else
+                {
+//                    $('#owner_id option[value="0"]').attr('selected', 'selected');
+                }
+            });
+            $.getJSON("<?php echo base_url('items/getsitebylocation'); ?>" + '/' + site_id, function(data) {
+
+                if (data.results.length != 0) {
+                    $('.multisiteclass option[value="' + data.results[0].site_id + '"]').attr('selected', 'selected');
+                }
+                else {
+                    $('.multisiteclass option[value="0"]').attr('selected', 'selected');
                 }
             });
         });
@@ -1705,7 +1837,7 @@ if (!empty($arr1)) {
 
 
                     <div class="form-group col-md-12">
-                        <?php // var_dump($arrLocations);   ?>
+                        <?php // var_dump($arrLocations);       ?>
                         <div class="col-md-6"> <label>Location*</label>
                         </div>
                         <div class="col-md-6">       
@@ -1865,7 +1997,7 @@ if (!empty($arr1)) {
                     <div class="form-group col-md-12">
                     </div>
                     <div class="form-group col-md-12">
-                        <div class="col-md-6"> <label>PAT Test Result</label>
+                        <div class="col-md-6"> <label>Electrical Test Required?</label>
                         </div>
                         <div class="col-md-6">    
                             <select name="item_patteststatus" id="item_patteststatus" class="form-control">
@@ -1876,7 +2008,7 @@ if (!empty($arr1)) {
                             </select>                </div>
                     </div>
                     <div class="form-group col-md-12" id="patTestDate">
-                        <div class="col-md-6"> <label>PAT Test Date</label>
+                        <div class="col-md-6"> <label>Electrical Test Date</label>
                         </div>
                         <div class="col-md-6">       
                             <input placeholder="Enter PAT Test Date" class="form-control datepicker" name="item_pattestdate" id="item_pattestdate" type="text">  
@@ -1995,7 +2127,7 @@ if (!empty($arr1)) {
                         <div class="col-md-5"> <label>Location*</label>
                         </div>
                         <div class="col-md-7">       
-                            <select name="location_id_similar" id="location_id_similar" class="form-control multi_location_class">
+                            <select name="location_id_similar" id="location_id_similar" class="form-control multilocationclass">
                                 <option value="0">Not Set</option>
                                 <?php
                                 foreach ($arrLocations['results'] as $arrLocation) {
@@ -2014,7 +2146,7 @@ if (!empty($arr1)) {
                         <div class="col-md-5"> <label>Site*</label>
                         </div>
                         <div class="col-md-7">       
-                            <select name="site_id_similar" id="site_id_similar" class="form-control multi_site_class">
+                            <select name="site_id_similar" id="site_id_similar" class="form-control multisiteclass">
                                 <option value="0">Not Set</option>
                                 <?php
                                 foreach ($arrSites['results'] as $arrSite) {
@@ -2085,7 +2217,7 @@ if (!empty($arr1)) {
                         </div>
 
                         <div class="col-md-7">       
-                            <input placeholder="Enter Purchase Price" class="form-control" name="item_value_similar" id="item_value_similar" type="text" readonly="">
+                            <input placeholder="Enter Purchase Price" class="form-control" name="item_value_similar" id="item_value_similar" type="text">
                         </div>
                         <input type="hidden" readonly name="itemID" id="itemID">
                     </div>
@@ -2130,13 +2262,13 @@ if (!empty($arr1)) {
     <form action="<?= site_url('items/filter/') ?>" method="post">
 
 <?php foreach ($arrColumns as $column) { ?>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <div class="form_row">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <label for="item_make"><?= $column->name ?></label>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <input type="checkbox" name="columns[]" value="<?= $column->id ?>" />
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <div class="form_row">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <label for="item_make"><?= $column->name ?></label>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <input type="checkbox" name="columns[]" value="<?= $column->id ?>" />
 
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <hr style="margin: 0;"/>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <hr style="margin: 0;"/>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div>
 <?php } ?>
 
 

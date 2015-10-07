@@ -181,12 +181,52 @@
             }
         });
 
+        // Establish Link to Owner,Location and Site
+        $('body').find('#owner_id').change(function() {
+            var owner_id = this.value;
+            if (owner_id != 0) {
+                $.getJSON("<?php echo base_url('items/getlocationbyowner'); ?>" + '/' + owner_id, function(data) {
+
+                    if (data.results.length != 0) {
+                        $('.multi_location_class option[value="' + data.results[0].location_id + '"]').attr('selected', 'selected');
+                        $.getJSON("<?php echo base_url('items/getsitebylocation'); ?>" + '/' + data.results[0].location_id, function(site_data) {
+                            if (site_data != null)
+                            {
+                                $('.multi_site_class option[value="' + site_data.results[0].site_id + '"]').attr('selected', 'selected');
+                            }
+                            else {
+                                $('.multi_site_class option[value="0"]').attr('selected', 'selected');
+                            }
+                        });
+                    }
+                    else {
+                        $('.multi_location_class option[value="0"]').attr('selected', 'selected');
+                        $('.multi_site_class option[value="0"]').attr('selected', 'selected');
+                    }
+                });
+            }
+            else
+            {
+                $('.multi_location_class option[value="0"]').attr('selected', 'selected');
+                $('.multi_site_class option[value="0"]').attr('selected', 'selected');
+            }
+        });
+
         // estblish link and site link
 
         $(document).find('.multi_site_class').change(function() {
             $(".multi_location_class").empty();
             var site_id = this.value;
             if (site_id != 0) {
+                $.getJSON("<?php echo base_url('items/getownerbysite'); ?>" + '/' + site_id, function(data) {
+                    if (data.results.length != 0) {
+                        $('#owner_id option[value="' + data.results[0].id + '"]').attr('selected', 'selected');
+                    }
+                    else
+                    {
+
+                    }
+                });
                 $.getJSON("<?php echo base_url('items/getlocationbysite'); ?>" + '/' + site_id, function(data) {
                     if (data.results.length != 0) {
 
@@ -221,8 +261,16 @@
         // select site accroding to location for multi acc
         $(document).find('.multi_location_class').change(function() {
 
-
             var site_id = this.value;
+            $.getJSON("<?php echo base_url('items/getownerbylocation'); ?>" + '/' + site_id, function(data) {
+                if (data.results.length != 0) {
+                    $('#owner_id option[value="' + data.results[0].id + '"]').attr('selected', 'selected');
+                }
+                else
+                {
+
+                }
+            });
             $.getJSON("<?php echo base_url('items/getsitebylocation'); ?>" + '/' + site_id, function(data) {
 
                 if (data.results.length != 0) {
@@ -230,6 +278,57 @@
                 }
                 else {
                     $('.multi_site_class option[value="0"]').attr('selected', 'selected');
+                }
+            });
+        });
+// For Search on Dashboard
+        $(document).find('.multisiteclass').change(function() { 
+            $(".multilocationclass").empty();
+            var site_id = this.value;
+            if (site_id != 0) {
+                
+                $.getJSON("<?php echo base_url('items/getlocationbysite'); ?>" + '/' + site_id, function(data) {
+                    if (data.results.length != 0) {
+
+                        var location_data = '';
+                        for (var i = 0; i < data.results.length; i++) {
+                            location_data += '<option value=' + data.results[i].id + '>' + data.results[i].name + '</option>';
+                        }
+                        $(".multilocationclass").append(location_data);
+                    }
+                    else {
+                        $(".multilocationclass").append("<option value='0'>Not Set</option>");
+                    }
+                });
+            }
+            else {
+                $.getJSON("<?php echo base_url('items/getalllocation'); ?>", function(data) {
+                    if (data.results.length != 0) {
+
+                        var location_data = '';
+                        location_data += "<option value='0'>Not Set</option>";
+                        for (var i = 0; i < data.results.length; i++) {
+                            location_data += '<option value=' + data.results[i].locationid + '>' + data.results[i].locationname + '</option>';
+                        }
+                        $(".multilocationclass").append(location_data);
+                    }
+                    else {
+                        $(".multilocationclass").append("<option value='0'>Not Set</option>");
+                    }
+                });
+            }
+        });
+        // select site accroding to location for multi acc
+        $(document).find('.multilocationclass').change(function() {
+
+            var site_id = this.value;
+            $.getJSON("<?php echo base_url('items/getsitebylocation'); ?>" + '/' + site_id, function(data) {
+
+                if (data.results.length != 0) {
+                    $('.multisiteclass option[value="' + data.results[0].site_id + '"]').attr('selected', 'selected');
+                }
+                else {
+                    $('.multisiteclass option[value="0"]').attr('selected', 'selected');
                 }
             });
         });
@@ -283,7 +382,7 @@
             $('#app_icons').css('display', 'none');
             $('#search_box').css('display', 'block');
         });
-        
+
         $('#change_owner').on('click', function()
         {
             $('.barcode').css('display', 'none');
@@ -315,8 +414,8 @@
                     'location_id': location_id
                 },
                 success: function(data) {
-              $('body').find('#search_box').find('input').val('');
-              $('body').find('#search_box').find('select').val('');
+                    $('body').find('#search_box').find('input').val('');
+                    $('body').find('#search_box').find('select').val('');
                     $('#search_box').css('display', 'none');
                     $('#search_results #resdata').html('');
                     $('#search_results').css('display', 'block');
@@ -428,34 +527,34 @@
         });
 
         // select site accroding to location for multi acc
-        $(document).find('#new_owner_id').change(function() {
-
-//            $('.multi_location_class').empty();
-//            $('.multi_site_class').empty();
-//            $('#updated_site_id').empty();
-//            $('#updated_location_id').empty();
-            var owner_id = this.value;
-            $.getJSON("<?php echo base_url('items/getlocationbyowner'); ?>" + '/' + owner_id, function(data) {
-
-                if (data.results.length != 0) {
-                    $('#new_location_id option[value="' + data.results[0].location_id + '"]').attr('selected', 'selected');
-                    $('#updated_location_id').attr('value', +data.results[0].location_id);
-                    $.getJSON("<?php echo base_url('items/getsitebylocation'); ?>" + '/' + data.results[0].location_id, function(site_data) {
-                        if (data.results.length != 0)
-                        {
-                            $('.multi_site_class option[value="' + site_data.results[0].site_id + '"]').attr('selected', 'selected');
-                            $('#updated_site_id').attr('value', +site_data.results[0].site_id);
-                        }
-                        else {
-                            $('.multi_site_class option[value="0"]').attr('selected', 'selected');
-                        }
-                    });
-                }
-                else {
-                    $('#new_location_id option[value="0"]').attr('selected', 'selected');
-                }
-            });
-        });
+//        $(document).find('#new_owner_id').change(function() {
+//
+////            $('.multi_location_class').empty();
+////            $('.multi_site_class').empty();
+////            $('#updated_site_id').empty();
+////            $('#updated_location_id').empty();
+//            var owner_id = this.value;
+//            $.getJSON("<?php echo base_url('items/getlocationbyowner'); ?>" + '/' + owner_id, function(data) {
+//
+//                if (data.results.length != 0) {
+//                    $('#new_location_id option[value="' + data.results[0].location_id + '"]').attr('selected', 'selected');
+//                    $('#updated_location_id').attr('value', +data.results[0].location_id);
+//                    $.getJSON("<?php echo base_url('items/getsitebylocation'); ?>" + '/' + data.results[0].location_id, function(site_data) {
+//                        if (data.results.length != 0)
+//                        {
+//                            $('.multi_site_class option[value="' + site_data.results[0].site_id + '"]').attr('selected', 'selected');
+//                            $('#updated_site_id').attr('value', +site_data.results[0].site_id);
+//                        }
+//                        else {
+//                            $('.multi_site_class option[value="0"]').attr('selected', 'selected');
+//                        }
+//                    });
+//                }
+//                else {
+//                    $('#new_location_id option[value="0"]').attr('selected', 'selected');
+//                }
+//            });
+//        });
         $("#report_fault_form").validate({
             rules: {
                 report_item_id: "required",
@@ -490,10 +589,10 @@
         {
             $('#app_icons').css('display', 'none');
             $('#search_box').css('display', 'block');
-            $('.barcode').css('display','block');
-            $('.categorys').css('display','block');
-            $('.itemmanus').css('display','block');
-            $('.manufacturers').css('display','block');
+            $('.barcode').css('display', 'block');
+            $('.categorys').css('display', 'block');
+            $('.itemmanus').css('display', 'block');
+            $('.manufacturers').css('display', 'block');
         });
 
         $('#ownership').on('click', function()
@@ -705,8 +804,8 @@
                         <div class="list-group-item site">
                             Site
                             <span class="pull-right text-muted small">
-                                <select name="search_site" class="opt" id="search_site">
-                                    <option value="">Select Site</option>
+                                <select name="search_site" class="opt multisiteclass" id="search_site">
+                                    <option value="0">Select Site</option>
                                     <?php
                                     foreach ($arrSites['results'] as $arrSite) {
                                         echo "<option ";
@@ -723,8 +822,8 @@
                         <div class="list-group-item location">
                             Location
                             <span class="pull-right text-muted small">
-                                <select name="search_location" class="opt" id="search_location">
-                                    <option value="">Select Location</option>
+                                <select name="search_location" class="opt multilocationclass" id="search_location">
+                                    <option value="0">Select Location</option>
                                     <?php
                                     foreach ($arrLocations['results'] as $arrLocation) {
                                         echo "<option ";
@@ -918,11 +1017,11 @@
                                         ?>
                                         <tr>
                                             <td><a href="<?php echo base_url($strUrl); ?>"><?php echo $objItem->barcode; ?></a></td>
-                                            <td> <?php echo Welcome::getItemManu($objItem->item_manu,$this->session->userdata('objSystemUser')->accountid); ?></td>
+                                            <td> <?php echo Welcome::getItemManu($objItem->item_manu, $this->session->userdata('objSystemUser')->accountid); ?></td>
                                             <td> <?php echo $objItem->categoryname; ?></td>
                                             <td> <?php echo $objItem->locationname; ?></td>
                                             <td> <?php echo $objItem->owner_name; ?></td>
-                                            <td> <?php echo date('Y/m/d',strtotime($objItem->added_date)); ?></td>
+                                            <td> <?php echo date('Y/m/d', strtotime($objItem->added_date)); ?></td>
 
                                         </tr>
                                         <?php
@@ -959,7 +1058,7 @@
                                         <tr>
 
                                             <td><?php echo $objItem->category_name; ?></td>
-                                            <td><?php echo Welcome::getItemManu($objItem->item_manu,$this->session->userdata('objSystemUser')->accountid); ?></td>
+                                            <td><?php echo Welcome::getItemManu($objItem->item_manu, $this->session->userdata('objSystemUser')->accountid); ?></td>
                                             <td><?php echo $objItem->manufacturer; ?></td>
                                             <td><?php echo $objItem->count; ?></td>
                                         </tr>
@@ -1005,7 +1104,7 @@
                                                 <td><a href="<?php echo base_url($strUrl);
                                             ?>"><?php echo $objItem->barcode; ?></a></td>
 
-                                                <td><?php echo $objItem->item_manu_name  ; ?></td>
+                                                <td><?php echo $objItem->item_manu_name; ?></td>
                                                 <td><?php echo $objItem->category_name; ?></td>
                                                 <td><?php echo $objItem->location_name; ?></td>
                                                 <td><?php echo $objItem->item_manu; ?></td>
@@ -1066,7 +1165,7 @@
                                         ?>
                                         <tr>
                                             <td><a href="<?php echo base_url($strUrl); ?>"><?php echo $fault->barcode; ?></a></td>
-                                            <td><?php echo Welcome::getItemManu($fault->item_manu,$this->session->userdata('objSystemUser')->accountid); ?></td>
+                                            <td><?php echo Welcome::getItemManu($fault->item_manu, $this->session->userdata('objSystemUser')->accountid); ?></td>
                                             <td><?php echo $fault->categoryname; ?></td>
                                             <td><?php echo $fault->locationname; ?></td>
                                             <td><?php echo $fault->owner_name; ?></td>
@@ -1102,7 +1201,7 @@
                                     ?>
                                     <tr>
                                         <td><a href="<?php echo base_url($strUrl); ?>"><?php echo $missingItem['barcode']; ?></a></td>
-                                        <td><?php echo Welcome::getItemManu($missingItem['item_manu'],$this->session->userdata('objSystemUser')->accountid); ?></td>
+                                        <td><?php echo Welcome::getItemManu($missingItem['item_manu'], $this->session->userdata('objSystemUser')->accountid); ?></td>
                                         <td><?php echo $missingItem['categoryname']; ?></td>
                                         <td><?php echo $missingItem['locationname']; ?></td>
                                         <td><?php echo $missingItem['firstname'] . " " . $missingItem['lastname']; ?></td>
@@ -1482,7 +1581,7 @@
                             <div class="form-group col-md-12">
                             </div>
                             <div class="form-group col-md-12">
-                                <div class="col-md-6"> <label>PAT Test Result</label>
+                                <div class="col-md-6"> <label>Electrical Test Required?</label>
                                 </div>
                                 <div class="col-md-6">    
                                     <select name="item_patteststatus" id="item_patteststatus" class="form-control">
@@ -1493,7 +1592,7 @@
                                     </select>                </div>
                             </div>
                             <div class="form-group col-md-12" id="patTestDate">
-                                <div class="col-md-6"> <label>PAT Test Date</label>
+                                <div class="col-md-6"> <label>Electrical Test Date</label>
                                 </div>
                                 <div class="col-md-6">       
                                     <input placeholder="Enter PAT Test Date" class="form-control datepicker" name="item_pattestdate" id="item_pattestdate" type="text">  
@@ -1801,92 +1900,92 @@
         </div>
 
         <!-- Change Location Modal -->
-<!--        <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="change_owner_model" class="modal fade" style="display: none;">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">&times;</button>
-                        <h4 id="myModalLabel" class="modal-title">Change Owner And Location</h4>
+        <!--        <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="change_owner_model" class="modal fade" style="display: none;">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">&times;</button>
+                                <h4 id="myModalLabel" class="modal-title">Change Owner And Location</h4>
+                            </div>
+                            items/changelinks/'.$objItem->itemid
+                            <form action="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/iwa/items/changelinks" method="post" id="change_owner_form">
+        
+                                <div class="modal-body">
+                                    <div class="form-group col-md-12">
+                                        <div class="col-md-6">  <label>Choose Item</label> </div>
+                                        <div class="col-md-6">  <select name="item_id" class="form-control"><option value="">----SELECT----</option>  
+        <?php foreach ($assetlist as $asset) { ?>
+                                                                    <option value="<?php echo $asset->itemid; ?>"><?php echo $asset->barcode; ?></option>
+        <?php } ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <div class="col-md-6">  <label>New Owner</label> </div>
+                                        <div class="col-md-6">  <select name="new_owner_id" id="new_owner_id" class="form-control">
+                                                <option value="0">----SELECT----</option>
+        <?php
+        foreach ($arrOwners['results'] as $arrOwner) {
+            echo "<option ";
+            echo 'value="' . $arrOwner->ownerid . '" ';
+            echo '>' . $arrOwner->owner_name . "</option>\r\n";
+        }
+        ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <div class="col-md-6">  <label>New Location</label> </div>
+                                        <div class="col-md-6">   <select name="new_location_id" id="new_location_id" class="form-control multi_location_class">
+        
+                                                <option value="0">----SELECT----</option>
+        <?php
+        foreach ($arrLocations['results'] as $arrLocation) {
+            echo "<option ";
+            echo 'value="' . $arrLocation->locationid . '" ';
+            echo '>' . $arrLocation->locationname . "</option>\r\n";
+        }
+        ?>
+                                            </select>
+                                            <input type="hidden" name="updated_location_id" id="updated_location_id" class="form-control multi_location_class" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <div class="col-md-6">  <label>New Site</label> </div>
+                                        <div class="col-md-6">  <select name="new_site_id" id="new_site_id" class="form-control multi_site_class">
+                                                <option value="0">----SELECT----</option>
+        <?php
+        foreach ($arrSites['results'] as $arrSite) {
+            echo "<option ";
+            echo 'value="' . $arrSite->siteid . '" ';
+            echo '>' . $arrSite->sitename . "</option>\r\n";
+        }
+        ?>
+                                            </select>
+                                            <input type="hidden" name="updated_site_id" id="updated_site_id" class="form-control multi_location_class" >
+                                        </div>
+                                    </div>
+        
+        
+        
+        
+        
+        
+        
+                                    <input type="hidden" name="userid" value="<?php echo $arrSessionData['objSystemUser']->userid; ?>"/>
+        
+                                </div>
+        
+                                <div class="modal-footer">
+                                    <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+                                    <button class="btn btn-primary" type="submit" id="save_button">Save</button>
+        
+                                </div>
+                            </form>
+                        </div>
+        
                     </div>
-                    items/changelinks/'.$objItem->itemid
-                    <form action="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/iwa/items/changelinks" method="post" id="change_owner_form">
-
-                        <div class="modal-body">
-                            <div class="form-group col-md-12">
-                                <div class="col-md-6">  <label>Choose Item</label> </div>
-                                <div class="col-md-6">  <select name="item_id" class="form-control"><option value="">----SELECT----</option>  
-                                        <?php foreach ($assetlist as $asset) { ?>
-                                            <option value="<?php echo $asset->itemid; ?>"><?php echo $asset->barcode; ?></option>
-                                        <?php } ?>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group col-md-12">
-                                <div class="col-md-6">  <label>New Owner</label> </div>
-                                <div class="col-md-6">  <select name="new_owner_id" id="new_owner_id" class="form-control">
-                                        <option value="0">----SELECT----</option>
-                                        <?php
-                                        foreach ($arrOwners['results'] as $arrOwner) {
-                                            echo "<option ";
-                                            echo 'value="' . $arrOwner->ownerid . '" ';
-                                            echo '>' . $arrOwner->owner_name . "</option>\r\n";
-                                        }
-                                        ?>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group col-md-12">
-                                <div class="col-md-6">  <label>New Location</label> </div>
-                                <div class="col-md-6">   <select name="new_location_id" id="new_location_id" class="form-control multi_location_class">
-
-                                        <option value="0">----SELECT----</option>
-                                        <?php
-                                        foreach ($arrLocations['results'] as $arrLocation) {
-                                            echo "<option ";
-                                            echo 'value="' . $arrLocation->locationid . '" ';
-                                            echo '>' . $arrLocation->locationname . "</option>\r\n";
-                                        }
-                                        ?>
-                                    </select>
-                                    <input type="hidden" name="updated_location_id" id="updated_location_id" class="form-control multi_location_class" readonly>
-                                </div>
-                            </div>
-                            <div class="form-group col-md-12">
-                                <div class="col-md-6">  <label>New Site</label> </div>
-                                <div class="col-md-6">  <select name="new_site_id" id="new_site_id" class="form-control multi_site_class">
-                                        <option value="0">----SELECT----</option>
-                                        <?php
-                                        foreach ($arrSites['results'] as $arrSite) {
-                                            echo "<option ";
-                                            echo 'value="' . $arrSite->siteid . '" ';
-                                            echo '>' . $arrSite->sitename . "</option>\r\n";
-                                        }
-                                        ?>
-                                    </select>
-                                    <input type="hidden" name="updated_site_id" id="updated_site_id" class="form-control multi_location_class" >
-                                </div>
-                            </div>
-
-
-
-
-
-
-
-                            <input type="hidden" name="userid" value="<?php echo $arrSessionData['objSystemUser']->userid; ?>"/>
-
-                        </div>
-
-                        <div class="modal-footer">
-                            <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
-                            <button class="btn btn-primary" type="submit" id="save_button">Save</button>
-
-                        </div>
-                    </form>
-                </div>
-
-            </div>
-        </div>-->
+                </div>-->
         <!-- Report fault Model -->
         <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="report_fault" class="modal fade" style="display: none;">
             <div class="modal-dialog">

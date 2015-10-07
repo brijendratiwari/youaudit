@@ -9,7 +9,7 @@ if (isset($this->session->userdata['theme_design']->logo)) {
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Compliance History</title>
+        <title>Safety History</title>
         <link href="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/includes/report_files/css/custom.css" rel="stylesheet" type="text/css">
         <link href="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/includes/report_files/fonts/stylesheet.css" rel="stylesheet" type="text/css">
         <link href="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/iwa/brochure/css/bootstrap.min.css" type="text/css" rel="stylesheet">
@@ -35,12 +35,12 @@ if (isset($this->session->userdata['theme_design']->logo)) {
                 </div>
                 <div class="right">
                     <div class="compliance">
-                        Compliance Report
+                        Safety Report
                     </div>
 
 
                     <div  class="insert"><?php echo $allData[2]; ?>    </div>
-                    <div  class="compliance_name"><b>Compliance Name:</b><?php echo $allData[0]; ?></div>
+                    <div  class="compliance_name"><b>Safety Name:</b><?php echo $allData[0]; ?></div>
                     <div  style="    font-family: 'calibriregular';"><b>Logged By:</b><?php echo $allData[1]; ?></div>
                     <div  style="    font-family: 'calibriregular';" ><b>Due Date:</b><?php echo $allData[3]; ?></div>
                     <div   style="    font-family: 'calibriregular';"><b>Owner:</b><?php echo $allData[1]; ?></div>

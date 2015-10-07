@@ -66,7 +66,21 @@
                         </tr>
                         <tr>
                             <td>Show Asset Age</td>
-                            <td></td>
+                            <td><?php
+                                if ($objItem->purchase_date != "0000-00-00" && $objItem->purchase_date != NULL) {
+                                    $date2 = date('d-m-Y', strtotime($objItem->purchase_date));
+                                    $date1 = date('d-m-Y H:i:s', strtotime(date('Y-m-d')));
+
+                                    $diff = abs(strtotime($date2) - strtotime($date1));
+
+                                    $years = floor($diff / (365 * 60 * 60 * 24));
+                                    $months = floor(($diff - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
+
+                                    echo $years . ' year ' . $months . ' month ';
+                                } else {
+                                    echo 'N/A';
+                                }
+                                ?></td>
                         </tr>
                     </tbody>
                 </table>
@@ -76,7 +90,7 @@
             <div class="col-md-6"><h3>Complete Form Below</h3></div>
         </div>
         <div style="padding-top:20px;" class="row">
-            <?php echo form_open('items/mark_deleted/' . $intItemId . '/', array('id' => 'delete_item_form')); ?>
+<?php echo form_open('items/mark_deleted/' . $intItemId . '/', array('id' => 'delete_item_form')); ?>
             <div class="col-md-6">
                 <table class="list_table table table-bordered table-striped">
                     <tbody>
