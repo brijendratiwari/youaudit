@@ -613,7 +613,7 @@
 <input type="hidden" id="current_barcode" value="<?php echo $objItem->barcode; ?>">
 <!--<a class="btn btn-info" href="<?php echo base_url('/items/filter'); ?>">Back</a>-->
 <!--<li class="pull-right back back-btn">-->
-<a href="#" class="backarrow back-btn" onclick="goBack();"><i class="fa fa-arrow-left"></i></a>
+<a href="<?php echo base_url('items/filter'); ?>" class="backarrow back-btn"><i class="fa fa-arrow-left"></i></a>
 <h5 class="backtxt">BACK</h5>
 <!--</li>-->
 <div class="alert alert-warning alert-dismissable" id="fault_error">
@@ -4279,7 +4279,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                     if (data.results.length != 0) {
                         $('.multilocationclass option[value="' + data.results[0].location_id + '"]').attr('selected', 'selected');
                         $.getJSON("<?php echo base_url('items/getsitebylocation'); ?>" + '/' + data.results[0].location_id, function(site_data) {
-                            if (site_data != null)
+                   if (site_data != null) 
                             {
                                 $('.multisiteclass option[value="' + site_data.results[0].site_id + '"]').attr('selected', 'selected');
                             }
