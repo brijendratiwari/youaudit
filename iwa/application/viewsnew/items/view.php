@@ -79,26 +79,26 @@
 <script>
 
 
- function Handlechange()
+    function Handlechange()
     {
         var fileinput = document.getElementById("item_photo");
-        document.getElementById("select_file").innerHTML = '<span class="selectedpdf">'+ fileinput.value.replace("C:\\fakepath\\", "")+'</span>';
+        document.getElementById("select_file").innerHTML = '<span class="selectedpdf">' + fileinput.value.replace("C:\\fakepath\\", "") + '</span>';
     }
     function Handle_change(img_id)
     {
         var fileinput = document.getElementById("photo_file_" + img_id);
-        document.getElementById("select_file" + img_id).innerHTML = '<span class="selectedpdf">'+ fileinput.value.replace("C:\\fakepath\\", "")+'</span>';
+        document.getElementById("select_file" + img_id).innerHTML = '<span class="selectedpdf">' + fileinput.value.replace("C:\\fakepath\\", "") + '</span>';
     }
 
     function Handlefilechange()
     {
         var fileinput = document.getElementById('pdf');
-        document.getElementById("select-pdf").innerHTML = '<span class="selectedpdf">'+fileinput.value.replace("C:\\fakepath\\", "")+'</span>';
+        document.getElementById("select-pdf").innerHTML = '<span class="selectedpdf">' + fileinput.value.replace("C:\\fakepath\\", "") + '</span>';
     }
     function Handle_filechange(doc)
     {
         var fileinput = document.getElementById('pdf_file_' + doc);
-        document.getElementById("select-pdf" + doc).innerHTML = '<span class="selectedpdf">'+ fileinput.value.replace("C:\\fakepath\\", "")+'</span>';
+        document.getElementById("select-pdf" + doc).innerHTML = '<span class="selectedpdf">' + fileinput.value.replace("C:\\fakepath\\", "") + '</span>';
     }
 //    function goBack() {
 ////    base_url = $('#base_url').val();
@@ -162,7 +162,7 @@
         var y = 1;
         //initlal text box count
 
-            $(add_button).click(function(e) { //on add input button click
+        $(add_button).click(function(e) { //on add input button click
             e.preventDefault();
             if (x < max_fields) { //max input box allowed
                 x++; //text box increment
@@ -242,7 +242,7 @@
             }
             //}
             ?>
-            <a href="<?php echo site_url('/compliance/log/' . $objItem->itemid . '/'); ?>" class="button icon-with-text round"> <i class="fa fa-fw">&#xf15c;</i> Log Compliance Check</a>
+            <a href="<?php echo site_url('/compliance/log/' . $objItem->itemid . '/'); ?>" class="button icon-with-text round"> <i class="fa fa-fw">&#xf15c;</i> Log Safety Check</a>
 
             <a data-toggle="modal" data-target="#report_fault" id="reportfault"  class="button icon-with-text round"> <i class="fa fa-fw">&#xf071;</i>Report Fault</a>
             <?php if ($checkItemReportFaults) {
@@ -280,11 +280,11 @@
         <li>   <a href="#second_table">Item History</a></li>
         <li>   <a href="#fourth_table">Item Fault History</a></li>
         <?php if ($this->session->userdata('objSystemUser')->compliance == 1) { ?>
-            <li>    <a href="#third_table">Compliance History</a></li>
+            <li>    <a href="#third_table">Safety History</a></li>
         <?php } else { ?>
-            <li style="display: none;"><a href="#third_table">Compliance History</a></li>
+            <li style="display: none;"><a href="#third_table">Safety History</a></li>
         <?php } ?>
-        <li>  <a href="#pat_table">Item Pat History</a>  </li>
+        <li>  <a href="#pat_table">Electrical Test History</a>  </li>
         <?php if ($this->session->userdata('objSystemUser')->condition_module == 1) { ?>
             <li><a href="#condition_table">Condition History</a></li>
         <?php } else { ?>
@@ -584,7 +584,7 @@
                         $(".dateval").datepicker({dateFormat: "dd/mm/yy"});
                     });
 
-                    var org = assetdata[0].barcode + '/' + assetdata[0].categoryname + '/' + assetdata[0].item_manu + '/' + assetdata[0].manufacturer;
+                    var org = assetdata[0].barcode + '/' + assetdata[0].categoryname + '/' + assetdata[0].item_manu_name + '/' + assetdata[0].manufacturer;
                     $('.get_original').html(org);
                     $('#item_quantity_similar').val(assetdata[0].quantity);
                     $('#owner_id_similar option[value="' + assetdata[0].owner_now + '"]').attr('selected', 'selected');
@@ -952,11 +952,11 @@
                                 ?>" disabled></td>
                         </tr>
                         <tr class="tb_font_warning">
-                            <td>Last Compliance Check</td>
+                            <td>Last Safety Check</td>
                             <td><input class="form-control col-lg-10 datepicker" name="compliance_date" id="compliance_date" type="text" value="<?= $last_compliance_check; ?>" disabled></td>
                         </tr>
                         <tr class="tb_font_warning">
-                            <td>Compliance Result</td>
+                            <td>Safety Result</td>
                             <td><input class="form-control" name="asset_age" id="asset_age" type="text" value="<?= $last_compliance_result; ?>" disabled></td>
                         </tr>
                     </tbody>
@@ -1425,22 +1425,22 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
         $(document).ready(function()
         {
             $(".pickdate").datepicker({dateFormat: "dd/mm/yy"});
-//            var fix_history = $("#fault_history").DataTable({
-//                "ordering": true,
-//                "aLengthMenu": [[10, 20, 40, -1], [10, 20, 40, "All"]],
-//                "iDisplayLength": 10,
-//                "bDestroy": true, //!!!--- for remove data table warning.
-//                "aoColumnDefs": [
-//                    {"sClass": "eamil_conform aligncenter", "aTargets": [0]},
-//                    {"sClass": "eamil_conform aligncenter", "aTargets": [1]},
-//                    {"sClass": "eamil_conform aligncenter", "aTargets": [2]},
-//                    {"sClass": "eamil_conform aligncenter", "aTargets": [3]},
-//                    {"sClass": "eamil_conform aligncenter", "aTargets": [4]},
-//                    {"sClass": "eamil_conform aligncenter", "aTargets": [5]},
-//                    {"sClass": "eamil_conform aligncenter", "aTargets": [6]},
-//                    {"sClass": "eamil_conform aligncenter", "aTargets": [7]},
-//                ]
-//            });
+    //            var fix_history = $("#fault_history").DataTable({
+    //                "ordering": true,
+    //                "aLengthMenu": [[10, 20, 40, -1], [10, 20, 40, "All"]],
+    //                "iDisplayLength": 10,
+    //                "bDestroy": true, //!!!--- for remove data table warning.
+    //                "aoColumnDefs": [
+    //                    {"sClass": "eamil_conform aligncenter", "aTargets": [0]},
+    //                    {"sClass": "eamil_conform aligncenter", "aTargets": [1]},
+    //                    {"sClass": "eamil_conform aligncenter", "aTargets": [2]},
+    //                    {"sClass": "eamil_conform aligncenter", "aTargets": [3]},
+    //                    {"sClass": "eamil_conform aligncenter", "aTargets": [4]},
+    //                    {"sClass": "eamil_conform aligncenter", "aTargets": [5]},
+    //                    {"sClass": "eamil_conform aligncenter", "aTargets": [6]},
+    //                    {"sClass": "eamil_conform aligncenter", "aTargets": [7]},
+    //                ]
+    //            });
             var fix_history1 = $("#fixed_history").DataTable({
                 "ordering": true,
                 "aLengthMenu": [[10, 20, 40, -1], [10, 20, 40, "All"]],
@@ -1494,12 +1494,12 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                                         <th>Incident Type</th>
                                         <th>Stage</th>
                                         <th>Fault Date</th>
-                                         <th>Logged By</th>
-                                          <th>Incident Length</th>   
+                                        <th>Logged By</th>
+                                        <th>Incident Length</th>   
                                         <th>Incident Time</th>
                                         <th>Severity</th>
-                                         <th>Order No</th>
-                                        <!--<th>Photos</th>-->
+                                        <th>Order No</th>
+                                       <!--<th>Photos</th>-->
                                         <th>Job Notes</th>
                                         <th>Incident Report</th>
                                         <th>Action</th>
@@ -1515,7 +1515,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                                         <tr>
                                             <td><?php echo $openticket['statusname']; ?></td>
                                             <td><?php echo $openticket['reason_code']; ?></td>
-                                              <?php
+                                            <?php
 //                                            echo $openticket['date'];
                                             if ($openticket['date']) {
                                                 $arr_date = explode(' ', $openticket['date']);
@@ -1523,10 +1523,10 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                                             }
                                             ?>
                                             <td><?php echo date('d/m/Y', strtotime($arr_date[0])); ?></td>
-                                           
+
                                             <td><?php echo $openticket['username']; ?></td>
-                                           
-                                            
+
+
                                             <td><?php
                                                 $datetime1 = new DateTime($openticket['date']);
                                                 $datetime2 = new DateTime('now');
@@ -1536,7 +1536,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                                                 echo $interval->format('%m month, ' . intval($week) . ' week and %d days');
                                                 ?></td>
                                             <td><?php echo $arr_date[1]; ?></td>
-                                            
+
 
 
                                             <?php
@@ -1563,41 +1563,24 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                                             <td><?php echo $openticket['severity']; ?></td>
 
                                             <td><?php echo $openticket['order_no']; ?></td>
-<!--                                            <td>
-                                                <?php
-                                                $image_role = '';
-                                                $url_contain = base_url();
+        <!--                                            <td>
+                                            <?php
+                                            $image_role = '';
+                                            $url_contain = base_url();
 
-                                                if ($openticket['photoid'] != '') {
-                                                    if (strpos($openticket['photoid'], ',') !== FALSE) {
-                                                        $image_arr = explode(',', $openticket['photoid']);
-                                                        if (is_array($image_arr)) {
+                                            if ($openticket['photoid'] != '') {
+                                                if (strpos($openticket['photoid'], ',') !== FALSE) {
+                                                    $image_arr = explode(',', $openticket['photoid']);
+                                                    if (is_array($image_arr)) {
 
 
 
-                                                            $image_role = "<div class='ui-lightbox-gallery_$j'>";
-                                                            foreach ($image_arr as $image_id) {
-                                                                $image_role.= "<a target='_top' title='' href='$url_contain/index.php/images/viewHero/$image_id' class=''><img width='75' alt='Gallery Image' style='display: inline-block' class='thumbnail thumb'  src='$url_contain/index.php/images/viewList/$image_id'></a>&nbsp;";
-                                                            }
-
-                                                            $image_role .= "<script>$('.ui-lightbox-gallery_" . $j . "').each(function() { // the containers for all your galleries
-    $(this).magnificPopup({
-        delegate: 'a', // the selector for gallery item
-        type: 'image',
-        gallery: {
-          enabled:true
-        }
-    });
-}); </script>";
-                                                            $image_role .= "</div>";
+                                                        $image_role = "<div class='ui-lightbox-gallery_$j'>";
+                                                        foreach ($image_arr as $image_id) {
+                                                            $image_role.= "<a target='_top' title='' href='$url_contain/index.php/images/viewHero/$image_id' class=''><img width='75' alt='Gallery Image' style='display: inline-block' class='thumbnail thumb'  src='$url_contain/index.php/images/viewList/$image_id'></a>&nbsp;";
                                                         }
-                                                    } else {
 
-                                                        $image_role = "<div class='image_single'>";
-                                                        $photoid = $openticket['photoid'];
-                                                        $image_role .= "<a title='' href='$url_contain/index.php/images/viewHero/$photoid' class='ui-lightbox'><img width='75' alt='Gallery Image' style='display: inline-block' class='thumbnail thumb'  src='$url_contain/index.php/images/viewList/$photoid'></a>";
-
-                                                        $image_role .= "<script>$('.image_single').each(function() { // the containers for all your galleries
+                                                        $image_role .= "<script>$('.ui-lightbox-gallery_" . $j . "').each(function() { // the containers for all your galleries
     $(this).magnificPopup({
         delegate: 'a', // the selector for gallery item
         type: 'image',
@@ -1608,10 +1591,27 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
 }); </script>";
                                                         $image_role .= "</div>";
                                                     }
-                                                } echo $image_role;
-                                                $account_id = $this->session->userdata('objSystemUser')->accountid;
-                                                $url = base_url().'faults/getPdfForOpenJob/'.$openticket[itemid].'/'.$account_id.'/'.$openticket['id'];
-                                                ?>
+                                                } else {
+
+                                                    $image_role = "<div class='image_single'>";
+                                                    $photoid = $openticket['photoid'];
+                                                    $image_role .= "<a title='' href='$url_contain/index.php/images/viewHero/$photoid' class='ui-lightbox'><img width='75' alt='Gallery Image' style='display: inline-block' class='thumbnail thumb'  src='$url_contain/index.php/images/viewList/$photoid'></a>";
+
+                                                    $image_role .= "<script>$('.image_single').each(function() { // the containers for all your galleries
+    $(this).magnificPopup({
+        delegate: 'a', // the selector for gallery item
+        type: 'image',
+        gallery: {
+          enabled:true
+        }
+    });
+}); </script>";
+                                                    $image_role .= "</div>";
+                                                }
+                                            } echo $image_role;
+                                            $account_id = $this->session->userdata('objSystemUser')->accountid;
+                                            $url = base_url() . 'faults/getPdfForOpenJob/' . $openticket[itemid] . '/' . $account_id . '/' . $openticket['id'];
+                                            ?>
 
                                             </td>-->
                                             <td><?php echo $openticket['jobnote']; ?></td>
@@ -1666,23 +1666,23 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                                     </tr>
                                 </thead>
                                 <tbody id="asset_body">
-                             
+
                                     <?php
 //                                    var_dump($arrItemFixTicketHistory);die;
                                     foreach ($arrItemFixTicketHistory['itemFixedHistory'] as $ticket) {
                                         ?>
 
                                         <tr>
-                                            <td><?php echo date('d/m/Y',strtotime($ticket['fault_date'])); ?></td>
-                                            <td><?php echo date('h:i:s',strtotime($ticket['fault_date'])); ?></td>
+                                            <td><?php echo date('d/m/Y', strtotime($ticket['fault_date'])); ?></td>
+                                            <td><?php echo date('h:i:s', strtotime($ticket['fault_date'])); ?></td>
                                             <td><?php echo $ticket['statusname']; ?></td>
                                             <td><?php echo $ticket['severity']; ?></td>
                                             <td><?php echo $ticket['fault_by']; ?></td>
                                             <td><?php echo $ticket['order_no']; ?></td>
-                                            <td><?php echo date('d/m/Y',strtotime($ticket['fix_date'])); ?></td>
-                                            <td><?php echo date('h:i:s',strtotime($ticket['fix_date'])); ?></td>
-                                           
-                                             <?php
+                                            <td><?php echo date('d/m/Y', strtotime($ticket['fix_date'])); ?></td>
+                                            <td><?php echo date('h:i:s', strtotime($ticket['fix_date'])); ?></td>
+
+                                            <?php
                                             if ($ticket['fix_date'] != '0000-00-00 00:00:00') {
 
 
@@ -1702,41 +1702,45 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                                             ?>
 
                                             <td><?php echo $age_of_asset; ?></td>
-                                            
+
                                             <td><?php echo $ticket['fix_code']; ?></td>
                                             <td><?php echo $ticket['username']; ?></td>
-                                           <?php
+                                            <?php
 //                                            if ($ticket['date']) {
 //                                                $arr_date = explode(' ', $ticket['date']);
 ////                                                    echo $arr_date[0]; 
 //                                            }
-//                                            ?>
+//                                            
+                                            ?>
                                             <?php
 //                                            if ($ticket['fix_date'])
 //                                                $arr_fixdate = explode(' ', $ticket['fix_date']);
 ////                                                    echo $arr_date[0]; 
-//                                            ?>
+//                                            
+                                            ?>
                                             <!--<td>-->
-                                          <?php
+                                            <?php
 //                                                if (!empty($arr_fixdate[0])) {
 //                                                    echo date('d/m/Y', strtotime($arr_fixdate[0]));
 //                                                }
-//                                                ?>
+//                                                
+                                            ?>
                                             <!--</td>-->
                                             <!--<td>-->
-                                                <?php
+                                            <?php
 //                                                if (!empty($arr_fixdate[1])) {
 //                                                    echo $arr_fixdate[1];
 //                                                }
-//                                                ?>
+//                                                
+                                            ?>
                                             <!--</td>-->
 
-                                           
-                                            
 
-                                            
 
-                                            
+
+
+
+
                                             <td>
                                                 <?php
                                                 $image_role = '';
@@ -1786,15 +1790,15 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                                                 ?>
 
                                             </td>
-                                            <?php $account_id = $this->session->userdata('objSystemUser')->accountid; ?>
+        <?php $account_id = $this->session->userdata('objSystemUser')->accountid; ?>
                                             <td><a  href="<?php echo base_url("faults/getPdfForFaultHistory/$ticket[itemid]/$account_id"); ?>"><img src="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/img/pdf.png" title="Get pdf" alt="Get pdf" /></a></td>
                                             <td>
                                                 <span class="action-w"><a data-toggle="modal" actionmode="reportfault"  ticket_id = "<?php echo $ticket['id']; ?>"  id="itm_<?php echo $ticket['itemid']; ?>" account_id="<?php echo $this->session->userdata('objSystemUser')->accountid; ?>"  href="#viewfaultFix" title="View Incident" class="viewfaultFix" data_customer_id=''><i class="fa fa-eye franchises-i"></i></a>View Incident</span>
-                                           </td>
+                                            </td>
                                         </tr>
-                                        <?php
-                                    }
-                                    ?></tbody>
+        <?php
+    }
+    ?></tbody>
                             </table>
                         </div>
                         <!-- /.table-responsive -->
@@ -1802,123 +1806,123 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                 </div>
             </div>
         </div>
-<!--        <div class="row">
-            <h1>Resolve Incident Logged Data</h1>
-        </div>
-        <div class="row">
-            <div class="col-lg-12">
-
-                <div class="panel-body">
-
-                    <div class="table-responsive">
-                        <div role="grid" class="dataTables_wrapper form-inline" id="dataTables-example_wrapper">
-                            <table id="fault_history" class="table table-striped table-bordered table-hover" width="100%" cellspacing="0">
-                                <thead>
-                                    <tr>
-                                        <th>Severity</th>
-                                        <th>Fault Date</th>
-                                        <th>Incident Time</th>
-                                        <th>Incident Length</th>
-                                        <th>Logged By</th>
-                                        <th>Order No</th>
-                                        <th>Photos</th>
-                                        <th>Incident Report</th>
-
-                                    </tr>
-                                </thead>
-                                <tbody id="asset_body">
-                                    <?php // var_dump($arrItemFixTicketHistory['itemFaultHistory']);  ?>
-                                    <?php
-                                    foreach ($arrItemFixTicketHistory['itemFaultHistory'] as $ticketData) {
-                                        foreach ($ticketData as $ticket) {
-                                            ?>
-
-                                            <tr>
-                                                <td><?php echo $ticket['severity']; ?></td>
-                                                <?php
-                                                if ($ticket['date']) {
-                                                    $arr_date = explode(' ', $ticket['date']);
-//                                                    echo $arr_date[0]; 
-                                                }
-                                                ?>
-                                                <td><?php echo date('d/m/Y', strtotime($arr_date[0])); ?></td>
-                                                <td><?php echo $arr_date[1]; ?></td>
-                                                <td><?php
-                                                    $datetime1 = new DateTime($ticket['date']);
-                                                    $datetime2 = new DateTime('now');
-                                                    $interval = $datetime1->diff($datetime2);
-                                                    $daysCal = $interval->format('%d');
-                                                    $week = $daysCal / 7;
-                                                    echo $interval->format('%m month, ' . intval($week) . ' week and %d days');
-                                                    ?></td>
-
-
-                                                <td><?php echo $ticket['username']; ?></td>
-
-                                                <td><?php echo $ticket['order_no']; ?></td>
-                                                <td>
-                                                    <?php
-                                                    $image_role = '';
-                                                    $url_contain = base_url();
-
-                                                    if ($ticket['photoid'] != '') {
-                                                        if (strpos($ticket['photoid'], ',') !== FALSE) {
-                                                            $image_arr = explode(',', $ticket['photoid']);
-                                                            if (is_array($image_arr)) {
-
-
-
-                                                                $image_role = "<div class='ui-lightbox-gallery_$j'>";
-                                                                foreach ($image_arr as $image_id) {
-                                                                    $image_role.= "<a target='_top' title='' href='$url_contain/index.php/images/viewHero/$image_id' class=''><img width='75' alt='Gallery Image' style='display: inline-block' class='thumbnail thumb'  src='$url_contain/index.php/images/viewList/$image_id'></a>&nbsp;";
-                                                                }
-
-                                                                $image_role .= "<script>$('.ui-lightbox-gallery_" . $j . "').each(function() { // the containers for all your galleries
-    $(this).magnificPopup({
-        delegate: 'a', // the selector for gallery item
-        type: 'image',
-        gallery: {
-          enabled:true
-        }
-    });
-}); </script>";
-                                                                $image_role .= "</div>";
-                                                            }
-                                                        } else {
-
-                                                            $image_role = "<div class='image_single'>";
-                                                            $photoid = $ticket['photoid'];
-                                                            $image_role .= "<a title='' href='$url_contain/index.php/images/viewHero/$photoid' class='ui-lightbox'><img width='75' alt='Gallery Image' style='display: inline-block' class='thumbnail thumb'  src='$url_contain/index.php/images/viewList/$photoid'></a>";
-
-                                                            $image_role .= "<script>$('.image_single').each(function() { // the containers for all your galleries
-    $(this).magnificPopup({
-        delegate: 'a', // the selector for gallery item
-        type: 'image',
-        gallery: {
-          enabled:true
-        }
-    });
-}); </script>";
-                                                            $image_role .= "</div>";
-                                                        }
-                                                    } echo $image_role;
-                                                    ?>
-
-                                                </td>
-                                                <td><a  href="<?php echo base_url("faults/getPdf/$ticket[id]"); ?>"><img src="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/img/pdf.png" title="Get pdf" alt="Get pdf" /></a></td>
-
-                                            </tr>
-                                            <?php
-                                        }
-                                    }
-                                    ?></tbody>
-                            </table>
-                        </div>
-                         /.table-responsive 
-                    </div>
+        <!--        <div class="row">
+                    <h1>Resolve Incident Logged Data</h1>
                 </div>
-            </div>
-        </div>-->
+                <div class="row">
+                    <div class="col-lg-12">
+        
+                        <div class="panel-body">
+        
+                            <div class="table-responsive">
+                                <div role="grid" class="dataTables_wrapper form-inline" id="dataTables-example_wrapper">
+                                    <table id="fault_history" class="table table-striped table-bordered table-hover" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th>Severity</th>
+                                                <th>Fault Date</th>
+                                                <th>Incident Time</th>
+                                                <th>Incident Length</th>
+                                                <th>Logged By</th>
+                                                <th>Order No</th>
+                                                <th>Photos</th>
+                                                <th>Incident Report</th>
+        
+                                            </tr>
+                                        </thead>
+                                        <tbody id="asset_body">
+        <?php // var_dump($arrItemFixTicketHistory['itemFaultHistory']);  ?>
+    <?php
+    foreach ($arrItemFixTicketHistory['itemFaultHistory'] as $ticketData) {
+        foreach ($ticketData as $ticket) {
+            ?>
+                
+                                                            <tr>
+                                                                <td><?php echo $ticket['severity']; ?></td>
+                <?php
+                if ($ticket['date']) {
+                    $arr_date = explode(' ', $ticket['date']);
+//                                                    echo $arr_date[0]; 
+                }
+                ?>
+                                                                <td><?php echo date('d/m/Y', strtotime($arr_date[0])); ?></td>
+                                                                <td><?php echo $arr_date[1]; ?></td>
+                                                                <td><?php
+                $datetime1 = new DateTime($ticket['date']);
+                $datetime2 = new DateTime('now');
+                $interval = $datetime1->diff($datetime2);
+                $daysCal = $interval->format('%d');
+                $week = $daysCal / 7;
+                echo $interval->format('%m month, ' . intval($week) . ' week and %d days');
+                ?></td>
+                
+                
+                                                                <td><?php echo $ticket['username']; ?></td>
+                
+                                                                <td><?php echo $ticket['order_no']; ?></td>
+                                                                <td>
+                <?php
+                $image_role = '';
+                $url_contain = base_url();
+
+                if ($ticket['photoid'] != '') {
+                    if (strpos($ticket['photoid'], ',') !== FALSE) {
+                        $image_arr = explode(',', $ticket['photoid']);
+                        if (is_array($image_arr)) {
+
+
+
+                            $image_role = "<div class='ui-lightbox-gallery_$j'>";
+                            foreach ($image_arr as $image_id) {
+                                $image_role.= "<a target='_top' title='' href='$url_contain/index.php/images/viewHero/$image_id' class=''><img width='75' alt='Gallery Image' style='display: inline-block' class='thumbnail thumb'  src='$url_contain/index.php/images/viewList/$image_id'></a>&nbsp;";
+                            }
+
+                            $image_role .= "<script>$('.ui-lightbox-gallery_" . $j . "').each(function() { // the containers for all your galleries
+    $(this).magnificPopup({
+        delegate: 'a', // the selector for gallery item
+        type: 'image',
+        gallery: {
+          enabled:true
+        }
+    });
+}); </script>";
+                            $image_role .= "</div>";
+                        }
+                    } else {
+
+                        $image_role = "<div class='image_single'>";
+                        $photoid = $ticket['photoid'];
+                        $image_role .= "<a title='' href='$url_contain/index.php/images/viewHero/$photoid' class='ui-lightbox'><img width='75' alt='Gallery Image' style='display: inline-block' class='thumbnail thumb'  src='$url_contain/index.php/images/viewList/$photoid'></a>";
+
+                        $image_role .= "<script>$('.image_single').each(function() { // the containers for all your galleries
+    $(this).magnificPopup({
+        delegate: 'a', // the selector for gallery item
+        type: 'image',
+        gallery: {
+          enabled:true
+        }
+    });
+}); </script>";
+                        $image_role .= "</div>";
+                    }
+                } echo $image_role;
+                ?>
+                
+                                                                </td>
+                                                                <td><a  href="<?php echo base_url("faults/getPdf/$ticket[id]"); ?>"><img src="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/img/pdf.png" title="Get pdf" alt="Get pdf" /></a></td>
+                
+                                                            </tr>
+            <?php
+        }
+    }
+    ?></tbody>
+                                    </table>
+                                </div>
+                                 /.table-responsive 
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
 
 
 
@@ -1979,14 +1983,14 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
 
     <div id="pat_table" class="content_main">
         <div class="row">
-            <h1>Pat History</h1>
+            <h1>Electrical Test History</h1>
         </div>
 
         <table class="list_table">
             <thead>
                 <tr>
-                    <th class="left">PAT Date</th>
-                    <th class="left">PAT Test Status </th>
+                    <th class="left">Electrical Test Date</th>
+                    <th class="left">Electrical Test Status </th>
                     <th class="left">Logged By</th>
                 </tr>
             </thead>
@@ -2001,9 +2005,9 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                         <td><?php echo $pat_result->pattest_name; ?></td>
                         <td><?php echo $pat_result->firstname . ' ' . $pat_result->lastname ?></td>
                     </tr>
-                    <?php
-                }
-                ?>
+        <?php
+    }
+    ?>
 
             </tbody>
 
@@ -2020,25 +2024,25 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
     <div class="row">
         <h1>Condition History</h1>
     </div>
-    <?php
-    if ($this->session->flashdata('success')) {
-        ?>
+        <?php
+        if ($this->session->flashdata('success')) {
+            ?>
         <div class="alert alert-success alert-dismissable">
             <button aria-hidden="true" data-dismiss="alert" class="close" type="button">&times;</button>
-            <?php echo $this->session->flashdata('success'); ?>
+        <?php echo $this->session->flashdata('success'); ?>
         </div>
-        <?php
-    }
-    if ($this->session->flashdata('error')) {
-        ?>
+    <?php
+}
+if ($this->session->flashdata('error')) {
+    ?>
         <div class="alert alert-warning alert-dismissable">
             <button aria-hidden="true" data-dismiss="alert" class="close" type="button">&times;</button>
-            <?php echo $this->session->flashdata('error'); ?>
+        <?php echo $this->session->flashdata('error'); ?>
         </div>
-        <?php
-    }
-    ?>
-    <?php // echo $this->view('users/assets/asset_sidemenu');                 ?>
+    <?php
+}
+?>
+<?php // echo $this->view('users/assets/asset_sidemenu');                  ?>
     <div class="row">
         <div class="col-lg-12">
 
@@ -2060,7 +2064,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                                 </tr>
                             </thead>
                             <tbody id="asset_body"> 
-                                <?php foreach ($conditionhistory as $asset) { ?>
+                                        <?php foreach ($conditionhistory as $asset) { ?>
                                     <tr>
                                         <td>
                                             <?php
@@ -2142,7 +2146,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                                         <td><?php echo $asset['firstname'] . ' ' . $asset['lastname']; ?></td>
                                         <td><?php echo $asset['notes']; ?></td>
                                     </tr>
-                                <?php } ?>
+<?php } ?>
                             </tbody>
                         </table>
                     </div>
@@ -2220,7 +2224,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                     <td>Purchase Date</td>
                     <td><?php
                         if ($assetcondition[0]['purchase_date'] != "0000-00-00" && $assetcondition[0]['purchase_date'] != NULL) {
-                            echo date('d-m-Y', strtotime($assetcondition[0]['purchase_date']));
+                            echo date('d/m/Y', strtotime($assetcondition[0]['purchase_date']));
                         } else {
                             echo "N/A";
                         }
@@ -2277,7 +2281,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
     ?>
     <div id="third_table" class="content_main">
         <div class="row">
-            <h1>Compliance History</h1>
+            <h1>Safety History</h1>
         </div>
         <div class="compliance_box_top">
             <div class="button_holder">
@@ -2297,7 +2301,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                 <thead>
                     <tr>
                         <th data-export="false">Actions</th>
-                        <th data-export="true">Compliance Name</th>
+                        <th data-export="true">Safety Name</th>
                         <th data-export="true">Logged By</th>
                         <th data-export="true">Due Date</th>
                         <th data-export="true">Complete Date</th>
@@ -2311,7 +2315,21 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                         <th hidden=''></th>
                         <th data-export="false">Doc</th>
                     </tr>
-
+                    <tr>
+                        <th>Actions</th>
+                        <th>Safety Name</th>
+                        <th>Logged By</th>
+                        <th>Due Date</th>
+                        <th>Complete Date</th>
+                        <th>Complete Time</th>
+                        <th>Result</th>
+                        <th>No Of Task</th>
+                        <th>Checks Failed</th>
+                        <th></th>
+                        <th></th>
+                        <th hidden=""></th>
+                        <th hidden=""></th>
+                    </tr>
                 </thead>
 
                 <tbody>
@@ -2440,11 +2458,11 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                         </tr>
 
 
-                    <?php } ?>
+    <?php } ?>
                 </tbody>
-                <tfoot>
+<!--                <tfoot>
                 <th>Actions</th>
-                <th>Compliance Name</th>
+                <th>Safety Name</th>
                 <th>Logged By</th>
                 <th>Due Date</th>
                 <th>Complete Date</th>
@@ -2454,7 +2472,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                 <th>Checks Failed</th>
                 <th></th>
                 <th></th>
-                </tfoot>
+                </tfoot>-->
             </table>
         </div>
 
@@ -2555,9 +2573,9 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                     <div class="form-group col-md-12">
                         <div class="col-md-6"><label>New Condition</label> </div>
                         <div class="col-md-6"><select name="new_condition" class="form-control"><option>----SELECT----</option>  
-                                <?php foreach ($conditionlist as $condition) { ?>
+<?php foreach ($conditionlist as $condition) { ?>
                                     <option value="<?php echo $condition['id']; ?>"><?php echo $condition['condition']; ?></option>
-                                <?php } ?>
+<?php } ?>
                             </select>
                         </div>
                     </div>
@@ -2799,7 +2817,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                         <div class="col-md-6">  <label>Enter QR Code*</label> </div>
                         <div class="col-md-6">  <div class="input-group">
                                 <div class="input-group-addon grpaddon">
-                                    <?php echo $this->session->userdata('objSystemUser')->qrcode; ?></div>
+<?php echo $this->session->userdata('objSystemUser')->qrcode; ?></div>
                                 <input placeholder="Enter QR Code" class="form-control barcss" name="item_barcode_similar" id="item_barcode_similar">
                             </div>
                             <div id="qrcodeerror_similar" class="qrcodeerror hide">QR Code Already Exist.</div>
@@ -2916,9 +2934,9 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                                 foreach ($arrCondition as $arrConn) {
                                     ?>
                                     <option value="<?php echo $arrConn['id']; ?>"><?php echo $arrConn['condition']; ?></option>                     
-                                    <?php
-                                }
-                                ?>
+    <?php
+}
+?>
                             </select>
                         </div>
                     </div>
@@ -3145,10 +3163,10 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                 <div class="form-group col-md-12">
                 </div>
 
-                 <div class="actionData">
+                <div class="actionData">
 
                 </div>     
-                    
+
                 <!-- Job Notes -->
                 <div class="form-group col-md-12">
                     <div class="col-md-6"><label>Job Notes</label>   </div>
@@ -3437,9 +3455,9 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                     <div class="col-md-6"><input type="text" name="order_no" id="v_order_no" class="form-control" value="" disabled="" /></div></div> <!-- /.form-group -->
                 <div class="form-group col-md-12">
                 </div>
-                       <div class="actionData">
+                <div class="actionData">
 
-                        </div> 
+                </div> 
                 <!-- Job Notes -->
                 <div class="form-group col-md-12">
                     <div class="col-md-6"><label>Job Notes</label>
@@ -3450,7 +3468,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                 <div class="form-group col-md-12" >
 
                 </div>
-                  <div class="form-group col-md-12 fault_photo2">
+                <div class="form-group col-md-12 fault_photo2">
                     <div class="col-md-6"><label>Photos</label>   </div>
                     <div class="col-md-6" id="photo_div_resolve1"> </div>
                 </div>
@@ -3570,46 +3588,46 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
 
 //##############################
 // for update incident..
-  // button for add image
-                     var max_fields = 10; //maximum input boxes allowed
-                var wrapper = $(); //Fields wrapper
-                var add_button = $(".add_field_button1"); //Add button ID
-                var x = 1;
-                var y = 1;
-                //initlal text box count
+        // button for add image
+        var max_fields = 10; //maximum input boxes allowed
+        var wrapper = $(); //Fields wrapper
+        var add_button = $(".add_field_button1"); //Add button ID
+        var x = 1;
+        var y = 1;
+        //initlal text box count
 
-                $("body").find("#img_button1").click(function(e) { //on add input button click
+        $("body").find("#img_button1").click(function(e) { //on add input button click
 
-                    e.preventDefault();
-                    if (x < max_fields) { //max input box allowed
-                        x++; //text box increment
-                        $(".input_fields_wrap1").append('<div> <input class="fileupload upload form-control" type="file" name="photo_file_' + x + '" size="20"><a href="#" class="remove_field1">Remove</a></div>'); //add input box
-
-
-                    }
-                });
-                $(".input_fields_wrap1").on("click", ".remove_field1", function(e) { //user click on remove text
-                    e.preventDefault();
-                    $(this).parent('div').remove();
-                    x--;
-                    total--;
-                });
-                $("body").find("#img_fix_button1").click(function(e) { //on add input button click
-
-                    e.preventDefault();
-                    if (x < max_fields) { //max input box allowed
-                        x++; //text box increment
-                        $(".input_fix_wrap1").append('<div> <input class="fileupload upload form-control" type="file" name="photo_file_' + x + '" size="20"><a href="#" class="remove_field1">Remove</a></div>'); //add input box
+            e.preventDefault();
+            if (x < max_fields) { //max input box allowed
+                x++; //text box increment
+                $(".input_fields_wrap1").append('<div> <input class="fileupload upload form-control" type="file" name="photo_file_' + x + '" size="20"><a href="#" class="remove_field1">Remove</a></div>'); //add input box
 
 
-                    }
-                });
-                $(".input_fix_wrap1").on("click", ".remove_field1", function(e) { //user click on remove text
-                    e.preventDefault();
-                    $(this).parent('div').remove();
-                    x--;
-                    total--;
-                });
+            }
+        });
+        $(".input_fields_wrap1").on("click", ".remove_field1", function(e) { //user click on remove text
+            e.preventDefault();
+            $(this).parent('div').remove();
+            x--;
+            total--;
+        });
+        $("body").find("#img_fix_button1").click(function(e) { //on add input button click
+
+            e.preventDefault();
+            if (x < max_fields) { //max input box allowed
+                x++; //text box increment
+                $(".input_fix_wrap1").append('<div> <input class="fileupload upload form-control" type="file" name="photo_file_' + x + '" size="20"><a href="#" class="remove_field1">Remove</a></div>'); //add input box
+
+
+            }
+        });
+        $(".input_fix_wrap1").on("click", ".remove_field1", function(e) { //user click on remove text
+            e.preventDefault();
+            $(this).parent('div').remove();
+            x--;
+            total--;
+        });
 //##############################
         $(".fixitem").click(function() {
             var iId = $(this).attr('id');
@@ -3772,10 +3790,10 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
             }); // End of ajax
 
         });
-        
-        
+
+
         // fixed fault history..
-                $(".viewfaultFix").click(function() {
+        $(".viewfaultFix").click(function() {
 
             var iId = $(this).attr('id');
             var account_id = $(this).attr('account_id');
@@ -3786,7 +3804,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                 type: "POST",
                 url: base_url + "faults/ajaxfetchItemForSingleItem",
                 dataType: 'json',
-                data: "&id=" + iId + "&account_id=" + account_id + "&type=" + type + "&ticket_id="+ticket_id,
+                data: "&id=" + iId + "&account_id=" + account_id + "&type=" + type + "&ticket_id=" + ticket_id,
                 success: function(data) {
                     console.log('I am result');
                     $("#viewfaultFix #v_item_manu").val(data.item_manu_name);
@@ -3839,13 +3857,13 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
 
                         }
                     });
-                      if (data.allPhoto != null) {
+                    if (data.allPhoto != null) {
                         var updatePhoto = data.allPhoto.split(',');
                     }
                     else {
                         var updatePhoto = data.photoid.split(',');
                     }
-                                      if (updatePhoto.length != 0) {
+                    if (updatePhoto.length != 0) {
                         $('.fault_photo2').css('display', 'block');
 
 
@@ -3879,24 +3897,24 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
 //                        console.log(job_div);
 //                        $(".job_notes_div").html(job_div);
 //                    }
-                      var notes_div = '';
+                    var notes_div = '';
                     if (data.allNotes != "") {
                         var allNote = data.allNotes.split(',');
                         var noteDate = data.notesDate.split(',');
-                            $(".job_notes_div").empty();
-                       
+                        $(".job_notes_div").empty();
+
                         notes_div += "<ul>";
                         for (var i = 0; i < allNote.length; i++) {
-                            notes_div += "<li style='list-style:none;padding:0;margin:0;'>"+noteDate[i]+ " - "+ allNote[i] + "</li>";
+                            notes_div += "<li style='list-style:none;padding:0;margin:0;'>" + noteDate[i] + " - " + allNote[i] + "</li>";
 
                         }
                         notes_div += "</ul>";
-                    }else{
-                    $(".job_notes_div1").empty();
-                       notes_div += "<ul><li style='list-style:none;padding:0;margin:0;'>" +data.loggedByDate+ " - "+ data.jobnote + "</li></ul>";
+                    } else {
+                        $(".job_notes_div1").empty();
+                        notes_div += "<ul><li style='list-style:none;padding:0;margin:0;'>" + data.loggedByDate + " - " + data.jobnote + "</li></ul>";
                     }
-                  
-                        $(".job_notes_div1").html(notes_div);
+
+                    $(".job_notes_div1").html(notes_div);
 
                     $("#viewfaultFix #v_job_notes1").val(data.jobnote);
                     $("#save_button").show();
@@ -4040,7 +4058,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
         $('#history_table').find('td:empty').html('&nbsp;');
         var colCount = 0;
         var arr = [];
-        $('#history_table thead tr th').each(function() {
+        $('#history_table thead tr:eq(0) th').each(function() {
             if ($(this).attr("hidden") || $(this).attr('data-export') == 'false') {
 
             } else {
@@ -4050,6 +4068,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
         console.log(arr);
         var table = $('#history_table').DataTable({
             "pagingType": "full_numbers",
+            "bSortCellsTop": true,
             "lengthMenu": [[10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "All"]],
             "order": [[4, "desc"]],
             columnDefs: [
@@ -4058,7 +4077,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
             ]
 
         });
-        $("#history_table tfoot th").each(function(i) {
+        $("#history_table thead tr:eq(1) th").each(function(i) {
             if (i == 1 || i == 2 || i == 6) {
                 var select = $('<select><option value="">Reset Filter</option></select>')
                         .appendTo($(this).empty())
@@ -4076,6 +4095,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                         table.destroy();
                         table = $('#history_table').DataTable({
                             "pagingType": "full_numbers",
+                            "bSortCellsTop": true,
                             "lengthMenu": [[10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "All"]],
                             "order": [[4, "asc"]],
                             columnDefs: [
@@ -4149,6 +4169,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
             table.destroy();
             table = $('#history_table').DataTable({
                 "pagingType": "full_numbers",
+                "bSortCellsTop": true,
                 "lengthMenu": [[10, 25, 50, 100, 250, -1], [10, 25, 50, 100, 250, "All"]],
                 "order": [[4, "asc"]],
                 columnDefs: [
@@ -4206,7 +4227,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
             var site_id = this.value;
             if (site_id != 0) {
                 $.getJSON("<?php echo base_url('items/getownerbysite'); ?>" + '/' + site_id, function(data) {
-                    if (data.results.length != 0) { 
+                    if (data.results.length != 0) {
                         $('#owner_id option[value="' + data.results[0].id + '"]').attr('selected', 'selected');
                     }
                     else
@@ -4269,8 +4290,8 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                 }
             });
         });
-        
-                // Establish Link to Owner,Location and Site
+
+        // Establish Link to Owner,Location and Site
         $('body').find('#owner_id_similar').change(function() {
             var owner_id = this.value;
             if (owner_id != 0) {
@@ -4279,7 +4300,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                     if (data.results.length != 0) {
                         $('.multilocationclass option[value="' + data.results[0].location_id + '"]').attr('selected', 'selected');
                         $.getJSON("<?php echo base_url('items/getsitebylocation'); ?>" + '/' + data.results[0].location_id, function(site_data) {
-                   if (site_data != null) 
+                            if (site_data != null)
                             {
                                 $('.multisiteclass option[value="' + site_data.results[0].site_id + '"]').attr('selected', 'selected');
                             }
@@ -4308,7 +4329,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
             var site_id = this.value;
             if (site_id != 0) {
                 $.getJSON("<?php echo base_url('items/getownerbysite'); ?>" + '/' + site_id, function(data) {
-                    if (data.results.length != 0) { 
+                    if (data.results.length != 0) {
                         $('#owner_id_similar option[value="' + data.results[0].id + '"]').attr('selected', 'selected');
                     }
                     else
@@ -4351,7 +4372,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
         $(document).find('.multilocationclass').change(function() {
 
 
-            var site_id = this.value; 
+            var site_id = this.value;
             $.getJSON("<?php echo base_url('items/getownerbylocation'); ?>" + '/' + site_id, function(data) {
                 if (data.results.length != 0) {
                     $('#owner_id_similar option[value="' + data.results[0].id + '"]').attr('selected', 'selected');
@@ -4371,7 +4392,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                 }
             });
         });
-        
+
         // select site according to location for multi acc
         $(document).find('#new_owner_id').change(function() {
 
