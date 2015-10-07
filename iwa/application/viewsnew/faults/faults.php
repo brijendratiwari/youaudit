@@ -1071,7 +1071,7 @@
 
                             <thead>
                                 <tr>
-                                    <th>Select</th>
+                                    <th>Update Multiple Jobs</th>
                                     <th>Resolve Multiple Assets</th>
                                     <th>QR Code</th>
                                     <th>Photos</th>
