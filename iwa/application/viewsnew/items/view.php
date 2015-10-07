@@ -2850,7 +2850,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                         <div class="col-md-6"> <label>Site*</label>
                         </div>
                         <div class="col-md-6">       
-                            <select name="site_id_similar" id="site_id_similar" class="form-control multi_site_class">
+                            <select name="site_id_similar" id="site_id_similar" class="form-control multisiteclass">
                                 <option value="0">Not Set</option>
                                 <?php
                                 foreach ($arrSites['results'] as $arrSite) {
@@ -2870,7 +2870,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                         <div class="col-md-6"> <label>Location*</label>
                         </div>
                         <div class="col-md-6">       
-                            <select name="location_id_similar" id="location_id_similar" class="form-control multi_location_class">
+                            <select name="location_id_similar" id="location_id_similar" class="form-control multilocationclass">
                                 <option value="0">Not Set</option>
                                 <?php
                                 foreach ($arrLocations['results'] as $arrLocation) {
@@ -4206,7 +4206,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
             var site_id = this.value;
             if (site_id != 0) {
                 $.getJSON("<?php echo base_url('items/getownerbysite'); ?>" + '/' + site_id, function(data) {
-                    if (data.results.length != 0) {
+                    if (data.results.length != 0) { 
                         $('#owner_id option[value="' + data.results[0].id + '"]').attr('selected', 'selected');
                     }
                     else
@@ -4269,6 +4269,109 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                 }
             });
         });
+        
+                // Establish Link to Owner,Location and Site
+        $('body').find('#owner_id_similar').change(function() {
+            var owner_id = this.value;
+            if (owner_id != 0) {
+                $.getJSON("<?php echo base_url('items/getlocationbyowner'); ?>" + '/' + owner_id, function(data) {
+
+                    if (data.results.length != 0) {
+                        $('.multilocationclass option[value="' + data.results[0].location_id + '"]').attr('selected', 'selected');
+                        $.getJSON("<?php echo base_url('items/getsitebylocation'); ?>" + '/' + data.results[0].location_id, function(site_data) {
+                            if (site_data != null)
+                            {
+                                $('.multisiteclass option[value="' + site_data.results[0].site_id + '"]').attr('selected', 'selected');
+                            }
+                            else {
+                                $('.multisiteclass option[value="0"]').attr('selected', 'selected');
+                            }
+                        });
+                    }
+                    else {
+                        $('.multilocationclass option[value="0"]').attr('selected', 'selected');
+                        $('.multisiteclass option[value="0"]').attr('selected', 'selected');
+                    }
+                });
+            }
+            else
+            {
+                $('.multilocationclass option[value="0"]').attr('selected', 'selected');
+                $('.multisiteclass option[value="0"]').attr('selected', 'selected');
+            }
+        });
+
+        // estblish link and site link
+
+        $(document).find('.multisiteclass').change(function() {
+            $(".multilocationclass").empty();
+            var site_id = this.value;
+            if (site_id != 0) {
+                $.getJSON("<?php echo base_url('items/getownerbysite'); ?>" + '/' + site_id, function(data) {
+                    if (data.results.length != 0) { 
+                        $('#owner_id_similar option[value="' + data.results[0].id + '"]').attr('selected', 'selected');
+                    }
+                    else
+                    {
+//                        $('#owner_id_similar option[value="0"]').attr('selected', 'selected');
+                    }
+                });
+                $.getJSON("<?php echo base_url('items/getlocationbysite'); ?>" + '/' + site_id, function(data) {
+                    if (data.results.length != 0) {
+
+                        var location_data = '';
+                        for (var i = 0; i < data.results.length; i++) {
+                            location_data += '<option value=' + data.results[i].id + '>' + data.results[i].name + '</option>';
+                        }
+                        $(".multilocationclass").append(location_data);
+                    }
+                    else {
+                        $(".multilocationclass").append("<option value='0'>Not Set</option>");
+                    }
+                });
+            }
+            else {
+                $.getJSON("<?php echo base_url('items/getalllocation'); ?>", function(data) {
+                    if (data.results.length != 0) {
+
+                        var location_data = '';
+                        location_data += "<option value='0'>Not Set</option>";
+                        for (var i = 0; i < data.results.length; i++) {
+                            location_data += '<option value=' + data.results[i].locationid + '>' + data.results[i].locationname + '</option>';
+                        }
+                        $(".multilocationclass").append(location_data);
+                    }
+                    else {
+                        $(".multilocationclass").append("<option value='0'>Not Set</option>");
+                    }
+                });
+            }
+        });
+        // select site accroding to location for multi acc
+        $(document).find('.multilocationclass').change(function() {
+
+
+            var site_id = this.value; 
+            $.getJSON("<?php echo base_url('items/getownerbylocation'); ?>" + '/' + site_id, function(data) {
+                if (data.results.length != 0) {
+                    $('#owner_id_similar option[value="' + data.results[0].id + '"]').attr('selected', 'selected');
+                }
+                else
+                {
+//                    $('#owner_id_similar option[value="0"]').attr('selected', 'selected');
+                }
+            });
+            $.getJSON("<?php echo base_url('items/getsitebylocation'); ?>" + '/' + site_id, function(data) {
+
+                if (data.results.length != 0) {
+                    $('.multisiteclass option[value="' + data.results[0].site_id + '"]').attr('selected', 'selected');
+                }
+                else {
+                    $('.multisiteclass option[value="0"]').attr('selected', 'selected');
+                }
+            });
+        });
+        
         // select site according to location for multi acc
         $(document).find('#new_owner_id').change(function() {
 

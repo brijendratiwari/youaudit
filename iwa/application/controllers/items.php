@@ -2913,10 +2913,10 @@ class Items extends MY_Controller {
         }
     }
 
-    function getownerbylocation($location_id) {
+    function getownerbylocation($location_id) { 
         if ($location_id) {
-            $this->load->model('locations_model');
-            $location = $this->sites_model->getownerbylocation($location_id);
+            $this->load->model('sites_model');
+            $location = $this->sites_model->getownerbylocation($location_id); 
             if (!empty($location)) {
                 echo json_encode($location);
             }

@@ -750,7 +750,7 @@
         $('.add-fieldname').click(function(e) {
             if (r < max_fields) { //max box allowed
                 r++;
-                var fieldname = '<div class="multi-field"><input type="hidden" name="fieldname" value="' + r + '"><input id="fname' + r + '" name="field_name' + r + '" class="form-control prof pull-left" size="12"><button class="add-owner btn-xs btn-primary addp pull-right removepfield" onclick="remv(' + r + ')" type="button"><i class="fa fa-minus"></i></button></div>';
+                var fieldname = '<div class="multi-field"><input type="hidden" name="fieldname" value="' + r + '"><input id="fname' + r + '" name="field_name' + r + '" class="form-control prof pull-left" size="12"><button class="add-owner btn-xs btn-primary addp pull-right removepfield" type="button"><i class="fa fa-minus"></i></button></div>';
                 var fieldtype = '<div class="multi-fields"><select id="field_type' + r + '" name="field_type' + r + '" class="form-control pull-left"  onchange="custom(' + r + ')"><option value="text_type">Text</option><option value="pick_list_type">Pick List</option><option value="value_type">$ Value</option><option value="date_type">Date</option><option value="num">Number</option></select></div>';
                 $('#profile_field').append(fieldname);
                 $('#profile_type').append(fieldtype);
@@ -759,7 +759,7 @@
         $('#add_custom').click(function(e) {
             if (s < max_fields) { //max box allowed
                 s++;
-                var fieldname = '<div class="multi-field"><input type="hidden" name="fieldname" value="' + r + '"><input id="fname' + r + '" name="names[]" class="form-control prof pull-left" size="10"><button class="add-owner btn-xs btn-primary addp pull-right removepfield" onclick="remv(' + r + ')" type="button"><i class="fa fa-minus"></i></button></div>';
+                var fieldname = '<div class="multi-field"><input type="hidden" name="fieldname" value="' + r + '"><input id="fname' + r + '" name="names[]" class="form-control prof pull-left" size="10"><button class="add-owner btn-xs btn-primary addp pull-right removepfield" type="button"><i class="fa fa-minus"></i></button></div>';
                 var fieldtype = '<div class="multi-fields"><select id="field_type' + s + '" name="types[]" class="form-control pull-left"  onchange="custom(' + s + ')"><option value="text_type">Text</option><option value="pick_list_type">Pick List</option><option value="value_type">$ Value</option><option value="date_type">Date</option><option value="num">Number</option></select></div>';
                 $('#name_list').append(fieldname);
                 $('#type_list').append(fieldtype);

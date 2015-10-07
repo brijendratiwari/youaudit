@@ -258,7 +258,6 @@ class Sites_model extends CI_Model {
                 }
                 $arrResult['results'] = $arrLocations;
             }
-
             return $arrResult;
         } else {
             return array();
