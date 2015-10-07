@@ -1188,10 +1188,10 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
         <div class="row">
             <div class="col-md-12">
                 <div class="col-md-4">
-                    <h1>OWNERSHIP CHANGES</h1></div>
+                    <h1>Ownership Changes</h1></div>
 
                 <div class="col-md-4">
-                    <h1>AUDIT HISTORY</h1>
+                    <h1>Audit / Stocktake History</h1>
 
                 </div>
                 <div class="col-md-4">
