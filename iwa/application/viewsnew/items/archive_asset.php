@@ -53,7 +53,7 @@
         var base_url_str = $("#base_url").val();
         var num_of_th = $('#num_of_th').val();
         var numofth = num_of_th.split(',');
-        var aryJSONColTable = [];
+          var aryJSONColTable = [];
         for (var k = 0; k < numofth.length; k++) {
 
             if (k == 0) {
@@ -66,7 +66,7 @@
             {
                 aryJSONColTable.push({
                     "sClass": "eamil_conform aligncenter",
-                    "bSortable": false,
+//                    "bSortable": false,
                     "aTargets": [k]
                 });
             }
@@ -81,6 +81,9 @@
         }
 
         var item_table = $("#itemtable").DataTable({
+              "initComplete" : function () {
+        $('.dataTables_scrollBody thead tr').addClass('hidden');
+    },
             "oLanguage": {
                 "sProcessing": "<div align='center'><img src='<?php echo base_url('./img/ajax-loader.gif'); ?>'</div>"},
             "ordering": true,
@@ -92,7 +95,8 @@
             "bDeferRender": true,
             "aLengthMenu": [[20, 50, 100, 250, 500, -1], [20, 50, 100, 250, 500, "All"]],
             "iDisplayLength": 20,
-//            "sScrollX": "100%",
+            "sScrollX": "100%",
+            "sScrollY": "570px",
             "bScrollCollapse": false,
             "bDestroy": true, //!!!--- for remove data table warning.
             "fnDrawCallback": function() {
@@ -398,7 +402,7 @@
     <table class="list_table tb" id="itemtable">
         <thead>
 
-            <tr> <th>Select</th>
+            <tr> 
                 <?php
                 foreach ($arrColumns as $column) {
                     $cnt = 22;
@@ -408,6 +412,7 @@
                 <?php } ?>
                 <th data-export="true">Removal Date</th>
                 <th data-export="true">Removal Logged By</th>
+                <th data-export="true">Confirm By</th>
                 <th data-export="true">Reason</th>
                 <th data-export="true">Method Of Removal</th>
                 <th data-export="true">Income Removal</th>
@@ -418,9 +423,7 @@
 
 
             <tr> 
-                <th class="left" data-export="false"><input id="selectAllchk" type="checkbox" title="Select ALL">
-                    <br><button id="multiComEditBtn" class="btn btn-warning fade hide" style="padding:0 5px;" type="button">Edit</button></th>
-                <?php
+                  <?php
                 foreach ($arrColumns as $column) {
                     ?>
                     <?php if ($column->input_name == "barcode") { ?>
@@ -539,6 +542,7 @@
                     }
                     ?>
                 <?php } ?>
+                <th></th>
                 <th></th>
                 <th></th>
                 <th></th>

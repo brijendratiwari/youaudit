@@ -79,9 +79,9 @@
             // Call ajax
             $.ajax({
                 type: "POST",
-                url: base_url + "faults/ajaxfetchItem",
+                url: base_url + "faults/ajaxfetchItemForSingleItem",
                 dataType: 'json',
-                data: "&id=" + iId + "&account_id=" + account_id + "&type=" + type,
+                data: "&id=" + iId + "&account_id=" + account_id + "&type=" + type+"&ticket_id="+ticket_id,
                 success: function(data) {
                     console.log('I am result');
                     $("#view_fault #v_item_manu").val(data.item_manu_name);

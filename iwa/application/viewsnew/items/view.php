@@ -1406,22 +1406,22 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
         $(document).ready(function()
         {
             $(".pickdate").datepicker({dateFormat: "dd/mm/yy"});
-            var fix_history = $("#fault_history").DataTable({
-                "ordering": true,
-                "aLengthMenu": [[10, 20, 40, -1], [10, 20, 40, "All"]],
-                "iDisplayLength": 10,
-                "bDestroy": true, //!!!--- for remove data table warning.
-                "aoColumnDefs": [
-                    {"sClass": "eamil_conform aligncenter", "aTargets": [0]},
-                    {"sClass": "eamil_conform aligncenter", "aTargets": [1]},
-                    {"sClass": "eamil_conform aligncenter", "aTargets": [2]},
-                    {"sClass": "eamil_conform aligncenter", "aTargets": [3]},
-                    {"sClass": "eamil_conform aligncenter", "aTargets": [4]},
-                    {"sClass": "eamil_conform aligncenter", "aTargets": [5]},
-                    {"sClass": "eamil_conform aligncenter", "aTargets": [6]},
-                    {"sClass": "eamil_conform aligncenter", "aTargets": [7]},
-                ]
-            });
+//            var fix_history = $("#fault_history").DataTable({
+//                "ordering": true,
+//                "aLengthMenu": [[10, 20, 40, -1], [10, 20, 40, "All"]],
+//                "iDisplayLength": 10,
+//                "bDestroy": true, //!!!--- for remove data table warning.
+//                "aoColumnDefs": [
+//                    {"sClass": "eamil_conform aligncenter", "aTargets": [0]},
+//                    {"sClass": "eamil_conform aligncenter", "aTargets": [1]},
+//                    {"sClass": "eamil_conform aligncenter", "aTargets": [2]},
+//                    {"sClass": "eamil_conform aligncenter", "aTargets": [3]},
+//                    {"sClass": "eamil_conform aligncenter", "aTargets": [4]},
+//                    {"sClass": "eamil_conform aligncenter", "aTargets": [5]},
+//                    {"sClass": "eamil_conform aligncenter", "aTargets": [6]},
+//                    {"sClass": "eamil_conform aligncenter", "aTargets": [7]},
+//                ]
+//            });
             var fix_history1 = $("#fixed_history").DataTable({
                 "ordering": true,
                 "aLengthMenu": [[10, 20, 40, -1], [10, 20, 40, "All"]],
@@ -1472,18 +1472,16 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                             <table id="open_job" class="table table-striped table-bordered table-hover" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
-                                        <th>Severity</th>
+                                        <th>Incident Type</th>
+                                        <th>Stage</th>
                                         <th>Fault Date</th>
-
+                                         <th>Logged By</th>
+                                          <th>Incident Length</th>   
                                         <th>Incident Time</th>
-                                        <th>Incident Length</th>
-
-
-
-                                        <th>Logged By</th>
-
-                                        <th>Order No</th>
-                                        <th>Photos</th>
+                                        <th>Severity</th>
+                                         <th>Order No</th>
+                                        <!--<th>Photos</th>-->
+                                        <th>Job Notes</th>
                                         <th>Incident Report</th>
                                         <th>Action</th>
                                     </tr>
@@ -1491,12 +1489,14 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                                 <tbody id="asset_body">
 
                                     <?php
+//                                    var_dump($arrItemOpenTicketHistory);
                                     foreach ($arrItemOpenTicketHistory as $openticket) {
                                         ?>
 
                                         <tr>
-                                            <td><?php echo $openticket['severity']; ?></td>
-                                            <?php
+                                            <td><?php echo $openticket['statusname']; ?></td>
+                                            <td><?php echo $openticket['reason_code']; ?></td>
+                                              <?php
 //                                            echo $openticket['date'];
                                             if ($openticket['date']) {
                                                 $arr_date = explode(' ', $openticket['date']);
@@ -1504,7 +1504,10 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                                             }
                                             ?>
                                             <td><?php echo date('d/m/Y', strtotime($arr_date[0])); ?></td>
-                                            <td><?php echo $arr_date[1]; ?></td>
+                                           
+                                            <td><?php echo $openticket['username']; ?></td>
+                                           
+                                            
                                             <td><?php
                                                 $datetime1 = new DateTime($openticket['date']);
                                                 $datetime2 = new DateTime('now');
@@ -1513,6 +1516,8 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                                                 $week = $daysCal / 7;
                                                 echo $interval->format('%m month, ' . intval($week) . ' week and %d days');
                                                 ?></td>
+                                            <td><?php echo $arr_date[1]; ?></td>
+                                            
 
 
                                             <?php
@@ -1536,10 +1541,10 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
 
 
 
-                                            <td><?php echo $openticket['username']; ?></td>
+                                            <td><?php echo $openticket['severity']; ?></td>
 
                                             <td><?php echo $openticket['order_no']; ?></td>
-                                            <td>
+<!--                                            <td>
                                                 <?php
                                                 $image_role = '';
                                                 $url_contain = base_url();
@@ -1585,10 +1590,14 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                                                         $image_role .= "</div>";
                                                     }
                                                 } echo $image_role;
+                                                $account_id = $this->session->userdata('objSystemUser')->accountid;
+                                                $url = base_url().'faults/getPdfForOpenJob/'.$openticket[itemid].'/'.$account_id.'/'.$openticket['id'];
                                                 ?>
 
-                                            </td>
-                                            <td><a  href="<?php echo base_url("faults/getPdf/$openticket[id]/1"); ?>"><img src="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/img/pdf.png" title="Get pdf" alt="Get pdf" /></a></td>
+                                            </td>-->
+                                            <td><?php echo $openticket['jobnote']; ?></td>
+                                            <!--<td><a  href="<?php echo base_url("faults/getPdf/$openticket[id]/1"); ?>"><img src="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/img/pdf.png" title="Get pdf" alt="Get pdf" /></a></td>-->
+                                            <td><a  href="<?php echo $url; ?>"> <img src="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/img/pdf.png" title="Get pdf" alt="Get pdf" /></a></td>
                                             <td><span class="action-w"><a data-toggle="modal" actionmode="reportfault"  ticket_id = "<?php echo $openticket['id']; ?>"  id="itm_<?php echo $openticket['itemid']; ?>" account_id="<?php echo $this->session->userdata('objSystemUser')->accountid; ?>" data-val="<?php echo $openticket['ticket_action']; ?>" href="#view_fault" title="View Incident" class="viewfault" data_customer_id=''><i class="fa fa-eye franchises-i"></i></a>View Incident</span>
                                                 <span class="action-w"><a  id="itm_<?php echo $openticket['itemid']; ?>" item_status="<?php echo $openticket['statusname']; ?>" ticket_id = "<?php echo $openticket['id']; ?>" account_id="<?php echo $this->session->userdata('objSystemUser')->accountid; ?>"  id="" data-toggle="modal" href="#update_fault" data_customer_id='' title="Update Fault" class="updatefault" data-val="<?php echo $openticket['ticket_action']; ?>"><i class="fa  fa-recycle franchises-i"></i></a>Update Incident</span>
                                                 <span class="action-w"><a  ticket_id = "<?php echo $openticket['id']; ?>" id="itm_<?php echo $openticket['itemid']; ?>" account_id="<?php echo $this->session->userdata('objSystemUser')->accountid; ?>"  data-toggle="modal" href="#fix_item" title="Fix item" class="fixitem" data_customer_id='' data-val="<?php echo $openticket['ticket_action']; ?>"><i class="glyphicon glyphicon-edit franchises-i"></i></a>Resolve Incident</span>
@@ -1620,49 +1629,41 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                             <table id="fixed_history" class="table table-striped table-bordered table-hover" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
+                                        <th>Fault Date</th>
+                                        <th>Fault Time</th>
+                                        <th>Incident Type</th>
                                         <th>Severity</th>
+                                        <th>Fault Logged By</th>
+                                        <th>Order No</th>
                                         <th>Fix Date</th>
                                         <th>Fix Time</th>
-                                        <th>Total Time</th>
-                                        <th>Fix Code</th>
-                                        <th>Logged By</th>
-                                        <th>Order No</th>
+                                        <th>Incident Length</th>
+                                        <th>Fix Reason Code</th>
+                                        <th>Fixed By</th>
                                         <th>Photos</th>
                                         <th>Incident Report</th>
+                                        <th>Action</th>
 
                                     </tr>
                                 </thead>
                                 <tbody id="asset_body">
-                                    <?php // var_dump($arrItemFixTicketHistory);  ?>
+                             
                                     <?php
+//                                    var_dump($arrItemFixTicketHistory);die;
                                     foreach ($arrItemFixTicketHistory['itemFixedHistory'] as $ticket) {
                                         ?>
 
                                         <tr>
+                                            <td><?php echo date('d/m/Y',strtotime($ticket['fault_date'])); ?></td>
+                                            <td><?php echo date('h:i:s',strtotime($ticket['fault_date'])); ?></td>
+                                            <td><?php echo $ticket['statusname']; ?></td>
                                             <td><?php echo $ticket['severity']; ?></td>
-                                            <?php
-                                            if ($ticket['date']) {
-                                                $arr_date = explode(' ', $ticket['date']);
-//                                                    echo $arr_date[0]; 
-                                            }
-                                            ?>
-                                            <?php
-                                            if ($ticket['fix_date'])
-                                                $arr_fixdate = explode(' ', $ticket['fix_date']);
-//                                                    echo $arr_date[0]; 
-                                            ?>
-                                            <td><?php
-                                                if (!empty($arr_fixdate[0])) {
-                                                    echo date('d/m/Y', strtotime($arr_fixdate[0]));
-                                                }
-                                                ?></td>
-                                            <td><?php
-                                                if (!empty($arr_fixdate[1])) {
-                                                    echo $arr_fixdate[1];
-                                                }
-                                                ?></td>
-
-                                            <?php
+                                            <td><?php echo $ticket['fault_by']; ?></td>
+                                            <td><?php echo $ticket['order_no']; ?></td>
+                                            <td><?php echo date('d/m/Y',strtotime($ticket['fix_date'])); ?></td>
+                                            <td><?php echo date('h:i:s',strtotime($ticket['fix_date'])); ?></td>
+                                           
+                                             <?php
                                             if ($ticket['fix_date'] != '0000-00-00 00:00:00') {
 
 
@@ -1682,11 +1683,41 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                                             ?>
 
                                             <td><?php echo $age_of_asset; ?></td>
+                                            
                                             <td><?php echo $ticket['fix_code']; ?></td>
-
                                             <td><?php echo $ticket['username']; ?></td>
+                                           <?php
+//                                            if ($ticket['date']) {
+//                                                $arr_date = explode(' ', $ticket['date']);
+////                                                    echo $arr_date[0]; 
+//                                            }
+//                                            ?>
+                                            <?php
+//                                            if ($ticket['fix_date'])
+//                                                $arr_fixdate = explode(' ', $ticket['fix_date']);
+////                                                    echo $arr_date[0]; 
+//                                            ?>
+                                            <!--<td>-->
+                                          <?php
+//                                                if (!empty($arr_fixdate[0])) {
+//                                                    echo date('d/m/Y', strtotime($arr_fixdate[0]));
+//                                                }
+//                                                ?>
+                                            <!--</td>-->
+                                            <!--<td>-->
+                                                <?php
+//                                                if (!empty($arr_fixdate[1])) {
+//                                                    echo $arr_fixdate[1];
+//                                                }
+//                                                ?>
+                                            <!--</td>-->
 
-                                            <td><?php echo $ticket['order_no']; ?></td>
+                                           
+                                            
+
+                                            
+
+                                            
                                             <td>
                                                 <?php
                                                 $image_role = '';
@@ -1736,8 +1767,11 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                                                 ?>
 
                                             </td>
-                                            <td><a  href="<?php echo base_url("faults/getPdf/$ticket[id]"); ?>"><img src="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/img/pdf.png" title="Get pdf" alt="Get pdf" /></a></td>
-
+                                            <?php $account_id = $this->session->userdata('objSystemUser')->accountid; ?>
+                                            <td><a  href="<?php echo base_url("faults/getPdfForFaultHistory/$ticket[itemid]/$account_id"); ?>"><img src="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/img/pdf.png" title="Get pdf" alt="Get pdf" /></a></td>
+                                            <td>
+                                                <span class="action-w"><a data-toggle="modal" actionmode="reportfault"  ticket_id = "<?php echo $ticket['id']; ?>"  id="itm_<?php echo $ticket['itemid']; ?>" account_id="<?php echo $this->session->userdata('objSystemUser')->accountid; ?>"  href="#viewfaultFix" title="View Incident" class="viewfaultFix" data_customer_id=''><i class="fa fa-eye franchises-i"></i></a>View Incident</span>
+                                           </td>
                                         </tr>
                                         <?php
                                     }
@@ -1749,7 +1783,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                 </div>
             </div>
         </div>
-        <div class="row">
+<!--        <div class="row">
             <h1>Resolve Incident Logged Data</h1>
         </div>
         <div class="row">
@@ -1861,11 +1895,11 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                                     ?></tbody>
                             </table>
                         </div>
-                        <!-- /.table-responsive -->
+                         /.table-responsive 
                     </div>
                 </div>
             </div>
-        </div>
+        </div>-->
 
 
 
@@ -3092,6 +3126,10 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                 <div class="form-group col-md-12">
                 </div>
 
+                 <div class="actionData">
+
+                </div>     
+                    
                 <!-- Job Notes -->
                 <div class="form-group col-md-12">
                     <div class="col-md-6"><label>Job Notes</label>   </div>
@@ -3128,7 +3166,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                 <h4 id="myModalLabel" class="modal-title">Update Fault</h4>
             </div>
 
-            <form action="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/iwa/faults/fixfault" method="post" id="update_fault_form">
+            <form enctype="multipart/form-data" action="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/iwa/faults/fixfault" method="post" id="update_fault_form">
                 <div class="modal-body">
                     <!-- Fix Item -->
 
@@ -3198,6 +3236,15 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                     </div>
                     <div class="form-group col-md-12">
                         <div class="col-md-12"><textarea placeholder="Enter Job Notes" class="form-control" name="job_notes" id="job_notes" cols="10" rows="2"></textarea>  
+                        </div>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <div class="col-md-6"> <label>Photo</label>
+                        </div>
+                        <div class="col-md-6 input_fields_wrap1"> </br>
+                            <button class="btn btn-primary btn-circle btn-xs add_field_button1" id="img_button1" title="add more image" type="button"><i class="glyphicon glyphicon-plus"></i></button>    
+                            <div><input class="fileupload upload form-control" type="file" name="photo_file_1" size="20"></div>
+
                         </div>
                     </div>
 
@@ -3308,6 +3355,97 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
     <!-- /.modal-dialog -->
 </div>
 
+<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="viewfaultFix" class="modal fade" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">&times;</button>
+                <h4 id="myModalLabel" class="modal-title">View Fault</h4>
+            </div>
+
+            <div class="modal-body">
+                <!-- Report Fault -->
+
+                <div class="form-group col-md-12">
+                </div>
+
+                <div class="form-group col-md-12">
+                    <div class="col-md-6">  <label>Item</label> </div>
+                    <div class="col-md-6">  <input readonly="readonly" class="form-control" name="item_manu" id="v_item_manu">
+                    </div>
+                </div>
+                <div class="form-group col-md-12">
+                    <div class="col-md-6">  <label>Manufacturer</label> </div>
+                    <div class="col-md-6">  <input readonly="readonly" class="form-control" name="manufacturer" id="v_manufacturer">
+                    </div>
+                </div>
+                <div class="form-group col-md-12">
+                    <div class="col-md-6">  <label>QR CODE</label> </div>
+                    <div class="col-md-6">  <input readonly="readonly" class="form-control" name="serial_number" id="v_serial_number">
+                    </div>
+                </div>
+                <div class="form-group col-md-12">
+                    <div class="col-md-6">  <label>Category</label> </div>
+                    <div class="col-md-6">  <input readonly="readonly" class="form-control" name="categoryname" id="v_categoryname">
+                    </div>
+                </div>
+                <div class="form-group col-md-12">
+                    <div class="col-md-6"><label>Location</label> </div>
+                    <div class="col-md-6"><input readonly="readonly" class="form-control" name="locationname" id="v_locationname">
+                    </div>
+                </div>
+
+                <div class="form-group col-md-12">
+                </div>
+                <div class="form-group col-md-12">
+                    <div class="col-md-6"><label>Severity</label> </div>
+                    <div class="col-md-6">
+                        <select class="form-control" name="severity" id="v_severity" disabled="">
+                            <option value="low">Low<option>
+                            <option value="normal">Normal<option>
+                            <option value="High">High<option>
+                            <option value="critical">Critical<option>
+                        </select>
+                    </div>
+                </div> <!-- /.form-group -->
+                <div class="form-group col-md-12">
+                    <div class="col-md-6"><label>Status</label> </div>
+                    <div class="col-md-6"><input  class="form-control" name="itemstatusname" id="v_itemstatusname" disabled="">
+                    </div>
+                </div> <!-- /.form-group -->
+                <div class="form-group col-md-12">
+                    <div class="col-md-6"><label>Enter Order No</label> </div>
+                    <div class="col-md-6"><input type="text" name="order_no" id="v_order_no" class="form-control" value="" disabled="" /></div></div> <!-- /.form-group -->
+                <div class="form-group col-md-12">
+                </div>
+                       <div class="actionData">
+
+                        </div> 
+                <!-- Job Notes -->
+                <div class="form-group col-md-12">
+                    <div class="col-md-6"><label>Job Notes</label>
+                    </div>
+                    <div class="col-md-6 job_notes_div1">
+                    </div>
+                </div>
+                <div class="form-group col-md-12" >
+
+                </div>
+                  <div class="form-group col-md-12 fault_photo2">
+                    <div class="col-md-6"><label>Photos</label>   </div>
+                    <div class="col-md-6" id="photo_div_resolve1"> </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+            </div>
+        </div>
+
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
 <script>
     $(document).ready(function() {
         var base_url = $("#base_url").val();
@@ -3411,7 +3549,49 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
 
         });
 
+//##############################
+// for update incident..
+  // button for add image
+                     var max_fields = 10; //maximum input boxes allowed
+                var wrapper = $(); //Fields wrapper
+                var add_button = $(".add_field_button1"); //Add button ID
+                var x = 1;
+                var y = 1;
+                //initlal text box count
 
+                $("body").find("#img_button1").click(function(e) { //on add input button click
+
+                    e.preventDefault();
+                    if (x < max_fields) { //max input box allowed
+                        x++; //text box increment
+                        $(".input_fields_wrap1").append('<div> <input class="fileupload upload form-control" type="file" name="photo_file_' + x + '" size="20"><a href="#" class="remove_field1">Remove</a></div>'); //add input box
+
+
+                    }
+                });
+                $(".input_fields_wrap1").on("click", ".remove_field1", function(e) { //user click on remove text
+                    e.preventDefault();
+                    $(this).parent('div').remove();
+                    x--;
+                    total--;
+                });
+                $("body").find("#img_fix_button1").click(function(e) { //on add input button click
+
+                    e.preventDefault();
+                    if (x < max_fields) { //max input box allowed
+                        x++; //text box increment
+                        $(".input_fix_wrap1").append('<div> <input class="fileupload upload form-control" type="file" name="photo_file_' + x + '" size="20"><a href="#" class="remove_field1">Remove</a></div>'); //add input box
+
+
+                    }
+                });
+                $(".input_fix_wrap1").on("click", ".remove_field1", function(e) { //user click on remove text
+                    e.preventDefault();
+                    $(this).parent('div').remove();
+                    x--;
+                    total--;
+                });
+//##############################
         $(".fixitem").click(function() {
             var iId = $(this).attr('id');
 
@@ -3491,6 +3671,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                     $("#view_fault #v_locationname").val(data.locationname);
                     $("#view_fault #v_itemstatusname").val(data.itemstatusname);
                     $("#view_fault #v_order_no").val(data.order_no);
+                    $("#view_fault .actionData").html(data.actionData);
                     $("#view_fault  #v_status").find('option').each(function(i, opt) {
                         if (opt.value == data.itemstatusid) {
                             $(opt).attr('selected', 'selected');
@@ -3572,6 +3753,140 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
             }); // End of ajax
 
         });
+        
+        
+        // fixed fault history..
+                $(".viewfaultFix").click(function() {
+
+            var iId = $(this).attr('id');
+            var account_id = $(this).attr('account_id');
+            var ticket_id = $(this).attr('ticket_id');
+            var type = 'Fix';
+            // Call ajax
+            $.ajax({
+                type: "POST",
+                url: base_url + "faults/ajaxfetchItemForSingleItem",
+                dataType: 'json',
+                data: "&id=" + iId + "&account_id=" + account_id + "&type=" + type + "&ticket_id="+ticket_id,
+                success: function(data) {
+                    console.log('I am result');
+                    $("#viewfaultFix #v_item_manu").val(data.item_manu_name);
+                    $("#viewfaultFix #v_manufacturer").val(data.manufacturer);
+                    $("#viewfaultFix #v_serial_number").val(data.barcode);
+                    $("#viewfaultFix #v_categoryname").val(data.categoryname);
+                    $("#viewfaultFix #v_locationname").val(data.locationname);
+                    $("#viewfaultFix #v_itemstatusname").val(data.itemstatusname);
+                    $("#viewfaultFix #v_order_no").val(data.order_no);
+                    $("#viewfaultFix .actionData").html(data.actionData);
+
+
+                    $("#viewfaultFix  #v_status").find('option').each(function(i, opt) {
+                        if (opt.value == data.itemstatusid) {
+                            $(opt).attr('selected', 'selected');
+                        }
+
+                    });
+
+                    $("#viewfaultFix  #v_severity").find('option').each(function(i, opt) {
+                        if (opt.value == data.severity) {
+                            $(opt).attr('selected', 'selected');
+                        }
+                        else
+                        {
+                            $(opt).attr('selected', false);
+                        }
+
+                    });
+
+                    $("#viewfaultFix  #v_fix_code").find('option').each(function(i, opt) {
+                        if (opt.value == data.fix_code) {
+                            $(opt).attr('selected', 'selected');
+
+                        }
+                    });
+
+                    $("#viewfaultFix #v_action").find('option').each(function(i, opt) {
+
+                        if (opt.value == data.ticket_action) {
+                            $(opt).attr('selected', 'selected');
+
+                        }
+                    });
+
+                    $("#viewfaultFix #v_reason_code").find('option').each(function(i, opt) {
+
+                        if (opt.value == data.reason_code) {
+                            $(opt).attr('selected', 'selected');
+
+                        }
+                    });
+                      if (data.allPhoto != null) {
+                        var updatePhoto = data.allPhoto.split(',');
+                    }
+                    else {
+                        var updatePhoto = data.photoid.split(',');
+                    }
+                                      if (updatePhoto.length != 0) {
+                        $('.fault_photo2').css('display', 'block');
+
+
+                        $("#photo_div_resolve1").empty();
+                        for (var i = 0; i < updatePhoto.length; i++) {
+                            var img_div = '';
+                            img_div += "<div style='float:left' class='ui-lightbox-gallery'>";
+                            img_div += "<div class='image_single'>";
+                            img_div += "<img width='65' alt='Gallery Image' style='display: inline-block' class='thumbnail thumb'  src='" + base_url + "/index.php/images/viewList/" + updatePhoto[i] + "'>";
+                            img_div += "</div></div>";
+                            $("#photo_div_resolve1").append(img_div);
+                        }
+                    }
+                    else
+                    {
+                        $('.fault_photo2').css('display', 'none');
+                    }
+
+//                    if (data.allNotes) {
+//                        var jobnotes = data.allNotes.split(',');
+//                        $(".job_notes_div").empty();
+//                        var job_div = '';
+//
+//                        job_div += "<ul>";
+//                        for (var i = 0; i < jobnotes.length; i++) {
+//
+//                            job_div += "<li>" + jobnotes[i] + "</li>";
+//                        }
+//
+//                        job_div += "</ul>";
+//                        console.log(job_div);
+//                        $(".job_notes_div").html(job_div);
+//                    }
+                      var notes_div = '';
+                    if (data.allNotes != "") {
+                        var allNote = data.allNotes.split(',');
+                        var noteDate = data.notesDate.split(',');
+                            $(".job_notes_div").empty();
+                       
+                        notes_div += "<ul>";
+                        for (var i = 0; i < allNote.length; i++) {
+                            notes_div += "<li style='list-style:none;padding:0;margin:0;'>"+noteDate[i]+ " - "+ allNote[i] + "</li>";
+
+                        }
+                        notes_div += "</ul>";
+                    }else{
+                    $(".job_notes_div1").empty();
+                       notes_div += "<ul><li style='list-style:none;padding:0;margin:0;'>" +data.loggedByDate+ " - "+ data.jobnote + "</li></ul>";
+                    }
+                  
+                        $(".job_notes_div1").html(notes_div);
+
+                    $("#viewfaultFix #v_job_notes1").val(data.jobnote);
+                    $("#save_button").show();
+
+                } // End of success
+            }); // End of ajax
+
+        }) // End of function 
+//        ############################
 
         $(".datepicker").datepicker({dateFormat: "dd/mm/yy"});
 // Code To Check Unique Barcode

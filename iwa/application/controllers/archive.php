@@ -141,7 +141,8 @@ class Archive extends MY_Controller {
         $sLimit = "";
         $lenght = 20;
         $str_point = 0;
-        $col_sort = array("items.barcode", "items.serial_number", "categories.name", "items.item_manu", "items.manufacturer", "items.model", "items.quantity", "sites.name", "locations.name", "users.firstname", "users.lastname", "pat.pattest_name", "itemstatus.name", "items.purchase_date", "items.warranty_date", "items.replace_date", "items.value", "items.current_value", "suppliers.supplier_name", "item_condition.condition");
+        $col_sort = array("items.barcode","","categories.name", "items.item_manu", "items.manufacturer", "items.model", "items.quantity", "sites.name", "locations.name","owner.owner_name","suppliers.supplier_name","itemstatus.name", "item_condition.condition","","items.serial_number","","items.purchase_date", "items.warranty_date", "items.replace_date", "items.value", "items.current_value","","","","","","","","","","item_remove_reasons.reason","","itemstatus.name","items_reason_link.payment","items_reason_link.net_gain_loss","");
+//        var_dump($col_sort);
         $query = "select
                 items.id AS itemid, items.mark_deleted,
                 items.mark_deleted_2, items.manufacturer,items.item_manu ,items.model, items.serial_number, items.barcode, items.owner_since AS currentownerdate, items.location_since AS currentlocationdate, items.site, items.value, items.current_value, items.purchase_date,items.status_id, items.compliance_start, items.quantity,items.warranty_date,items.replace_date,
@@ -187,6 +188,8 @@ class Archive extends MY_Controller {
                 left join pat on items.pattest_status = pat.id
                 where (actions.action = 'Item Confirmed Deleted') AND items.active =0 AND items.account_id=" . $this->session->userdata('objSystemUser')->accountid;
 
+        
+        
         if (isset($_GET['sSearch']) && $_GET['sSearch'] != "") {
 
             $words = $_GET['sSearch'];
@@ -271,6 +274,7 @@ class Archive extends MY_Controller {
             $query .=" and ( item_condition.condition REGEXP '$words'
                          ) ";
         }
+//        echo $_GET['iSortCol_0'];
         for ($k = 22; $k < $_GET['iColumns']; $k++) {
             if (isset($_GET['sSearch_' . $k]) && $_GET['sSearch_' . $k] != "") {
 
@@ -280,24 +284,49 @@ class Archive extends MY_Controller {
             }
         }
 
-        if (isset($_GET['iSortCol_0'])) {
-            $query .= " GROUP BY items.id ORDER BY ";
+//        if (isset($_GET['iSortCol_0'])) {
+//            $query .= " GROUP BY items.id ORDER BY ";
+//            for ($i = 0; $i < intval($_GET['iSortingCols']); $i++) {
+//                if ($_GET['bSortable_' . intval($_GET['iSortCol_' . $i])] == "true") {
+//                    $query .= $col_sort[intval($_GET['iSortCol_' . $i])] . "
+//				 	" . mysql_real_escape_string($_GET['sSortDir_' . $i]) . ", ";
+//                }
+//            }
+//
+//            $query = substr_replace($query, "", -2);
+//            if ($query == "ORDER BY") {
+//                $query .= "";
+//            }
+//            if ($query == "GROUP BY") {
+//                $query .= "";
+//            }
+//        }
+
+                if (isset($_GET['iSortCol_0'])) {
+//            echo $_GET['iSortCol_0'];
+            $query .= " GROUP BY items.id  ";
             for ($i = 0; $i < intval($_GET['iSortingCols']); $i++) {
+//                echo $_GET['bSortable_' . intval($_GET['iSortCol_' . $i])];
                 if ($_GET['bSortable_' . intval($_GET['iSortCol_' . $i])] == "true") {
-                    $query .= $col_sort[intval($_GET['iSortCol_' . $i])] . "
-				 	" . mysql_real_escape_string($_GET['sSortDir_' . $i]) . ", ";
+//                    echo intval($_GET['iSortCol_' . $i]);
+                    if (!empty($col_sort[intval($_GET['iSortCol_' . $i])])) {
+                        $query .= " ORDER BY ";
+                        $query .= $col_sort[intval($_GET['iSortCol_' . $i])] . "
+				 	" . mysql_real_escape_string($_GET['sSortDir_' . $i]);
+                    }
                 }
+//                echo $query;
             }
 
-            $query = substr_replace($query, "", -2);
-            if ($query == "ORDER BY") {
-                $query .= "";
-            }
-            if ($query == "GROUP BY") {
-                $query .= "";
-            }
+//            $query = substr_replace($query, "", -2);
+//            if ($query == "ORDER BY") {
+//                $query .= "";
+//            }
+//            if ($query == "GROUP BY") {
+//                $query .= "";
+//            }
         }
-
+        
         if (isset($_GET['iDisplayStart']) && $_GET['iDisplayLength'] != '-1') {
             $str_point = intval($_GET['iDisplayStart']);
             $lenght = intval($_GET['iDisplayLength']);
@@ -305,6 +334,7 @@ class Archive extends MY_Controller {
         } else {
             $query_res = $query;
         }
+//        echo $query_res;die;
         $res = $this->db->query($query_res);
         $count_res = $this->db->query($query);
         $result = $res->result_array();
@@ -402,7 +432,9 @@ class Archive extends MY_Controller {
                 $logged_by = $val['userfirstname'] . '' . $val['userlastname'];
             }
 
-            $output['aaData'][] = array("DT_RowId" => $val['itemid'], '<input type="checkbox" class="multiComSelect" value="' . $val['itemid'] . '"><input type="hidden" id="category_id_' . $val['itemid'] . '" class="" value="' . $val['categoryid'] . '" >', '<a id="bcode" href="' . $view_users . '">' . $val['barcode'] . '</a>', $photo, $val['categoryname'], $val['item_manu_name'], $val['manufacturer'], $val['model'], $val['quantity'], $val['sitename'], $val['locationname'], $val['owner_name'], $val['supplier_name'], $val['statusname'], $val['condition_name'], $numberOfFaults, $val['serial_number'], $age_asset, $purchase_date, $warranty_date, $replace_date, $val['value'], $val['current_value'], $removal_date, $logged_by, $val['reason'], $val['status_name'], '$'.$val['payment'],'$'.$val['net_gain_loss'], '<span><a class="icon-with-text" href="' . $view_users . '" title="View"><i class="fa fa-eye franchises-i"></i></a>View</span>');
+            $confirm_by = $this->getUser($val['mark_deleted']);
+            
+            $output['aaData'][] = array("DT_RowId" => $val['itemid'],'<a id="bcode" href="' . $view_users . '">' . $val['barcode'] . '</a>', $photo, $val['categoryname'], $val['item_manu_name'], $val['manufacturer'], $val['model'], $val['quantity'], $val['sitename'], $val['locationname'], $val['owner_name'], $val['supplier_name'], $val['statusname'], $val['condition_name'], $numberOfFaults, $val['serial_number'], $age_asset, $purchase_date, $warranty_date, $replace_date, $val['value'], $val['current_value'], $removal_date,$confirm_by,$logged_by, $val['reason'], $val['status_name'], '$'.$val['payment'],'$'.$val['net_gain_loss'], '<span><a class="icon-with-text" href="' . $view_users . '" title="View"><i class="fa fa-eye franchises-i"></i></a>View</span>');
             foreach (array_reverse($arrCustomfield) as $col) {
 
                 if (isset($val[$col->field_name])) {
@@ -421,5 +453,14 @@ class Archive extends MY_Controller {
         echo json_encode($output);
         die;
     }
-
+    public function getUser($user_id){
+       $res = $this->db->select('firstname,lastname')->from('users')->where('id',$user_id)->get();
+       if($res->num_rows() > 0){
+           $userdata=$res->result_array();
+           return $userdata[0]['firstname']." ".$userdata[0]['lastname'];
+       }else{
+           return FALSE;
+       }
+    }
+    
 }

@@ -99,7 +99,92 @@ class Faults extends MY_Controller {
                 $loggedName = $user['result'][0]->firstname . " " . $user['result'][0]->lastname;
         
 //        $all_job_notes = $this->tickets_model->getAllJob($item_id,$intAccountType);      
-        $all_job_notes = $this->tickets_model->getAllJobData($fullItemsData[0]->ticket_id);      
+        $all_job_notes = $this->tickets_model->getAllJobData($fullItemsData[0]->ticket_id);   
+//   $jobnote = '';
+   $allJob = array();
+   $actionData = '';
+        foreach($all_job_notes as $history){
+             $allJob [] = $history['jobnote'];
+             $jobNoteDate [] = date('d/m/Y',  strtotime($history['date']));
+             
+             $actionData .= '<div class="col-md-12">
+                    <div class="col-md-6"><label>Action</label> </div>
+                    <div class="col-md-6">'.$history['action'].'</div>
+                     </div>';
+                    if($history['fix_code'] != ''){
+              $actionData .='<div class="col-md-12">
+                    <div class="col-md-6"><label>Fixed Code</label> </div>
+                    <div class="col-md-6">'.$history['fix_code'].'</div>
+                    </div>';
+                    }else{
+              $actionData .='<div class="col-md-12">
+                    <div class="col-md-6"><label>Reason Code</label> </div>
+                    <div class="col-md-6">'.$history['reason_code'].'</div>
+                    </div>';
+                    }
+              $actionData .= '<div class="col-md-12">
+                    <div class="col-md-6"><label>Update  Date</label> </div>
+                    <div class="col-md-6">'.date('d/m/Y',  strtotime($history['date'])).'</div>
+                    </div>
+                    <div class="col-md-12">
+                    <div class="col-md-6"><label>Logged By</label> </div>
+                    <div class="col-md-6">'.$history['firstname'].' '.$history['lastname'].'</div>
+                  </div>
+                <div class="col-md-12">&nbsp;</div>';
+             
+             
+//            echo $jobnote;
+        }
+        $all_notes=  implode(',',$allJob);
+        $notesDate=  implode(',',$jobNoteDate);
+//        $all_photos=  implode(',', $photoid);
+        $fullItemsData[0]->allNotes=$all_notes;
+        $fullItemsData[0]->notesDate=$notesDate;
+        $fullItemsData[0]->actionData=  $actionData;
+//        $fullItemsData[0]->allPhoto=$all_photos;
+        $fullItemsData[0]->loggedBy=$loggedName;
+        $fullItemsData[0]->loggedByDate=date('d/m/Y',strtotime($fullItemsData[0]->dt));
+       
+        $array = json_encode($fullItemsData[0]);
+        echo $array;
+        die;
+    }
+    function ajaxfetchItemForSingleItem() {
+        $intItemId = $this->input->post('id');
+        $ticket_id = $this->input->post('ticket_id');
+        $intAccountId = $this->input->post('account_id');
+        if($this->input->post('type')){
+        $intAccountType = $this->input->post('type');
+        }
+        if(strpos($intItemId, '_')!=FALSE) {
+        $explodeArr = explode("_", $intItemId);
+        $item_id = $explodeArr[1];
+        }
+        else
+        {
+         $item_id = $this->input->post('id');   
+        }
+        $this->load->model('items_model');
+        $this->load->model('users_model');
+        $this->load->model('tickets_model');
+
+        $arrPageData = array();
+        $arrPageData['arrPageParameters']['strSection'] = get_class();
+        $arrPageData['arrPageParameters']['strPage'] = "Change ownership";
+        $arrPageData['arrSessionData'] = $this->session->userdata;
+        $this->session->set_userdata('booCourier', false);
+        $this->session->set_userdata('arrCourier', array());
+        $arrPageData['arrErrorMessages'] = array();
+        $arrPageData['arrUserMessages'] = array();
+
+        //echo "<pre>"; print_R($explodeArr); die;
+        //echo $explodeArr[1]."===============".$intAccountId;
+        $fullItemsData = $this->items_model->basicGetOneWithTicket($item_id, $intAccountId, $intAccountType,$ticket_id);
+        $user = $this->users_model->getOne($fullItemsData[0]->user_id,$intAccountId);
+                $loggedName = $user['result'][0]->firstname . " " . $user['result'][0]->lastname;
+        
+//        $all_job_notes = $this->tickets_model->getAllJob($item_id,$intAccountType);      
+        $all_job_notes = $this->tickets_model->getAllJobData($fullItemsData[0]->ticket_id);   
 //   $jobnote = '';
    $allJob = array();
    $actionData = '';
@@ -153,17 +238,7 @@ class Faults extends MY_Controller {
     ##########################################################################
     // get pdf for fault history with all incident 
     function getPdfForFaultHistory($item_id=FALSE,$intAccountId=FALSE) {
-//        $intItemId = $this->input->post('id');
-//        $intAccountId = $this->input->post('account_id');
-     
-//        if(strpos($intItemId, '_')!=FALSE) {
-//        $explodeArr = explode("_", $intItemId);
-//        $item_id = $explodeArr[1];
-//        }
-//        else
-//        {
-//         $item_id = $this->input->post('id');   
-//        }
+
         $this->load->model('items_model');
         $this->load->model('users_model');
         $this->load->model('tickets_model');
@@ -177,21 +252,17 @@ class Faults extends MY_Controller {
         $arrPageData['arrErrorMessages'] = array();
         $arrPageData['arrUserMessages'] = array();
 
-        //echo "<pre>"; print_R($explodeArr); die;
-        //echo $explodeArr[1]."===============".$intAccountId;
+    
         $fullItemsData = $this->items_model->basicGetOneWithTicket($item_id, $intAccountId,"Fix");
         $user = $this->users_model->getOne($fullItemsData[0]->user_id,$intAccountId);
                 $loggedName = $user['result'][0]->firstname . " " . $user['result'][0]->lastname;
-//        $all_job_notes = $this->tickets_model->getAllJob($item_id,$intAccountType);      
         $all_job_notes = $this->tickets_model->getAllJobData($fullItemsData[0]->ticket_id);      
         $previousHistory = $this->tickets_model->getFaultHistoryByItem($fullItemsData[0]->itemid);     
-//   $jobnote = '';
    $allJob = array();
    $actionData = '';
         
         $all_notes=  implode(',',$allJob);
         $notesDate=  implode(',',$jobNoteDate);
-//        $all_photos=  implode(',', $photoid);
         $fullItemsData[0]->allNotes=$all_notes;
         $fullItemsData[0]->notesDate=$notesDate;
         $fullItemsData[0]->actionData=  $actionData;
@@ -202,10 +273,8 @@ class Faults extends MY_Controller {
 
     
         
-//     $strHtml .= $this->load->view('faults/incidentpdf', array("historyData"=>$fullItemsData[0],"allJobNotes"=>$all_job_notes), TRUE);
 
         $strHtml = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"><html><head></head>";
-//        $strHtml = "<html><head><link rel=\"stylesheet\" type=\"text/css\" media=\"all\" href=\"https://www.ischoolaudit.com/includes/css/report.css\" /></head>";
 
         $strHtml .= "<body>";
         $strHtml .= "<table><tr><td>";
@@ -216,7 +285,6 @@ class Faults extends MY_Controller {
         if (isset($this->session->userdata['theme_design']->logo)) {
             $logo = $this->session->userdata['theme_design']->logo;
         }
-//        $strHtml .= "<img alt=\"ischoolaudit\" src=\"https://www.ischoolaudit.com/includes/img/logo_ictracker.png\">";
         $strHtml .= "<img alt=\"ictracker\" src='http://".$_SERVER['HTTP_HOST']."/youaudit/iwa/brochure/logo/logo.png'>";
 
         $strHtml .= "</td></tr></table>";
@@ -278,7 +346,6 @@ $strHtml .= "<div>&nbsp;</div>";
         $strHtml .= "<table class=\"report\">";
                $strHtml .= "<tbody>";
             $strHtml .= "<tr>";
-//var_dump($fullItemsData);die;
              $photoIds = explode(",",$fullItemsData[0]->photoid);
              $strHtml .= "<td style='padding:10px;'><div style='width:1000px;height:200px;'>";
              foreach ($photoIds as $photo_id){
@@ -930,6 +997,179 @@ $strHtml .= "</body></html>";
          return FALSE;
      }
  }
+     ##########################################################################
+    // get pdf for fault history with all incident 
+   public function getPdfForOpenJob($item_id=FALSE,$intAccountId=FALSE,$ticket_id=FALSE) {
+
+        $this->load->model('items_model');
+        $this->load->model('users_model');
+        $this->load->model('tickets_model');
+
+        $arrPageData = array();
+        $arrPageData['arrPageParameters']['strSection'] = get_class();
+        $arrPageData['arrPageParameters']['strPage'] = "Change ownership";
+        $arrPageData['arrSessionData'] = $this->session->userdata;
+        $this->session->set_userdata('booCourier', false);
+        $this->session->set_userdata('arrCourier', array());
+        $arrPageData['arrErrorMessages'] = array();
+        $arrPageData['arrUserMessages'] = array();
+
+    
+        $fullItemsData = $this->items_model->openGetOneWithTicket($item_id, $intAccountId,$ticket_id);
+        $user = $this->users_model->getOne($fullItemsData[0]->user_id,$intAccountId);
+                $loggedName = $user['result'][0]->firstname . " " . $user['result'][0]->lastname;
+        $all_job_notes = $this->tickets_model->getOpenJobData($ticket_id);      
+//        var_dump($all_job_notes);die;
+        $previousHistory = $this->tickets_model->getFaultHistoryByItem($fullItemsData[0]->itemid);     
+   $allJob = array();
+   $actionData = '';
+        
+        $all_notes=  implode(',',$allJob);
+        $notesDate=  implode(',',$jobNoteDate);
+        $fullItemsData[0]->allNotes=$all_notes;
+        $fullItemsData[0]->notesDate=$notesDate;
+        $fullItemsData[0]->actionData=  $actionData;
+//        $fullItemsData[0]->allPhoto=$all_photos;
+        $fullItemsData[0]->loggedBy=$loggedName;
+        $fullItemsData[0]->loggedByDate=date('d/m/Y',strtotime($fullItemsData[0]->dt));
+       
+
+    
+        
+
+        $strHtml = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"><html><head></head>";
+
+        $strHtml .= "<body>";
+        $strHtml .= "<table><tr><td>";
+        $strHtml .= "<h1>Incident Report</h1>";
+        $strHtml .= "</td><td class=\"right\">";
+
+        $logo = 'logo.png';
+        if (isset($this->session->userdata['theme_design']->logo)) {
+            $logo = $this->session->userdata['theme_design']->logo;
+        }
+        $strHtml .= "<img alt=\"ictracker\" src='http://".$_SERVER['HTTP_HOST']."/youaudit/iwa/brochure/logo/logo.png'>";
+
+        $strHtml .= "</td></tr></table>";
+
+$strHtml .= "<div>&nbsp;</div>";
+
+        $strHtml .= "<table class=\"report\">";
+        $strHtml .= "<thead>";
+        $strHtml .= "<tr style='background-color:#00AEEF;color:white;'>";
+
+            $strHtml .= "<th style='padding:10px;'>QR Code</th><th>Manufacturer</th><th>Model</th><th>Category</th><th>Item</th><th>Location</th><th>Site</th><th>Owner</th><th>Severity</th><th>Order No</th><th>Fault Logged By</th>";
+
+        $strHtml .= "</tr>";
+        $strHtml .= "</thead><tbody>";
+
+            $strHtml .= "<tr>";
+
+    $strHtml .= "<td style='padding:10px;'>".$fullItemsData[0]->barcode."</td><td>".$fullItemsData[0]->manufacturer."</td><td>".$fullItemsData[0]->model."</td><td>".$fullItemsData[0]->categoryname."</td><td>".$fullItemsData[0]->item_manu_name."</td><td>".$fullItemsData[0]->locationname."</td><td>".$fullItemsData[0]->sitename."</td><td>".$fullItemsData[0]->userfirstname." ".$fullItemsData[0]->userlastname."</td><td>".$fullItemsData[0]->severity."</td><td>".$fullItemsData[0]->order_no."</td><td>".$fullItemsData[0]->loggedBy."</td>";
+                   
+      
+            $strHtml .= "</tr>";
+      
+        $strHtml .= "</tbody></table>";
+        
+        $strHtml .= "<div>&nbsp;</div>";
+        $strHtml .= "<div>&nbsp;</div>";
+       
+   $strHtml .= "<div><h1 style='color:#00aeef;'>Incident Timeline</h1></div>";
+        $strHtml .= "<table class=\"report\">";
+        $strHtml .= "<thead>";
+        $strHtml .= "<tr style='background-color:#00AEEF;color:white;'>";
+
+            $strHtml .= "<th style='padding:10px;'>Date</th><th>Time</th><th>Event</th><th>Logged By</th><th>Code</th><th>Notes</th>";
+
+        $strHtml .= "</tr>";
+        $strHtml .= "</thead><tbody>";
+               foreach($all_job_notes as $val){
+            $strHtml .= "<tr>";
+
+    $strHtml .= "<td style='padding:10px;'>". date('Y/m/d',strtotime($val['date']))."</td><td>". date('h:i:s',strtotime($val['date']))."</td><td>".$val['action']."</td><td>".$val['firstname']." ".$val['lastname']."</td>";
+    $strHtml .= "<td>";
+    if($val['fix_code'] != ""){
+        
+        $strHtml .= $val['fix_code']; 
+    }else{
+        $strHtml .= $val['reason_code'];
+    }
+     $strHtml .= "</td>";              
+     $strHtml .= "<td>".$val['jobnote']."</td>";              
+      
+            $strHtml .= "</tr>";
+        }
+        $strHtml .= "</tbody></table>";
+        //#############################################
+           
+        $strHtml .= "<div><h1 style='color:#00aeef;'>Photo Images</h1></div>";
+        
+                   //##############################################
+        $strHtml .= "<table class=\"report\">";
+               $strHtml .= "<tbody>";
+            $strHtml .= "<tr>";
+             $photoIds = explode(",",$fullItemsData[0]->photoid);
+             $strHtml .= "<td style='padding:10px;'><div style='width:1000px;height:200px;'>";
+             foreach ($photoIds as $photo_id){
+            $faultPhoto = $this->getPhotoPath($photo_id);
+             $strHtml .= "<img style='margin-left:7px;' width='300' height='200' alt=\"ictracker\" src='".base_url($faultPhoto)."'>";
+       }        
+    $strHtml .= "</div></td></tr>";
+        $strHtml .= "</tbody></table>";
+        //#############################################
+               $strHtml .= "<div>&nbsp;</div>";
+        $strHtml .= "<div>&nbsp;</div>";
+
+        
+        
+        $strHtml .= "<div><h1 style='color:#00aeef;'>History - Previous Faults</h1></div>";
+        //##############################################
+        $strHtml .= "<table class=\"report\">";
+        $strHtml .= "<thead>";
+        $strHtml .= "<tr style='background-color:#00AEEF;color:white;'>";
+
+            $strHtml .= "<th style='padding:10px;'>Date</th><th>Time</th><th>Type Of Fault</th><th>Code</th><th>Logged By</th><th>Fix Time</th>";
+
+        $strHtml .= "</tr>";
+        $strHtml .= "</thead><tbody>";
+               foreach($previousHistory as $val1){
+                   
+                    $date2 = date('d-m-Y', strtotime($val1['fix_date']));
+                                                    $date1 = date('d-m-Y H:i:s', strtotime($val1['date']));
+
+                                                    $diff = abs(strtotime($date2) - strtotime($date1));
+
+                                                    $days = floor($diff / 3600 / 24);
+                                                    $months = floor(($diff - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
+
+                                                    $total_time= $months . ' month ' . $days . ' days ';
+                   
+                   
+            $strHtml .= "<tr>";
+
+            $strHtml .= "<td style='padding:10px;'>". date('Y/m/d',strtotime($val1['date']))."</td><td>". date('h:i:s',strtotime($val1['date']))."</td><td>".$val1['fault_type']."</td><td>".$val1['fix_code']."</td><td>".$val['firstname']." ".$val['lastname']."</td><td>".$total_time."</td>";
+            $strHtml .= "<td>";
+                   
+
+                    $strHtml .= "</tr>";
+                }
+                $strHtml .= "</tbody></table>";
+                //############################################# 
+       
+       
+        
+$strHtml .= "</body></html>";
+        
+      echo $strHtml;die;  
+       $this->load->library('Mpdf');
+            $mpdf = new Pdf('en-GB', 'A4');
+           // $mpdf->setFooter('{PAGENO} of {nb}');
+            $mpdf->WriteHTML($strHtml);
+            $mpdf->Output("YouAudit_" . date('Ymd_His') . ".pdf", "D");
+        
+    }
+ ##########################################################################
 }
 
 /* End of file faults.php */

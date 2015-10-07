@@ -2806,7 +2806,7 @@ items.id AS itemid,
 
 // End of function
 
-    public function basicGetOneWithTicket($intItemId = -1, $intAccountId = -1, $inttype = '') {
+    public function basicGetOneWithTicket($intItemId = -1, $intAccountId = -1, $inttype = '',$ticket_id=False) {
         if (($intItemId > 0) && ($intAccountId > 0)) {
             $this->db->select('
                         items.id AS itemid,
@@ -2878,6 +2878,90 @@ items.id AS itemid,
             } else {
                 $this->db->where('tickets.ticket_action', "Fix");
             }
+            if($ticket_id){
+                $this->db->where('tickets.id', $ticket_id);
+            }
+            $this->db->order_by('tickets.id', 'DESC');
+
+            $resQuery = $this->db->get();
+
+            if ($resQuery->num_rows() > 0) {
+                return $resQuery->result();
+            }
+        } else {
+            return false;
+        }
+    }
+    public function openGetOneWithTicket($intItemId = -1, $intAccountId = -1, $ticket_id = '') {
+        if (($intItemId > 0) && ($intAccountId > 0)) {
+            $this->db->select('
+                        items.id AS itemid,
+                        items.manufacturer,
+                        items.item_manu,
+                        items.model, 
+                        items.serial_number, 
+                        items.barcode, 
+                        items.owner_now, 
+                        items.owner_since, 
+                        items.site AS siteid,
+                        items.location_now, 
+                        items.location_since,
+                        items.value,
+                        items.current_value, 
+                        items.notes,
+                        items.warranty_date,
+                        items.purchase_date, 
+                        items.replace_date,
+                        items.added_date,
+                        items.pattest_date, 
+                        items.pattest_status,
+                        items.mark_deleted, 
+                        items.mark_deleted_2, 
+                        items.mark_deleted_date,
+                        items.mark_deleted_2_date, 
+                        items.active,
+                        items.deleted_date,
+                        items.compliance_start,
+                        items.quantity,
+                       item_manu.doc as pdf_name,
+                        photos.id AS itemphotoid,
+                        photos.title AS itemphototitle,
+                        itemstatus.id AS itemstatusid,
+                        itemstatus.name AS itemstatusname,
+                        categories.id AS categoryid, 
+                        categories.name AS categoryname, 
+                        categories.default AS categorydefault, 
+                        categories.icon AS categoryicon, 
+                        categories.support_emails AS support_emails, 
+                        categories.quantity_enabled,
+                        users.id AS userid,
+                        users.firstname AS userfirstname,
+                        users.lastname AS userlastname, 
+                        users.nickname AS usernickname,
+                        locations.id AS locationid,
+                        locations.name AS locationname,
+                        sites.id AS siteid,
+                        item_manu.item_manu_name,
+                        sites.name AS sitename,
+                        items.supplier,
+                        suppliers.supplier_name,
+                        suppliers.supplier_title AS suppliers_title,tickets.id as ticket_id,tickets.fix_code,tickets.user_id,tickets.reason_code,tickets.order_no,tickets.jobnote,tickets.severity,tickets.ticket_action,tickets.date as dt,tickets.order_no,tickets.photoid');
+            $this->db->from('items');
+            $this->db->join('users', 'items.owner_now = users.id', 'left');
+            $this->db->join('item_manu', 'items.item_manu = item_manu.id', 'left');
+            $this->db->join('photos', 'photos.id = items.photo_id', 'left');
+            $this->db->join('locations', 'items.location_now = locations.id', 'left');
+            $this->db->join('sites', 'items.site = sites.id', 'left');
+            $this->db->join('itemstatus', 'items.status_id = itemstatus.id', 'left');
+            $this->db->join('items_categories_link', 'items.id = items_categories_link.item_id', 'left');
+            $this->db->join('categories', 'items_categories_link.category_id = categories.id', 'left');
+            $this->db->join('suppliers', 'items.supplier = suppliers.supplier_id', 'left');
+            $this->db->join('tickets', 'tickets.item_id = items.id', 'left');
+            $this->db->where('items.id', $intItemId);
+            $this->db->where('items.account_id', $intAccountId);
+                $this->db->where('tickets.ticket_action', "Open Job");
+                $this->db->where('tickets.id', $ticket_id);
+       
             $this->db->order_by('tickets.id', 'DESC');
 
             $resQuery = $this->db->get();

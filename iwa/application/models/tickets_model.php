@@ -969,14 +969,24 @@ OR `categories`.`name` LIKE '%$strfreetext%')");
 
         $itemFaultHistory = array();
         foreach ($itemHistory as $key => $value) {
-            $itemFaultHistory[] = $this->ticketFaulltHistory($value['id']);
+            $itemFaultHistory = $this->ticketFaulltHistory($value['id']);
+            foreach($itemFaultHistory as $val){
+            
+                $itemHistory[$key]['fault_date'] = $val['date'];
+                $itemHistory[$key]['fault_by'] = $val['username'];
+                
+            }
             $user = $this->users_model->getOne($value['user_id'], $this->session->userdata('objSystemUser')->accountid);
 
             $itemHistory[$key]['username'] = $user['result'][0]->firstname . " " . $user['result'][0]->lastname;
         }
 //        echo '<pre>';
+//        print_r($itemHistory);die;
+        
+//        echo '<pre>';
 //                        print_r(array("itemFixedHistory"=>$itemHistory,"itemFaultHistory"=>$itemFaultHistory));die;
-        return array("itemFixedHistory" => $itemHistory, "itemFaultHistory" => $itemFaultHistory);
+//        return array("itemFixedHistory" => $itemHistory, "itemFaultHistory" => $itemFaultHistory);
+        return array("itemFixedHistory" => $itemHistory);
     }
 
     public function ticketFaulltHistory($ticket_id) {
@@ -985,6 +995,7 @@ OR `categories`.`name` LIKE '%$strfreetext%')");
         $this->db->select('*');
 
         $this->db->where('ticket_id', $ticket_id);
+        $this->db->where('action','Fixed');
         $query = $this->db->get('tickets_history');
         $itemFaultHistory = $query->result_array();
 
@@ -1195,6 +1206,19 @@ OR `categories`.`name` LIKE '%$strfreetext%')");
         $this->db->from('tickets_history');
         $this->db->where('tickets_history.ticket_id', $ticket_id);
         $this->db->join('users', 'users.id=tickets_history.user_id');
+        $result = $this->db->get();
+        if ($result->num_rows() > 0) {
+            return $result->result_array();
+        } else {
+            return FALSE;
+        }
+    }
+    public function getOpenJobData($ticket_id) {
+
+        $this->db->select('users.firstname,users.lastname,tickets.jobnote,tickets.reason_code,tickets.ticket_action,tickets.date');
+        $this->db->from('tickets');
+        $this->db->where('tickets.id',$ticket_id);
+        $this->db->join('users', 'users.id=tickets.user_id');
         $result = $this->db->get();
         if ($result->num_rows() > 0) {
             return $result->result_array();
