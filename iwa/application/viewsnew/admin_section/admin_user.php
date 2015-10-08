@@ -51,6 +51,12 @@
         });
 
 
+        // evnet for push notification..
+        $('.myCheckbox').on('switchChange.bootstrapSwitch', function(event, state) {
+                        $('body').find('#pushNotify').val('1');
+});
+
+
 // This button will increment the value
         $('.qtyplus').click(function(e) {
             // Stop acting like a button
@@ -1085,6 +1091,7 @@ if ($this->session->flashdata('error')) {
             <form action="<?php echo base_url('admin_section/editMultipleUser'); ?>" method="post" id="edit_multipleuser_account">
                 <div class="modal-body">
                     <input hidden="" name="user_id" id="multiComIds">
+                    <input hidden="" name="push_notify" id="pushNotify" value="0">
 
                     <div class="form-group col-md-12">
                         <div class="col-md-6"> <label>Access Level : </label>

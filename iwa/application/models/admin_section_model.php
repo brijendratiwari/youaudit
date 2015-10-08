@@ -1738,18 +1738,25 @@ class Admin_Section_Model extends CI_Model {
             }
             $ids = explode(',', $data['user_id']);
 
+            if($data['push_notify'] == '1'){
             if ($data['notification'] == 'on') {
                 $notify = 1;
             } else {
 
                 $notify = 0;
             }
-
-
-            $update_list = array(
+             $update_list = array(
                 'level_id' => $data['edit_access_level'],
                 'push_notification' => $notify
             );
+            }else{
+                $update_list = array(
+                'level_id' => $data['edit_access_level']
+            );
+                
+            }            
+
+           
 
 //            var_dump($update_list);die;
 
