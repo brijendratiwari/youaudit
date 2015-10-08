@@ -101,14 +101,14 @@
             "bDestroy": true, //!!!--- for remove data table warning.
             "fnDrawCallback": function() {
                 var api = this.api();
-                $(api.column(7).footer()).html(
-                        api.column(7, {page: 'current'}).data().sum()
+                $(api.column(6).footer()).html(
+                        api.column(6, {page: 'current'}).data().sum()
+                        );
+                $(api.column(19).footer()).html(
+                        api.column(19, {page: 'current'}).data().sum()
                         );
                 $(api.column(20).footer()).html(
                         api.column(20, {page: 'current'}).data().sum()
-                        );
-                $(api.column(21).footer()).html(
-                        api.column(21, {page: 'current'}).data().sum()
                         );
 
             },
@@ -572,6 +572,7 @@
         <th data-export="true"></th>
         <th data-export="true"></th>
         <th data-export="true"></th>
+        <!--<th data-export="true"></th>-->
         </tfoot>
     </table>
 </div> 

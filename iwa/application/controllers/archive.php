@@ -435,20 +435,23 @@ class Archive extends MY_Controller {
             $confirm_by = $this->getUser($val['mark_deleted']);
             
             $output['aaData'][] = array("DT_RowId" => $val['itemid'],'<a id="bcode" href="' . $view_users . '">' . $val['barcode'] . '</a>', $photo, $val['categoryname'], $val['item_manu_name'], $val['manufacturer'], $val['model'], $val['quantity'], $val['sitename'], $val['locationname'], $val['owner_name'], $val['supplier_name'], $val['statusname'], $val['condition_name'], $numberOfFaults, $val['serial_number'], $age_asset, $purchase_date, $warranty_date, $replace_date, $val['value'], $val['current_value'], $removal_date,$confirm_by,$logged_by, $val['reason'], $val['status_name'], '$'.$val['payment'],'$'.$val['net_gain_loss'], '<span><a class="icon-with-text" href="' . $view_users . '" title="View"><i class="fa fa-eye franchises-i"></i></a>View</span>');
+//            var_dump($arrCustomfield);
             foreach (array_reverse($arrCustomfield) as $col) {
-
+//  echo $col->field_name.'<br>';
                 if (isset($val[$col->field_name])) {
+//                    echo  $val[$col->field_name].'<br>';
                     $col_value = $val[$col->field_name];
                 } else {
                     $col_value = 'N/A';
                 }
-
-                array_splice($output['aaData'][$count], 23, 0, $col_value);
+//var_dump($output['aaData'][$count]);die;
+                array_splice($output['aaData'][$count], 22, 0, $col_value);
             }
             $count++;
+        
         }
 
-//        var_dump($output);die;
+        
 
         echo json_encode($output);
         die;
