@@ -36,7 +36,9 @@ class Customfields_model extends CI_Model {
 
     public function getField($id) {
         $query = $this->db->get_where('custom_fields', array('id' => $id));
+        if($query->num_rows() > 0){
         return $query->row();
+        }
     }
 
     public function getFieldByAccountId($account_id) {

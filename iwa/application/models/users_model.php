@@ -715,12 +715,15 @@ class Users_model extends CI_Model {
             if (strpos($value, 'custom') !== false) {
                 $explode_custom = explode('custom_', $value);
                 $custom = $this->customfields_model->getField($explode_custom[1]);
+                if(!empty($custom->id)){
                 $custom->id = 'custom_' . $custom->id . '_' . $count;
                 $custom->name = $custom->field_name;
                 $custom->input_name = $custom->field_name;
+                
                 unset($custom->field_name, $custom->account_id);
                 $columns[] = array(0 => $custom);
                 $count++;
+                }
             } else {
 
                 $query = $this->db->get_where('columns', array('id' => $value));
@@ -729,7 +732,7 @@ class Users_model extends CI_Model {
                 }
             }
         }
-        //  print_r($columns);die;
+//          var_dump($columns);die;
         return $columns;
     }
 

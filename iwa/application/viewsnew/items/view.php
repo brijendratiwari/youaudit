@@ -4083,7 +4083,7 @@ if ($this->session->flashdata('error')) {
                         .appendTo($(this).empty())
                         .on('change', function() {
                     if ($(this).val() != '')
-                    {
+                    {  
                         console.log(table);
                         table.column(i)
                                 .search('^' + $(this).val() + '$', true, false)
@@ -4106,7 +4106,7 @@ if ($this->session->flashdata('error')) {
                         });
                     }
                 });
-                table.column(i).data().unique().sort().each(function(d, j) {
+                table.column(i).data().unique().sort().each(function(d, j) { 
                     if (d != '&nbsp;')
                         select.append('<option value="' + d + '">' + d + '</option>');
                 });
