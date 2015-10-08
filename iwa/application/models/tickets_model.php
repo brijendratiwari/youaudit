@@ -175,24 +175,21 @@ class Tickets_model extends CI_Model {
                 tickets.ticket_action');
             } else {
                 $this->db->select('
-                items.item_manu, 
-                items.manufacturer, 
-                items.model,
-                items.barcode, 
-                 owner.owner_name,
-                 item_manu.item_manu_name,
-                categories.name AS categoryname,
-                locations.name AS locationname,
-                sites.name AS sitename,
-                itemstatus.name AS statusname,
-                users.firstname,users.lastname,
-                tickets.severity,
-                tickets.order_no,
-                tickets.jobnote,
-                tickets.photoid as photo_id,
-                tickets.date as dt,
-                tickets.ticket_action,
-                tickets.reason_code');
+                items.barcode as QRCode,
+                categories.name as Category,
+                item_manu.item_manu_name as Item,
+                items.manufacturer as Manufacturer, 
+                items.model as Model,
+                sites.name AS Site,
+                locations.name AS Location,
+                owner.owner_name as Owner,
+                itemstatus.name AS IncidentType,
+                tickets.ticket_action as Stage,
+                tickets.date as FaultDate,
+                tickets.severity as Severity,
+                tickets.order_no as OrderNo,
+                tickets.jobnote as JobNote
+                ');
             }
 
             $this->db->from('items');
@@ -213,7 +210,6 @@ class Tickets_model extends CI_Model {
             $this->db->order_by('tickets.id', 'DESC');
 
             $resQuery = $this->db->get();
-
             if ($export == 'CSV') {
 
                 $this->load->dbutil();
