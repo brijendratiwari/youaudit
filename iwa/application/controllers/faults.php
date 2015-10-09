@@ -323,7 +323,7 @@ $strHtml .= "<div>&nbsp;</div>";
       }else{
           $safetyCheck = '< SAFETY CHECKS DUE >';
       }
-            $strHtml .= "<th width='800px;'style='padding:10px;'>Safety Check ".$safetyCheck."</th>";
+            $strHtml .= "<th style='padding:10px;width:800px'>Safety Check ".$safetyCheck."</th>";
 
         $strHtml .= "</tr>";
         $strHtml .= "</thead><tbody>";
