@@ -1259,7 +1259,7 @@ OR `categories`.`name` LIKE '%$strfreetext%')");
 
     public function getFaultHistoryByItem($item_id = FALSE) {
         
-        $this->db->select('tickets.date,tickets.fix_date,tickets.fix_code,itemstatus.name as fault_type,users.firstname,users.lastname');
+        $this->db->select('tickets.date,tickets.fix_date,tickets.fix_code,itemstatus.name as fault_type,users.firstname,users.lastname,tickets_history.severity');
         $this->db->from('tickets');
         $this->db->where('tickets.item_id',$item_id);
         $this->db->where('tickets_history.status !=',1);

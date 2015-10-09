@@ -309,6 +309,37 @@ $strHtml .= "<div>&nbsp;</div>";
       
         $strHtml .= "</tbody></table>";
         
+        //#############################################################
+//        safety check data
+        
+          $strHtml .= "<div>&nbsp;</div>";
+
+        $strHtml .= "<table class=\"report\">";
+        $strHtml .= "<thead>";
+        $strHtml .= "<tr style='background-color:#00AEEF;color:white;'>";
+      if($fullItemsData[0]->test_compliance_name != ''){
+          
+          $safetyCheck = '< '.$fullItemsData[0]->test_compliance_name.' >';
+      }else{
+          $safetyCheck = '< SAFETY CHECKS DUE >';
+      }
+            $strHtml .= "<th width='800px;'style='padding:10px;'>Safety Check ".$safetyCheck."</th>";
+
+        $strHtml .= "</tr>";
+        $strHtml .= "</thead><tbody>";
+  foreach($previousHistory as $safetyData){
+            $strHtml .= "<tr>";
+
+    $strHtml .= "<td style='padding:5px;'>".$safetyData['fault_type']."</td><td>".$safetyData['severity']."</td>";
+                   
+      
+            $strHtml .= "</tr>";
+  }   
+      
+        $strHtml .= "</tbody></table>";
+        //#############################################################
+        
+        
         $strHtml .= "<div>&nbsp;</div>";
         $strHtml .= "<div>&nbsp;</div>";
        
@@ -1071,6 +1102,39 @@ $strHtml .= "<div>&nbsp;</div>";
             $strHtml .= "</tr>";
       
         $strHtml .= "</tbody></table>";
+        
+                //#############################################################
+//        safety check data
+        
+          $strHtml .= "<div>&nbsp;</div>";
+
+        $strHtml .= "<table class=\"report\">";
+        $strHtml .= "<thead>";
+        $strHtml .= "<tr style='background-color:#00AEEF;color:white;'>";
+      if($fullItemsData[0]->test_compliance_name != ''){
+          
+          $safetyCheck = '< '.$fullItemsData[0]->test_compliance_name.' >';
+      }else{
+          $safetyCheck = '< SAFETY CHECKS DUE >';
+      }
+            $strHtml .= "<th width='800px;'style='padding:10px;'>Safety Check ".$safetyCheck."</th>";
+
+        $strHtml .= "</tr>";
+        $strHtml .= "</thead><tbody>";
+  foreach($previousHistory as $safetyData){
+            $strHtml .= "<tr>";
+
+    $strHtml .= "<td style='padding:5px;'>".$safetyData['fault_type']."</td><td>".$safetyData['severity']."</td>";
+                   
+      
+            $strHtml .= "</tr>";
+  }   
+      
+        $strHtml .= "</tbody></table>";
+        //#############################################################
+        
+        
+        
         
         $strHtml .= "<div>&nbsp;</div>";
         $strHtml .= "<div>&nbsp;</div>";

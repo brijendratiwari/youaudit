@@ -2859,7 +2859,19 @@ items.id AS itemid,
                         sites.name AS sitename,
                         items.supplier,
                         suppliers.supplier_name,
-                        suppliers.supplier_title AS suppliers_title,tickets.id as ticket_id,tickets.fix_code,tickets.user_id,tickets.reason_code,tickets.order_no,tickets.jobnote,tickets.severity,tickets.ticket_action,tickets.date as dt,tickets.order_no,tickets.photoid');
+                        suppliers.supplier_title AS suppliers_title,
+                        tickets.id as ticket_id,
+                        tickets.fix_code,
+                        tickets.user_id,
+                        tickets.reason_code,
+                        tickets.order_no,
+                        tickets.jobnote,
+                        tickets.severity,
+                        tickets.ticket_action,
+                        tickets.date as dt,
+                        tickets.order_no,
+                        tickets.photoid,
+                        tests_history.test_compliance_name');
             $this->db->from('items');
             $this->db->join('users', 'items.owner_now = users.id', 'left');
             $this->db->join('item_manu', 'items.item_manu = item_manu.id', 'left');
@@ -2871,6 +2883,7 @@ items.id AS itemid,
             $this->db->join('categories', 'items_categories_link.category_id = categories.id', 'left');
             $this->db->join('suppliers', 'items.supplier = suppliers.supplier_id', 'left');
             $this->db->join('tickets', 'tickets.item_id = items.id', 'left');
+            $this->db->join('tests_history', 'tests_history.test_item_id = items.id', 'left');
             $this->db->where('items.id', $intItemId);
             $this->db->where('items.account_id', $intAccountId);
             if ($inttype == 'Open Job') {
@@ -2944,6 +2957,7 @@ items.id AS itemid,
                         item_manu.item_manu_name,
                         sites.name AS sitename,
                         items.supplier,
+                         tests_history.test_compliance_name,
                         suppliers.supplier_name,
                         suppliers.supplier_title AS suppliers_title,tickets.id as ticket_id,tickets.fix_code,tickets.user_id,tickets.reason_code,tickets.order_no,tickets.jobnote,tickets.severity,tickets.ticket_action,tickets.date as dt,tickets.order_no,tickets.photoid');
             $this->db->from('items');
@@ -2957,6 +2971,7 @@ items.id AS itemid,
             $this->db->join('categories', 'items_categories_link.category_id = categories.id', 'left');
             $this->db->join('suppliers', 'items.supplier = suppliers.supplier_id', 'left');
             $this->db->join('tickets', 'tickets.item_id = items.id', 'left');
+            $this->db->join('tests_history', 'tests_history.test_item_id = items.id', 'left');
             $this->db->where('items.id', $intItemId);
             $this->db->where('items.account_id', $intAccountId);
                 $this->db->where('tickets.ticket_action', "Open Job");
