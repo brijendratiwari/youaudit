@@ -910,7 +910,7 @@
                     <a class="button icon-with-text round" href="<?php echo site_url('/faults/'); ?>" id="clearfilter">
                         <i class="glyphicon glyphicon-repeat"></i>
                         <b>Clear Filter</b></a>
-                </div
+                </div>
                 <div class="col-md-5 text-right">
                     <span class="com-name">                     <?= $arrSessionData['objSystemUser']->accountname; ?>
                         <!--<img src="<?= base_url('/img/circle-red.png'); ?>" width="60" />-->
