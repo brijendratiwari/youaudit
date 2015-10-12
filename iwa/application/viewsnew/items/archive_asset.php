@@ -43,6 +43,12 @@
         font-weight: bold;
         font-size: 12px!important;
     }
+    #itemtable > thead {
+    display: none !important;
+}
+    #itemtable > tfoot {
+    display: none !important;
+}
 </style>
 <link href="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/css/sub_style.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" language="javascript" src="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/bootbox/bootbox.min.js"></script>
