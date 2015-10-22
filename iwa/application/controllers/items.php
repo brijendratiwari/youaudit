@@ -590,7 +590,14 @@ class Items extends MY_Controller {
         $arrPageData['arrCondition'] = $this->items_model->get_condition();
 
         $mixItemsData = $this->items_model->getAll($this->session->userdata('objSystemUser')->accountid);
+        
+        // confirm delete count for show on icon...
+        $confirmDeletedData = $this->items_model->getAwaitingDeletion(
+                    $this->session->userdata('objSystemUser')->accountid, $this->session->userdata('objSystemUser')->userid, $this->session->userdata('objSystemUser')->levelid
+            );
 
+            $arrPageData['confirmDeletedData']= $confirmDeletedData['results'];
+        
         if (isset($mixItemsData['results'])) {
             /* Add custom fields to each item */
             foreach ($mixItemsData['results'] as $item) {
@@ -648,7 +655,6 @@ class Items extends MY_Controller {
     }
 
     public function view($intItemId = -1) {
-
         $this->load->library('s3');
         $data = array();
         $this->load->model('items_model');
@@ -726,6 +732,7 @@ class Items extends MY_Controller {
             $arrPageData['arrManufaturer'] = $this->admin_section_model->getManufacturer($arrPageData['arrSessionData']['objSystemUser']->accountid);
             $arrPageData['arrCondition'] = $this->items_model->get_condition();
             $mixItemsData = $this->items_model->basicGetOne($intItemId, $this->session->userdata('objSystemUser')->accountid);
+            $arrPageData['removalData'] = $this->items_model->basicGetOneRemoval($intItemId, $this->session->userdata('objSystemUser')->accountid);
 
 // is there a submission?
             if ($mixItemsData && (count($mixItemsData) == 1)) {
@@ -818,7 +825,7 @@ class Items extends MY_Controller {
 
 
                 foreach ($arrPageData['dueTests'] as $key => $value) {
-                    
+
                     $arrPageData['dueTests'][$key]['location_name'] = $this->tests_model->getLocation($value['test_item_id']);
                     $arrPageData['dueTests'][$key]['owner_name'] = $this->tests_model->getOwnerName($value['test_item_id']);
                     $arrPageData['dueTests'][$key]['site_name'] = $this->tests_model->getSiteName($value['test_item_id']);
@@ -2989,6 +2996,33 @@ class Items extends MY_Controller {
         $res = $this->items_model->item_search(trim($this->input->post('bar_code')));
         echo $res;
         die;
+    }
+
+    // function for electrical test...
+    public function electricalTest($item_id = False) {
+        if ($item_id != FALSE) {
+            $this->load->model('items_model');
+            $res = $this->items_model->linkThisToElectrical($item_id, $this->input->post('item_patteststatus'), $this->input->post('item_pattestdate'), $this->input->post('userid'));
+            if ($res) {
+                $this->session->set_userdata('arrCourier', array('arrUserMessages' => array('The item was successfully updated')));
+                redirect('items/view/' . $item_id);
+//                $this->view($item_id);                
+            } else {
+                $this->session->set_userdata('arrCourier', array('arrUserMessages' => array('Something went wrong.. Pleae try agian.')));
+                redirect('items/view/' . $item_id);
+//                $this->view($item_id);                
+            }
+        }
+    }
+
+    public function getUser($user_id) {
+        $res = $this->db->select('firstname,lastname')->from('users')->where('id', $user_id)->get();
+        if ($res->num_rows() > 0) {
+            $userdata = $res->result_array();
+            return $userdata[0]['firstname'] . " " . $userdata[0]['lastname'];
+        } else {
+            return FALSE;
+        }
     }
 
 }

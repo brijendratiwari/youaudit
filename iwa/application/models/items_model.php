@@ -109,6 +109,34 @@ class Items_model extends CI_Model {
             return false;
         }
     }
+    public function basicGetOneRemoval($intItemId = -1, $intAccountId = -1) {
+        if (($intItemId > 0) && ($intAccountId > 0)) {
+            $this->db->select('
+                        items.id AS itemid,
+                        items.mark_deleted, 
+                        items.mark_deleted_2, 
+                        items.mark_deleted_date,
+                        items.mark_deleted_2_date, 
+                        items.active,
+                        items.deleted_date,
+                        items_reason_link.payment,
+                        itemstatus.name AS status_name,
+                items_reason_link.net_gain_loss,item_remove_reasons.reason');
+            $this->db->from('items');
+            $this->db->join('itemstatus', 'items.status_id = itemstatus.id');
+            $this->db->join('items_reason_link', 'items.id = items_reason_link.item_id');
+            $this->db->join('item_remove_reasons', 'items_reason_link.reason_id=item_remove_reasons.id');
+            $this->db->where('items.id', $intItemId);
+            $this->db->where('items.account_id', $intAccountId);
+            $resQuery = $this->db->get();
+
+            if ($resQuery->num_rows() > 0) {
+                return $resQuery->result();
+            }
+        } else {
+            return false;
+        }
+    }
 
     public function getTotalNumberOfItems($intAccountId = -1) {
         if ($intAccountId > 0) {
@@ -1135,6 +1163,19 @@ class Items_model extends CI_Model {
     public function linkThisToPat($intItemId = -1, $intPatId = NULL, $user_id = -1) {
 //echo $intPatId;die;
         $this->db->insert('items_pat_link', array('item_id' => $intItemId, 'pattest_status' => (int) $intPatId, 'user_id' => $user_id, 'date' => date('Y-m-d H:i:s')));
+    }
+    public function linkThisToElectrical($intItemId = -1, $intPatId = NULL,$date=False,$user_id = -1) {
+//echo $intPatId;die;
+                $ex = explode('/', $date);
+                $elc_date = $ex[2] . "-" . $ex[1] . "-" . $ex[0];
+                $this->db->insert('items_pat_link', array('item_id' => $intItemId, 'pattest_status' => (int) $intPatId, 'user_id' => $user_id, 'date' => $elc_date));
+                if($this->db->affected_rows() > 0){
+                
+                return TRUE;
+            }else{
+                return FALSE;
+            }
+                
     }
 
     public function getPatHistory($item_id) {
@@ -2667,13 +2708,22 @@ items.id AS itemid,
                 $arrDate = explode('/', $data['item_warranty']);
                 $warrnty = $arrDate[2] . "-" . $arrDate[1] . "-" . $arrDate[0];
             }
+            
+              if ($data['item_purchase']) {
+
+
+                $arrDate = explode('/', $data['item_purchase']);
+                $purchase_date = $arrDate[2] . "-" . $arrDate[1] . "-" . $arrDate[0];
+            }
 
             $update_list = array(
                 'owner_now' => $data['user'],
                 'owner_since' => date('Y-m-d H:i:s'),
                 'location_now' => $data['location'],
                 'status_id' => $data['status'],
+                'purchase_date' => $purchase_date,
                 'warranty_date' => $warrnty,
+                'value' => $data['purchase_value'],
                 'supplier' => $data['supplier'],
                 'site' => $data['site'],
                 'item_manu' => $data['item_manu'],
@@ -2683,6 +2733,22 @@ items.id AS itemid,
                 'manufacturer' => $data['manufacturer'],
                 'model' => $data['item_model'],
             );
+
+//            $update_list = array(
+//                'owner_now' => $data['user'],
+//                'owner_since' => date('Y-m-d H:i:s'),
+//                'location_now' => $data['location'],
+//                'status_id' => $data['status'],
+//                'warranty_date' => $warrnty,
+//                'supplier' => $data['supplier'],
+//                'site' => $data['site'],
+//                'item_manu' => $data['item_manu'],
+//                'status_id' => $data['status'],
+//                'condition_now' => $data['item_condition'],
+//                'condition_since' => date('Y-m-d H:i:s'),
+//                'manufacturer' => $data['manufacturer'],
+//                'model' => $data['item_model'],
+//            );
 
             foreach ($update_list as $key => $value) {
                 if ($value == '') {

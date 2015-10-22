@@ -3,6 +3,17 @@
 <link rel="stylesheet" href="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/magnific/magnific-popup.css" type="text/css" />-->
 <?php $this->load->helper('text'); ?>
 <style>
+    .audit_green{
+        
+        background-color:green;
+        color:white;
+    }
+    .audit_red{
+        
+        background-color:red;
+        color:white;
+    }
+    
     .panel-footer{
         background: #DFF2F9;
     }
@@ -1179,6 +1190,50 @@
 
             </div>
         </div>
+        <?php if($objItem->active == 0){ ?>
+        <!--new view for deleted assets..-->
+        <div class="col-md-4">
+               <div class="table-responsive" id="view_itemdetails_fault">
+                <table class="table" >
+                    <tbody>
+                        <tr class="tb_header_warning">
+                            <td>Removal Data</td>
+                            <td></td>
+                        </tr>
+                        <tr class="tb_font_warning">
+                            <td>Date of Removal</td>
+                            <td><?php echo date('d/m/Y',strtotime($removalData[0]->mark_deleted_2_date)); ?></td>
+                        </tr>
+                        <tr class="tb_font_warning">
+                            <td>Removal Logged by</td>
+                            <td><?php echo Items::getUser($removalData[0]->mark_deleted); ?></td>
+                        </tr>
+                        <tr class="tb_font_warning">
+                            <td>Removal Confirmed by</td>
+                            <td><?php echo Items::getUser($removalData[0]->mark_deleted_2); ?></td>
+                        </tr>
+                        <tr class="tb_font_warning">
+                            <td>Reason for Removal</td>
+                            <td><?php echo $removalData[0]->reason; ?></td>
+                        </tr>
+                        <tr class="tb_font_warning">
+                            <td>Method of Removal</td>
+                            <td><?php echo $removalData[0]->status_name; ?></td>
+                        </tr>
+                        <tr class="tb_font_warning">
+                            <td>Income Removal</td>
+                            <td><?php echo $removalData[0]->payment; ?></td>
+                        </tr>
+                        <tr class="tb_font_warning">
+                            <td>Net Income</td>
+                            <td><?php echo $removalData[0]->net_gain_loss; ?></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!--############################-->
+       <?php  } ?>
     </div></div>
 
 
@@ -1277,7 +1332,7 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                 </div>
 
                 <div class="col-md-5">
-                    <table id="audit_history" class="table table-striped table-bordered table-hover" width="100%" cellspacing="0">
+                    <table id="audit_history" class="table  table-bordered" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th class="left">Date of Audit</th>
@@ -1293,7 +1348,16 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                             <?php
                             foreach ($arrItemHistory as $strDate => $arrRecord) {
                                 ?>
-                                <tr>
+                                <tr  
+                                    <?php 
+                                    if($arrRecord['audit']->present == 1){
+                                        
+                                        echo 'class=audit_green';
+                                    }else{
+                                        echo 'class=audit_red';
+                                    }
+                                    ?>
+                                    >
                                     <td><?php echo date('d/m/Y', strtotime($strDate)); ?></td>
                                     <td><?php echo date('H:i:s', strtotime($strDate)); ?></td>
                                     <td><?php
@@ -1983,7 +2047,14 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
 
     <div id="pat_table" class="content_main">
         <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-3">
             <h1>Electrical Test History</h1>
+        </div>
+            <div class="col-md-4">
+            <a class="button icon-with-text round" id="electrical_test" data-target="#electrical_test_modal" data-toggle="modal"><i class="fa fa-bell-o"></i> Electrical Test</a>
+        </div>
+        </div>
         </div>
 
         <table class="list_table">
@@ -3166,18 +3237,19 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                 <div class="form-group col-md-12">
                 </div>
 
-                <div class="actionData">
-
+                  <div class="col-md-12">
+                     <div class="col-md-3"><label>Timeline/ Job Notes</label></div>
+                           <div class="actionData col-md-9"></div>
                 </div>     
 
                 <!-- Job Notes -->
-                <div class="form-group col-md-12">
+<!--                <div class="form-group col-md-12">
                     <div class="col-md-6"><label>Job Notes</label>   </div>
                     <div class="col-md-6 job_notes_div" >
                     </div>
 
 
-                </div>
+                </div>-->
                 <div class="form-group col-md-12 fault_photo">
                     <div class="col-md-6"><label>Photos</label>   </div>
                     <div class="col-md-6" id="photo_div"> </div>
@@ -3458,16 +3530,17 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                     <div class="col-md-6"><input type="text" name="order_no" id="v_order_no" class="form-control" value="" disabled="" /></div></div> <!-- /.form-group -->
                 <div class="form-group col-md-12">
                 </div>
-                <div class="actionData">
-
+                <div class="col-md-12">
+                     <div class="col-md-3"><label>Timeline/ Job Notes</label></div>
+                           <div class="actionData col-md-9"></div>
                 </div> 
                 <!-- Job Notes -->
-                <div class="form-group col-md-12">
+<!--                <div class="form-group col-md-12">
                     <div class="col-md-6"><label>Job Notes</label>
                     </div>
                     <div class="col-md-6 job_notes_div1">
                     </div>
-                </div>
+                </div>-->
                 <div class="form-group col-md-12" >
 
                 </div>
@@ -3486,6 +3559,52 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
     <!-- /.modal-dialog -->
 </div>
 
+
+
+<!--new modal for electrical test-->
+<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="electrical_test_modal" class="modal fade" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">&times;</button>
+                <h4 id="myModalLabel" class="modal-title">Electrical Test</h4>
+            </div>
+            <!--items/changelinks/'.$objItem->itemid-->
+            <form action="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/iwa/items/electricalTest/<?php echo $objItem->itemid; ?>" method="post" id="electrical_test_form">
+
+                <div class="modal-body">
+                    <div class="form-group col-md-12">
+                        <div class="col-md-6">  <label>Electrical Test Date</label> </div>
+                        <div class="col-md-6"> 
+                           <input class="form-control col-lg-10 datepicker" placeholder="Enter Pat Date" name="item_pattestdate" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <div class="col-md-6">  <label>Electrical Test Status</label> </div>
+                        <div class="col-md-6"> 
+                            <select name="item_patteststatus" id="item_patteststatus" class="form-control">
+                                    <option value="">----SELECT----</option>
+                                    <option value="-1">Unknown</option>
+                                    <option value="1" >Pass</option>
+                                    <option value="0">Fail</option>
+                                    <option value="5">Not Required</option>
+                                </select>
+                        </div>
+                    </div>
+                     <input type="hidden" name="userid" value="<?php echo $arrSessionData['objSystemUser']->userid; ?>"/>
+                </div>
+
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+                    <button class="btn btn-primary" type="submit" id="">Save</button>
+
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
 <script>
     $(document).ready(function() {
         var base_url = $("#base_url").val();
@@ -3500,6 +3619,16 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
             });
         });
 
+        $("#electrical_test_form").validate({
+            rules: {
+                item_pattestdate: "required",
+                item_patteststatus: "required"
+
+            },
+            messages: {
+                item_patteststatus: "Please Select Status",
+            }
+        });
         $("#update_fault_form").validate({
             rules: {
                 reason_code: "required",
@@ -3769,25 +3898,25 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
                     }
 
 
-                    if (data.allNotes != null) {
-                        var allNote = data.allNotes.split(',');
-                    }
-                    else {
-                        var allNote = data.jobnote.split(',');
-                    }
-
-                    if (allNote.length != 0) {
-                        $(".job_notes_div").empty();
-                        var notes_div = '';
-                        notes_div += "<ul>";
-//                        notes_div += "<li>" + data.jobnote + "</li>";
-                        for (var i = 0; i < allNote.length; i++) {
-                            notes_div += "<li>" + allNote[i] + "</li>";
-                        }
-                        notes_div += "</ul>";
-                        $(".job_notes_div").html(notes_div);
-                    }
-                    $("#view_fault #v_job_notes").val(data.jobnote);
+//                    if (data.allNotes != null) {
+//                        var allNote = data.allNotes.split(',');
+//                    }
+//                    else {
+//                        var allNote = data.jobnote.split(',');
+//                    }
+//
+//                    if (allNote.length != 0) {
+//                        $(".job_notes_div").empty();
+//                        var notes_div = '';
+//                        notes_div += "<ul>";
+////                        notes_div += "<li>" + data.jobnote + "</li>";
+//                        for (var i = 0; i < allNote.length; i++) {
+//                            notes_div += "<li>" + allNote[i] + "</li>";
+//                        }
+//                        notes_div += "</ul>";
+//                        $(".job_notes_div").html(notes_div);
+//                    }
+//                    $("#view_fault #v_job_notes").val(data.jobnote);
                     $("#save_button").show();
                 } // End of success
             }); // End of ajax
@@ -3900,26 +4029,26 @@ if ($arrSessionData['objSystemUser']->levelid > 1) {
 //                        console.log(job_div);
 //                        $(".job_notes_div").html(job_div);
 //                    }
-                    var notes_div = '';
-                    if (data.allNotes != "") {
-                        var allNote = data.allNotes.split(',');
-                        var noteDate = data.notesDate.split(',');
-                        $(".job_notes_div").empty();
-
-                        notes_div += "<ul>";
-                        for (var i = 0; i < allNote.length; i++) {
-                            notes_div += "<li style='list-style:none;padding:0;margin:0;'>" + noteDate[i] + " - " + allNote[i] + "</li>";
-
-                        }
-                        notes_div += "</ul>";
-                    } else {
-                        $(".job_notes_div1").empty();
-                        notes_div += "<ul><li style='list-style:none;padding:0;margin:0;'>" + data.loggedByDate + " - " + data.jobnote + "</li></ul>";
-                    }
-
-                    $(".job_notes_div1").html(notes_div);
-
-                    $("#viewfaultFix #v_job_notes1").val(data.jobnote);
+//                    var notes_div = '';
+//                    if (data.allNotes != "") {
+//                        var allNote = data.allNotes.split(',');
+//                        var noteDate = data.notesDate.split(',');
+//                        $(".job_notes_div").empty();
+//
+//                        notes_div += "<ul>";
+//                        for (var i = 0; i < allNote.length; i++) {
+//                            notes_div += "<li style='list-style:none;padding:0;margin:0;'>" + noteDate[i] + " - " + allNote[i] + "</li>";
+//
+//                        }
+//                        notes_div += "</ul>";
+//                    } else {
+//                        $(".job_notes_div1").empty();
+//                        notes_div += "<ul><li style='list-style:none;padding:0;margin:0;'>" + data.loggedByDate + " - " + data.jobnote + "</li></ul>";
+//                    }
+//
+//                    $(".job_notes_div1").html(notes_div);
+//
+//                    $("#viewfaultFix #v_job_notes1").val(data.jobnote);
                     $("#save_button").show();
 
                 } // End of success

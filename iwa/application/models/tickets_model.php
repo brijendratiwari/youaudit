@@ -109,11 +109,17 @@ class Tickets_model extends CI_Model {
     function fixStatus($data) {
         if ($data) {
 
+            if($this->session->userdata('objAppUser')){
+                $user_id = $this->session->userdata('objAppUser')->userid;
+            }else{
+                $user_id = $this->session->userdata('objSystemUser')->userid;
+            }
+            
             $this->db->where('id', $data['fix_item_id']);
             $result = $this->db->update('items', array("status_id" => $data['status']));
             if ($result) {
                 $this->db->where('id', $data['ticket_id']);
-                $this->db->update('tickets', array("user_id" => $this->session->userdata('objAppUser')->userid, "fix_code" => $data['fix_code'], "status" => $data['status'], "jobnote" => $data['job_notes'], "ticket_action" => "Fix", "fix_date" => $data['fix_date'], "photoid" => $data['photoid']));
+                $this->db->update('tickets', array("user_id" => $user_id, "fix_code" => $data['fix_code'], "status" => $data['status'], "jobnote" => $data['job_notes'], "ticket_action" => "Fix", "fix_date" => $data['fix_date'], "photoid" => $data['photoid']));
 
                 $open_history = $this->getTicketData($data['ticket_id']);
                 $history = array(
@@ -1200,7 +1206,7 @@ OR `categories`.`name` LIKE '%$strfreetext%')");
 
     public function getAllJobData($ticket_id) {
 
-        $this->db->select('users.firstname,users.lastname,tickets_history.jobnote,tickets_history.reason_code,tickets_history.fix_code,tickets_history.action,tickets_history.date');
+        $this->db->select('users.firstname,users.lastname,tickets_history.severity,tickets_history.jobnote,tickets_history.reason_code,tickets_history.fix_code,tickets_history.action,tickets_history.date');
         $this->db->from('tickets_history');
         $this->db->where('tickets_history.ticket_id', $ticket_id);
         $this->db->join('users', 'users.id=tickets_history.user_id');

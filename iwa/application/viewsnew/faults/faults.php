@@ -96,7 +96,6 @@
                     $("#view_fault #loggedByDate_div").val(data.loggedByDate);
                     $("#view_fault .actionData").html(data.actionData);
 
-
                     $("#view_fault  #v_status").find('option').each(function(i, opt) {
                         if (opt.value == data.itemstatusid) {
                             $(opt).attr('selected', 'selected');
@@ -163,27 +162,27 @@
                         $('.fault_photo').css('display', 'none');
                     }
 
-                     var notes_div = '';
-                    if (data.allNotes != "") {
-                        var allNote = data.allNotes.split(',');
-                        var noteDate = data.notesDate.split(',');
-                            $(".job_notes_div").empty();
-                       
-                        notes_div += "<ul>";
-                        for (var i = 0; i < allNote.length; i++) {
-                            notes_div += "<li style='list-style:none;padding:0;margin:0;'>"+noteDate[i]+ " - "+ allNote[i] + "</li>";
-
-                        }
-                        notes_div += "</ul>";
-                    }else{
-                    $(".job_notes_div").empty();
-                       notes_div += "<ul><li style='list-style:none;padding:0;margin:0;'>" +data.loggedByDate+ " - "+ data.jobnote + "</li></ul>";
-                    }
+//                     var notes_div = '';
+//                    if (data.allNotes != "") {
+//                        var allNote = data.allNotes.split(',');
+//                        var noteDate = data.notesDate.split(',');
+//                            $(".job_notes_div").empty();
+//                       
+//                        notes_div += "<ul>";
+//                        for (var i = 0; i < allNote.length; i++) {
+//                            notes_div += "<li style='list-style:none;padding:0;margin:0;'>"+noteDate[i]+ " - "+ allNote[i] + "</li>";
+//
+//                        }
+//                        notes_div += "</ul>";
+//                    }else{
+//                    $(".job_notes_div").empty();
+//                       notes_div += "<ul><li style='list-style:none;padding:0;margin:0;'>" +data.loggedByDate+ " - "+ data.jobnote + "</li></ul>";
+//                    }
                   
-                        $(".job_notes_div").html(notes_div);
+//                        $(".job_notes_div").html(notes_div);
 
 
-                    $("#view_fault #v_job_notes").val(data.jobnote);
+                  //  $("#view_fault #v_job_notes").val(data.jobnote);
                     $("#save_button").show();
 
                 } // End of success
@@ -1414,16 +1413,17 @@
                 <div class="form-group col-md-12">
                 </div>
 
-                <div class="actionData">
-
+                <div class="col-md-12">
+                     <div class="col-md-3"><label>Timeline/ Job Notes</label></div>
+                           <div class="actionData col-md-9"></div>
                 </div> 
                 <!-- Job Notes -->
-                <div class="form-group col-md-12">
+<!--                <div class="form-group col-md-12">
                     <div class="col-md-6"><label>Job Notes</label>
                     </div>
                     <div class="col-md-6 job_notes_div">
                     </div>
-                </div>
+                </div>-->
                 <div class="form-group col-md-12" >
 
                 </div>

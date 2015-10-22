@@ -43,17 +43,91 @@ class Faults extends MY_Controller {
             $this->session->set_userdata('strReferral', '/items/filter/');
             redirect('users/login/', 'refresh');
         }
-        // housekeeping
+
+   
+        
+        
+// housekeeping
         $arrPageData = array();
-        $arrPageData['arrPageParameters']['strSection'] = 'Fault History';
+         $arrPageData['arrPageParameters']['strSection'] = 'Fault History';
         $arrPageData['arrPageParameters']['strPage'] = "All Fault";
         $arrPageData['arrSessionData'] = $this->session->userdata;
         $this->session->set_userdata('booCourier', false);
         $this->session->set_userdata('arrCourier', array());
         $arrPageData['arrErrorMessages'] = array();
         $arrPageData['arrUserMessages'] = array();
-        $this->load->model('tickets_model');
-        $fullItemsData = $this->tickets_model->getAllFixItems($this->session->userdata('objSystemUser')->accountid);
+
+// set some defaults
+        $arrPageData['intCategoryId'] = 0;
+        $arrPageData['intLocationId'] = 0;
+        $arrPageData['intUserId'] = 0;
+        $arrPageData['intSiteId'] = -1;
+//
+//        //models
+        $this->load->model('items_model');
+        $this->load->model('itemstatus_model');
+        $this->load->model('users_model');
+        $this->load->model('categories_model');
+        $this->load->model('sites_model');
+        $this->load->model('locations_model');
+        $this->load->model('accounts_model');
+        $this->load->model('suppliers_model');
+        $this->load->model('customfields_model');
+        $this->load->model('admin_section_model');
+
+
+//        /* Save column data */
+        if ($this->input->post('columns')) {
+
+            $this->users_model->saveColumns(json_encode($this->input->post('columns')));
+        }
+//
+//        $arrPageData['export_uri'] = $this->uri->uri_string();
+        $arrPageData['currency'] = $this->accounts_model->getCurrencySym($this->session->userdata('objSystemUser')->currency);
+        $arrPageData['arrUsers'] = $this->users_model->getAllForPullDown($this->session->userdata('objSystemUser')->accountid);
+// For Owner Dropdown List
+        $arrPageData['arrOwners'] = $this->users_model->getAllForOwner($this->session->userdata('objSystemUser')->accountid);
+
+        $arrPageData['arrCategories'] = $this->categories_model->getAll($this->session->userdata('objSystemUser')->accountid);
+        $arrPageData['arrSites'] = $this->sites_model->getAll($this->session->userdata('objSystemUser')->accountid);
+        $arrPageData['arrLocations'] = $this->locations_model->getAll($this->session->userdata('objSystemUser')->accountid);
+        $arrPageData['arrManufacturers'] = $this->items_model->listManufacturers($this->session->userdata('objSystemUser')->accountid);
+//
+        $arrPageData['arrItemStatuses'] = $this->itemstatus_model->getAll();
+        $arrPageData['arrUserColumns'] = $this->users_model->getColumns($this->session->userdata('objSystemUser')->userid);
+        $arrPageData['arrUserColumnsFilter'] = $this->users_model->getColumnsFilter($this->session->userdata('objSystemUser')->userid);
+        $arrPageData['arrColumns'] = $this->users_model->getAllColumns();
+
+        $arrPageData['arrPatStatus'] = $this->items_model->getAllPatStatus();
+        $arrPageData['arrSuppliers'] = $this->suppliers_model->getAll();
+
+        $arrPageData['arrCustomfield'] = $this->customfields_model->getFieldByAccountId($this->session->userdata('objSystemUser')->accountid);
+        $arrPageData['arrItemManu'] = $this->admin_section_model->getItem_Manu($arrPageData['arrSessionData']['objSystemUser']->accountid);
+//
+        $arrPageData['arrManufaturer'] = $this->admin_section_model->getManufacturer($arrPageData['arrSessionData']['objSystemUser']->accountid);
+        $arrPageData['arrCondition'] = $this->items_model->get_condition();
+
+        $mixItemsData = $this->items_model->getAll($this->session->userdata('objSystemUser')->accountid, $arrPagination, $arrFilters, $arrOrder);
+
+        if (isset($mixItemsData['results'])) {
+            /* Add custom fields to each item */
+            foreach ($mixItemsData['results'] as $item) {
+                $custom_fields = $this->customfields_model->getCustomFieldsByItem($item->itemid);
+
+                if ($custom_fields) {
+
+                    foreach ($custom_fields as $custom_field) {
+                        $item->{$custom_field->field_name} = $custom_field->content;
+                    }
+                }
+            }
+        }
+
+
+
+
+//        $this->load->model('tickets_model');
+//        $fullItemsData = $this->tickets_model->getAllFixItems($this->session->userdata('objSystemUser')->accountid);
 
 
 
@@ -100,38 +174,29 @@ class Faults extends MY_Controller {
 //   $jobnote = '';
         $allJob = array();
         $actionData = '';
-        foreach ($all_job_notes as $history) {
-            $allJob [] = $history['jobnote'];
-            $jobNoteDate [] = date('d/m/Y', strtotime($history['date']));
+//            $allJob [] = $history['jobnote'];
+//            $jobNoteDate [] = date('d/m/Y', strtotime($history['date']));
 
-            $actionData .= '<div class="col-md-12">
-                    <div class="col-md-6"><label>Action</label> </div>
-                    <div class="col-md-6">' . $history['action'] . '</div>
-                     </div>';
-            if ($history['fix_code'] != '') {
-                $actionData .='<div class="col-md-12">
-                    <div class="col-md-6"><label>Fixed Code</label> </div>
-                    <div class="col-md-6">' . $history['fix_code'] . '</div>
-                    </div>';
-            } else {
-                $actionData .='<div class="col-md-12">
-                    <div class="col-md-6"><label>Reason Code</label> </div>
-                    <div class="col-md-6">' . $history['reason_code'] . '</div>
-                    </div>';
-            }
-            $actionData .= '<div class="col-md-12">
-                    <div class="col-md-6"><label>Update  Date</label> </div>
-                    <div class="col-md-6">' . date('d/m/Y', strtotime($history['date'])) . '</div>
-                    </div>
-                    <div class="col-md-12">
-                    <div class="col-md-6"><label>Logged By</label> </div>
-                    <div class="col-md-6">' . $history['firstname'] . ' ' . $history['lastname'] . '</div>
-                  </div>
-                <div class="col-md-12">&nbsp;</div>';
-
-
-//            echo $jobnote;
+               foreach ($all_job_notes as $history) {
+//            $allJob [] = $history['jobnote'];
+//            $jobNoteDate [] = date('d/m/Y', strtotime($history['date']));
+    
+              if ($history['fix_code'] != '') {
+        $code= '<div class="col-md-4">&nbsp</div><div class="col-md-8"> Fix Reason Code [ '.$history['fix_code'].' ]</div>';
+    }else{
+        $code = '<div class="col-md-4">&nbsp</div><div class="col-md-8"> Reason Code [ '.$history['reason_code'].' ]</div>';
+    }
+            $actionData .= '<div class="col-md-4">'.date('d/m/Y', strtotime($history['date'])).'</div>'
+                    .$code.'
+                    <div class="col-md-8"> '.  $history['action'] .' By ['.$history['firstname'] . ' ' . $history['lastname'].']</div>
+                    <div class="col-md-4">&nbsp</div>
+                    <div class="col-md-8"> '.$history['jobnote'].'</div><div class="col-md-12">&nbsp</div>';
+       
+           //            echo $jobnote;
+            
+            //            echo $jobnote;
         }
+//        echo $actionData ;die;
         $all_notes = implode(',', $allJob);
         $notesDate = implode(',', $jobNoteDate);
 //        $all_photos=  implode(',', $photoid);
@@ -184,38 +249,26 @@ class Faults extends MY_Controller {
 //   $jobnote = '';
         $allJob = array();
         $actionData = '';
+//        var_dump($all_job_notes);die;
         foreach ($all_job_notes as $history) {
-            $allJob [] = $history['jobnote'];
-            $jobNoteDate [] = date('d/m/Y', strtotime($history['date']));
-
-            $actionData .= '<div class="col-md-12">
-                    <div class="col-md-6"><label>Action</label> </div>
-                    <div class="col-md-6">' . $history['action'] . '</div>
-                     </div>';
-            if ($history['fix_code'] != '') {
-                $actionData .='<div class="col-md-12">
-                    <div class="col-md-6"><label>Fixed Code</label> </div>
-                    <div class="col-md-6">' . $history['fix_code'] . '</div>
-                    </div>';
-            } else {
-                $actionData .='<div class="col-md-12">
-                    <div class="col-md-6"><label>Reason Code</label> </div>
-                    <div class="col-md-6">' . $history['reason_code'] . '</div>
-                    </div>';
-            }
-            $actionData .= '<div class="col-md-12">
-                    <div class="col-md-6"><label>Update  Date</label> </div>
-                    <div class="col-md-6">' . date('d/m/Y', strtotime($history['date'])) . '</div>
-                    </div>
-                    <div class="col-md-12">
-                    <div class="col-md-6"><label>Logged By</label> </div>
-                    <div class="col-md-6">' . $history['firstname'] . ' ' . $history['lastname'] . '</div>
-                  </div>
-                <div class="col-md-12">&nbsp;</div>';
-
-
-//            echo $jobnote;
+//            $allJob [] = $history['jobnote'];
+//            $jobNoteDate [] = date('d/m/Y', strtotime($history['date']));
+    if ($history['fix_code'] != '') {
+        $code= '<div class="col-md-4">&nbsp</div><div class="col-md-8"> Fix Reason Code [ '.$history['fix_code'].' ]</div>';
+    }else{
+        $code = '<div class="col-md-4">&nbsp</div><div class="col-md-8"> Reason Code [ '.$history['reason_code'].' ]</div>';
+    }
+            $actionData .= '<div class="col-md-4">'.date('d/m/Y', strtotime($history['date'])).'</div>'
+                    .$code.'
+                    <div class="col-md-8"> '.  $history['action'] .' By ['.$history['firstname'] . ' ' . $history['lastname'].']</div>
+                    <div class="col-md-4">&nbsp</div>
+                    <div class="col-md-8"> '.$history['jobnote'].'</div><div class="col-md-12">&nbsp</div>';
+       
+           //            echo $jobnote;
         }
+        
+        
+        
         $all_notes = implode(',', $allJob);
         $notesDate = implode(',', $jobNoteDate);
 //        $all_photos=  implode(',', $photoid);
@@ -1215,6 +1268,302 @@ class Faults extends MY_Controller {
     }
 
     ##########################################################################
+    // method for ajax calling on fault hiistory tab.....
+    // get archived items 
+    public function faultHisyoryAjaxData() {
+        if (!$this->session->userdata('booUserLogin') && !$this->session->userdata('booInheritedUser')) {
+            $this->session->set_userdata('strReferral', '/items/filter/');
+            redirect('users/login/', 'refresh');
+        }
+// housekeeping
+        $arrPageData = array();
+        $arrPageData['arrPageParameters']['strSection'] = get_class();
+        $arrPageData['arrPageParameters']['strPage'] = "Filter Items";
+        $arrPageData['arrSessionData'] = $this->session->userdata;
+        $this->session->set_userdata('booCourier', false);
+        $this->session->set_userdata('arrCourier', array());
+        $arrPageData['arrErrorMessages'] = array();
+        $arrPageData['arrUserMessages'] = array();
+//models
+        $this->load->model('items_model');
+        $this->load->model('customfields_model');
+        $this->load->model('users_model');
+        $this->load->model('tickets_model');
+        $sLimit = "";
+        $lenght = 20;
+        $str_point = 0;
+        $col_sort = array("items.barcode", "", "categories.name", "items.item_manu", "items.manufacturer", "items.model", "items.quantity", "sites.name", "locations.name", "owner.owner_name", "suppliers.supplier_name", "itemstatus.name", "item_condition.condition", "", "items.serial_number", "", "items.purchase_date", "items.warranty_date", "items.replace_date", "items.value", "items.current_value", "", "", "", "", "", "", "", "", "tickets.date", "", "tickets.severity", "tickets.fix_date", "tickets.order_no", "", "users.firstname", "users.firstname", "tickets.fix_code", "");
+
+
+        $query = "SELECT items.current_value, items.serial_number,items.purchase_date,items.quantity,items.warranty_date,items.replace_date,item_condition.condition AS condition_name,suppliers.supplier_name,`items`.`id` AS itemid, `items`.`item_manu`, `items`.`manufacturer`, `items`.`account_id`, items.value,`items`.`model`, `items`.`barcode`, `items`.`site`, photos2.path AS itemphotopath,`owner`.`owner_name`, `item_manu`.`item_manu_name`, `categories`.`name` AS categoryname, `locations`.`name` AS locationname, `sites`.`name` AS sitename, `pat`.`pattest_name` AS pat_status, `itemstatus`.`name` AS statusname, `users`.`firstname`, `users`.`lastname`, `tickets`.`user_id` as fixed_by, `tickets`.`description`, `tickets`.`severity`, `tickets`.`id` as ticket_id, `tickets`.`fix_code`, `tickets`.`reason_code`, `tickets`.`order_no`, `tickets`.`jobnote`, `tickets`.`date` as dt, `tickets`.`fix_date`, `tickets`.`ticket_action`, `tickets_history`.`user_id` as fault_by FROM (`items`) LEFT JOIN `items_categories_link` ON `items`.`id` = `items_categories_link`.`item_id` LEFT JOIN `categories` ON `items_categories_link`.`category_id` = `categories`.`id` LEFT JOIN `users` ON `items`.`owner_now` = `users`.`id` LEFT JOIN `owner` ON `items`.`owner_now` = `owner`.`id` LEFT JOIN `locations` ON `items`.`location_now` = `locations`.`id` LEFT JOIN `sites` ON `items`.`site` = `sites`.`id` LEFT JOIN `tickets` ON `tickets`.`item_id` = `items`.`id` LEFT JOIN `tickets_history` ON `tickets`.`id` = `tickets_history`.`ticket_id` LEFT JOIN `suppliers` ON `items`.`supplier` = `suppliers`.`supplier_id` LEFT JOIN `itemstatus` ON `items`.`status_id` = `itemstatus`.`id` LEFT JOIN `pat` ON `items`.`pattest_status` = `pat`.`id` LEFT JOIN `item_manu` ON `items`.`item_manu` = `item_manu`.`id` 
+            left join photos on users.photo_id = photos.id
+             left join item_condition on items.condition_now = item_condition.id
+             left join custom_fields_content on items.id = custom_fields_content.item_id
+               left join photos AS photos2 on items.photo_id = photos2.id WHERE (items.account_id = " . $this->session->userdata('objSystemUser')->accountid . " AND tickets.ticket_action='Fix' AND tickets_history.action = 'Fixed')
+                  ";
+
+
+
+        if (isset($_GET['sSearch']) && $_GET['sSearch'] != "") {
+
+            $words = $_GET['sSearch'];
+            $query .=" AND ( items.barcode REGEXP '$words'
+                          OR categories.name REGEXP '$words'
+                          OR items.item_manu REGEXP '$words'
+                          OR items.manufacturer REGEXP '$words'
+                          OR items.model REGEXP '$words'
+                          OR items.quantity REGEXP '$words'
+                          OR sites.name REGEXP '$words'
+                          OR locations.name REGEXP '$words'
+                          OR owner.owner_name REGEXP '$words'
+                          OR pat.pattest_name REGEXP '$words'
+                          OR itemstatus.name REGEXP '$words' 
+                          OR items.value REGEXP '$words'
+                          OR items.current_value REGEXP '$words'
+                          OR suppliers.supplier_name REGEXP '$words' 
+                          OR itemstatus.name REGEXP '$words'
+                          OR item_condition.condition REGEXP '$words' 
+                          OR items.serial_number REGEXP '$words' 
+                          OR tickets.fix_code REGEXP '$words' 
+                          OR tickets.date REGEXP '$words' 
+                          OR tickets.severity REGEXP '$words' 
+                          OR tickets.fix_date REGEXP '$words' 
+                          OR tickets.order_no REGEXP '$words' 
+                          OR users.firstname REGEXP '$words' 
+) ";
+        } else {
+            $query .="";
+        }
+
+        if (isset($_GET['sSearch_1']) && $_GET['sSearch_1'] != "") {
+
+            $words = $_GET['sSearch_1'];
+            $query .=" and ( items.barcode REGEXP '$words'
+                         ) ";
+        }
+        if (isset($_GET['sSearch_3']) && $_GET['sSearch_3'] != "") {
+
+            $words = $_GET['sSearch_3'];
+            $query .=" and ( categories.name REGEXP '$words'
+                         ) ";
+        }
+        if (isset($_GET['sSearch_4']) && $_GET['sSearch_4'] != "") {
+
+            $words = $_GET['sSearch_4'];
+            $query .=" and ( item_manu.item_manu_name REGEXP '$words'
+                         ) ";
+        }
+        if (isset($_GET['sSearch_5']) && $_GET['sSearch_5'] != "") {
+
+            $words = $_GET['sSearch_5'];
+            $query .=" and ( items.manufacturer REGEXP '$words'
+                         ) ";
+        }
+        if (isset($_GET['sSearch_8']) && $_GET['sSearch_8'] != "") {
+
+            $words = $_GET['sSearch_8'];
+            $query .=" and ( sites.name REGEXP '$words'
+                         ) ";
+        }
+        if (isset($_GET['sSearch_9']) && $_GET['sSearch_9'] != "") {
+
+            $words = $_GET['sSearch_9'];
+            $query .=" and ( locations.name REGEXP '$words'
+                         ) ";
+        }
+        if (isset($_GET['sSearch_10']) && $_GET['sSearch_10'] != "") {
+
+            $words = $_GET['sSearch_10'];
+            $query .=" and ( owner.owner_name REGEXP '$words'
+                         ) ";
+        }
+        if (isset($_GET['sSearch_11']) && $_GET['sSearch_11'] != "") {
+
+            $words = $_GET['sSearch_11'];
+            $query .=" and ( suppliers.supplier_name REGEXP '$words'
+                         ) ";
+        }
+        if (isset($_GET['sSearch_12']) && $_GET['sSearch_12'] != "") {
+
+            $words = $_GET['sSearch_12'];
+            $query .=" and ( itemstatus.name REGEXP '$words'
+                         ) ";
+        }
+        if (isset($_GET['sSearch_13']) && $_GET['sSearch_13'] != "") {
+
+            $words = $_GET['sSearch_13'];
+            $query .=" and ( item_condition.condition REGEXP '$words'
+                         ) ";
+        }
+
+        for ($k = 22; $k < $_GET['iColumns']; $k++) {
+            if (isset($_GET['sSearch_' . $k]) && $_GET['sSearch_' . $k] != "") {
+
+                $words = $_GET['sSearch_' . $k];
+                $query .=" and ( custom_fields_content.content REGEXP '$words'
+                         ) ";
+            }
+        }
+        $order_by = " tickets.date ";
+        $temp = " DESC ";
+        if (isset($_GET['iSortCol_0'])) {
+            $index = $_GET['iSortCol_0'];
+            $temp = $_GET['sSortDir_0'] === 'asc' ? 'asc' : 'desc';
+            $order_by = $col_sort[$index];
+        }
+
+        $query .= " Group by tickets_history.ticket_id ORDER BY $order_by " . " " . " $temp";
+
+
+        if (isset($_GET['iDisplayStart']) && $_GET['iDisplayLength'] != '-1') {
+            $str_point = intval($_GET['iDisplayStart']);
+            $lenght = intval($_GET['iDisplayLength']);
+            $query_res = $query . " limit " . $str_point . "," . $lenght;
+        } else {
+            $query_res = $query;
+        }
+//        echo $query_res;die;
+        $res = $this->db->query($query_res);
+        $count_res = $this->db->query($query);
+        $result = $res->result_array();
+        $count_result = $count_res->result_array();
+        $total_record = count($count_result);
+
+        $output = array(
+            "sEcho" => intval($_GET['sEcho']),
+            "iTotalRecords" => $total_record,
+            "iTotalDisplayRecords" => $total_record,
+            "aaData" => array()
+        );
+        $arrCustomfield = $this->customfields_model->getFieldByAccountId($this->session->userdata('objSystemUser')->accountid);
+        foreach ($arrCustomfield as $column_name) {
+            $arr_column[] = $column_name->field_name;
+        }
+
+        $arr_custom_columns = implode(',', $arr_column);
+
+        $count = 0;
+        foreach ($result as $val) {
+            $view_users = base_url('items/view/' . $val['itemid']);
+            $edit = base_url('items/editItem/' . $val['itemid']);
+            $photo = '<img title="Item Picture" width="80" src="' . base_url($val['itemphotopath']) . '">';
+            $image_role = "<div class='image_single'>";
+            $photoid = $val['itemphotopath'];
+            $image_role .= '<a title="" href="' . base_url($val['itemphotopath']) . '" class="ui-lightbox"><img  alt="Gallery Image"   src="' . base_url() . '/images/viewList/' . $val['itemphotoid'] . '"></a>';
+
+            $image_role .= "<script>$('.image_single').each(function() { // the containers for all your galleries
+    $(this).magnificPopup({
+        delegate: 'a', // the selector for gallery item
+        type: 'image',
+        gallery: {
+          enabled:true
+        }
+    });
+}); </script>";
+
+            // get name 
+
+
+            $image_role .= "</div>";
+            if ($val['purchase_date'] != "0000-00-00" && $val['purchase_date'] != NULL) {
+                $date2 = date('d-m-Y', strtotime($val['purchase_date']));
+                $date1 = date('d-m-Y H:i:s', strtotime(date('Y-m-d')));
+
+                $diff = abs(strtotime($date2) - strtotime($date1));
+
+                $years = floor($diff / (365 * 60 * 60 * 24));
+                $months = floor(($diff - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
+
+                $age_asset = $years . ' year ' . $months . ' month ';
+            } else {
+                $age_asset = 'N/A';
+            }
+            $custom_fields = $this->customfields_model->getCustomFieldsByItem($val['itemid']);
+            foreach ($arrCustomfield as $col) {
+                if ($custom_fields) {
+                    foreach ($custom_fields as $custom_field) {
+                        if ($col->field_name == $custom_field->field_name) {
+                            $val[$col->field_name] = $custom_field->content;
+                        }
+                    }
+                } else {
+
+                    $val[$col->field_name] = 'N/A';
+                }
+            }
+            if ($val['purchase_date'] != "0000-00-00" && $val['purchase_date'] != NULL) {
+                $purchase_date = date('d-m-Y', strtotime($val['purchase_date']));
+            } else {
+                $purchase_date = "N/A";
+            }
+            if ($val['warranty_date'] != "0000-00-00" && $val['warranty_date'] != NULL) {
+                $warranty_date = date('d-m-Y', strtotime($val['warranty_date']));
+            } else {
+                $warranty_date = "N/A";
+            }
+            if ($val['replace_date'] != "0000-00-00" && $val['replace_date'] != NULL) {
+                $replace_date = date('d-m-Y', strtotime($val['replace_date']));
+            } else {
+                $replace_date = "N/A";
+            }
+// get total faults
+            $mixItemsTicketHistory = $this->tickets_model->ticketHistory($val['itemid']);
+            $numberOfFaults = count($mixItemsTicketHistory);
+
+            if ($val['deleted_date'] != NULL) {
+                $removal_date = date('d/m/Y', strtotime($val['deleted_date']));
+            } else {
+                $removal_date = 'N/A';
+            }
+
+            if ($val['userfirstname']) {
+                $logged_by = $val['userfirstname'] . '' . $val['userlastname'];
+            }
+
+//            $confirm_by = $this->getUser($val['mark_deleted']);
+            // calculate incident length...
+            if (isset($val['dt'])) {
+                $date2 = date('d-m-Y', strtotime($val['dt']));
+                $date1 = date('d-m-Y H:i:s', strtotime($val['fix_date']));
+
+                $diff = abs(strtotime($date2) - strtotime($date1));
+                $years = floor($diff / (365 * 60 * 60 * 24));
+                $days = floor($diff / 3600 / 24);
+                $months = floor(($diff - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
+
+                $incident_length = $months . ' month ' . $days . ' days ';
+            } else {
+                $incident_length = 'N/A';
+            }
+            $account_id = $this->session->userdata('objSystemUser')->accountid;
+            if ($val['ticket_id'] > 0) {
+                $ticket_id = $val['ticket_id'];
+            } else {
+                $ticket_id = 0;
+            }
+            $output['aaData'][] = array("DT_RowId" => $val['itemid'], '<a id="bcode" href="' . $view_users . '">' . $val['barcode'] . '</a>', $photo, $val['categoryname'], $val['item_manu_name'], $val['manufacturer'], $val['model'], $val['quantity'], $val['sitename'], $val['locationname'], $val['owner_name'], $val['supplier_name'], $val['statusname'], $val['condition_name'], $numberOfFaults, $val['serial_number'], $age_asset, $purchase_date, $warranty_date, $replace_date, $val['value'], $val['current_value'], $val['severity'], date('d/m/Y', strtotime($val['dt'])), $incident_length, $val['severity'], date('d/m/Y', strtotime($val['fix_date'])), $val['order_no'], $val['jobnote'], $this->getUserData($val['fault_by']), $this->getUserData($val['fixed_by']), $val['reason_code'],
+                '<span class="action-w"><a data-toggle="modal" actionmode="reportfault"  ticket_id = "' . $ticket_id . '"  id="itm_' . $val['itemid'] . '" account_id="' . $account_id . '" href="#view_fault" title="View Fault" class="viewfault" data_customer_id=""><i class="fa fa-eye franchises-i"></i></a>View Incident</span><span><a  href="' . base_url("faults/getPdfForFaultHistory/" . $val['itemid'] . '/' . $account_id) . '"><img src="http://' . $_SERVER['HTTP_HOST'] . '/youaudit/includes/img/pdf.png" title="Get pdf" alt="Get pdf" /></a></span>');
+//            var_dump($output);die;
+            foreach (array_reverse($arrCustomfield) as $col) {
+//  echo $col->field_name.'<br>';
+                if (isset($val[$col->field_name])) {
+//                    echo  $val[$col->field_name].'<br>';
+                    $col_value = $val[$col->field_name];
+                } else {
+                    $col_value = 'N/A';
+                }
+//var_dump($output['aaData'][$count]);die;
+                array_splice($output['aaData'][$count], 22, 0, $col_value);
+            }
+            $count++;
+        }
+
+
+
+        echo json_encode($output);
+        die;
+    }
+
 }
 
 /* End of file faults.php */

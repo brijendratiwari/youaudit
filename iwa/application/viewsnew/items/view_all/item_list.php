@@ -101,6 +101,15 @@
         font-weight: bold;
         font-size: 12px!important;
     }
+    sup {
+    background: rgb(0, 174, 239) none repeat scroll 0 0;
+    border-radius: 100px;
+    color: #fff;
+    font-size: 12px;
+    padding: 8px 5px;
+    position: absolute;
+    top: 0;
+}
     /*    table.dataTable tbody th, table.dataTable tbody td { padding: 0 20px !important; width: 200px !important;}*/
 </style>
 <link href="<?php echo 'http://' . $_SERVER['HTTP_HOST']; ?>/youaudit/includes/css/sub_style.css" rel="stylesheet" type="text/css" />
@@ -1336,7 +1345,7 @@
                 if ($arrSessionData['objSystemUser']->levelid > 2) {
                     ?>
                     <a href="<?php echo site_url('/items/confirmdeleted/'); ?>" class="button icon-with-text round">
-                        <i class="fa  fa-trash-o"></i>
+                        <i class="fa  fa-trash-o"><sup><?php echo count($confirmDeletedData); ?></sup></i>
                         <b>Confirm Deletions</b></a>
                     <?php
                 }
@@ -2400,12 +2409,23 @@ if (!empty($arr1)) {
                             </select></div>
                     </div> 
 
+                       <div class="row col-md-12">
+
+                        <label class="col-md-4">Purchase Date</label>
+                        <div class="col-md-8"><input type="input" name="item_purchase" id="" value="" class="datepicker form-control" /></div>
+
+                    </div> 
                     <div class="row col-md-12">
 
                         <label class="col-md-4">Warranty Date</label>
                         <div class="col-md-8"><input type="input" name="item_warranty" id="item_warranty" value="" class="datepicker form-control" /></div>
 
                     </div> 
+                    <div class="row col-md-12">
+
+                        <label class="col-md-4">Purchase Price</label>
+                        <div class="col-md-8"><input type="input" name="purchase_value" id="" value="" class="form-control" /></div>
+                        </div>
 
                     <div id="custom_header">
                         <img width="15" src="<?php echo base_url('../img/ajax-loader.gif'); ?>"><span>&nbsp;&nbsp;Please Wait...</span>

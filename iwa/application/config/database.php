@@ -51,8 +51,8 @@ $active_record = TRUE;
 
 
 $db['default']['hostname'] = 'localhost';
-$db['default']['username'] = 'deviis_inventure';
-$db['default']['password'] = 'inventure'; 
+$db['default']['username'] = 'root';
+$db['default']['password'] = ''; 
 $db['default']['database'] = 'deviis_youaudit';
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = '';
